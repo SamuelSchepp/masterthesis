@@ -54,9 +54,23 @@ The license of React prohibits the use of the framework, if the company is in a 
 One of the solutions is an interpreter, that is running a description of the app.
 It loads changes from a service and can change it`s behavior, based on the configuration.
 The level of abstraction is a balance between simplicity and functionality.
-If the configuration is to simple, new and 
+If the configuration is to simple, features of a new kind are not able to be configured.
+If the configuration is to comprehensive, the effort and complexity is to high, because the features have to be configured in a highly detailed way.
+This approach is sensitive to errors, too.
 
-\section*{Distinction}
+The configuration can be extensive on parts, where there need to be much possibility, and simple on the parts, where the most errors can occur.
+That is why, the ''mos'' configuration is designed to allows to configure the UI via layers in way that is equal to common UI frameworks.
+It even supports layout constraints, which enables relations between layers.
+Layers, that can have values like a text field, can be bound to a value in the database, so that the form is reactive and synchronized.
+
+When it comes to dynamic functionality, the configuration is limited to a set of actions, which take arguments and trigger certain discrete changes.
+Common tasks, like writing data in the database, making network request or even create calendar entries and trigger the reload of a database table.
+
+The app`s infrastructure can also be customized in a way, that boilerplate code is not needed.
+SQLite tables can be configured, that automatically sync with network endpoints or the configuration endpoint can be changed on the fly.
+Image and data proxy endpoints can be added, that will be used to load images. without changing every image layer.
+
+\section*{Limitation}
 
 
 
