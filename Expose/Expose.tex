@@ -4,7 +4,7 @@
 \usepackage[onehalfspacing]{setspace}
 \usepackage{ngerman} % hiermit werden deutsche Bezeichnungen genutzt und 
   
-\title{Domain-specific code interpreters}
+\title{Exposé: Domain-specific code interpreters for mobile applications}
 \author{Samuel Schepp}
 
 \date{\today}
@@ -15,38 +15,40 @@
 	
 \section*{Context}
 
-Fabrik19 is a software development company, which develops mobile apps and web applications for local businesses, events and city marketing agencies.
-All of the applications are produced business to business (B2B).
+Fabrik19 GmbH is a software development company, that develops mobile apps and web applications for local businesses, events and city marketing agencies.
+Most of the applications are distributed business to business (B2B).
 There are also implementations, that power digital signage devices, like customer terminals in stores or outdoor shopping streets.
 These devices show context specific information about products and the environment and provide search functionality and suggestions.
+City marketing agencies are hosting these terminals to be part of the digital transformation of the shopping experience.
 
-The content is loaded from back-ends, which are powered by common content management systems, like Joomla or Wordpress.
+The content, that is delivered to the user by the apps and terminals is loaded from back-ends, which are powered by common content management systems like Joomla or Wordpress.
 The customers have access and act as editors, who manage their own content.
-Some of the data is loaded through a custom proxy service, that is reprocessing data, before it gets downloaded by the apps.
+Some of the data is loaded through a custom proxy service, that is pre-processing data, before it gets downloaded by the apps.
 The app is then able to only load images in the needed size, so it may not be way to large to load over a mobile internet access.
 
 \section*{Problem definition}
 
-The customers not only want to edit their data and content live, but there is the requirement, that they need to be able to create new screens, different kinds of lists, or totally new features for the app.
+The customers not only want to edit their data and content live, but there is the requirement, that they need to be able to create new features like screens, different kinds of lists or a re-arranged navigation.
 
-if the app runs on a digital signage terminal, the new app version has to be deployed to all of the devices, which can be a hard process, if there is no automatic deploy mechanism.
-
+If the app runs on a digital signage terminal, the new app version has to be deployed to all of the devices, which can be a hard process, if there is no automatic deploy mechanism.
 If the app is targeted for mobile devices, changes have to be made for both platforms, and changes have to be reviewed by Apple and Google, which may take hours to days, which means that last minutes changes are not possible.
 
-Many solutions for faster app deployment have been evaluated by the engineering team.
+Some solutions for faster app deployment have been evaluated by the engineering team.
 Solutions like web apps (Ionic), or native apps with JavaScript bundles (React Native) have some significant downsides.
-
 The apps have to support native capabilities like push notifications, camera, beacons and GPS.
-Using these special features in a highly customization way and independent of the framework vendors implementation is not possible.
-New platform features cannot be used without workarounds until they are implemented by the framework.
-Problems, that are already solved are reoccurring, because of the JavaScript layer.
-Object-relational operations on a SQLite database take much more time, because data has to be mapped into the JavaScript environment, instead of heaving direct memory access with the native languages.
-Web views also introduce new issues with the way, the app is used.
-They change the way, users travel through the view hierarchy, because they don't support native gestures and special device needs, like the display notch on newer iPhones.
-While it is very easy in iOS to let the native navigation bars handle the different devices, a web app has to calculate it by hand and has to be updated if new devices are introduced.
+Using these special features in a highly customizable way and independent of the framework vendors implementation is not possible.
+Besides, new platform features cannot be used without workarounds until they are implemented by the framework.
 
-The most substantial issue is the dependence on these frameworks and the need to agree to their terms and conditions.
-The license of React prohibits the use of the framework, if the company is in a active lawsuit against Facebook or it`s affiliates.
+%Problems, that are already solved are reoccurring, because of the JavaScript layer.
+%Object-relational operations on a SQLite database take much more time, because data has to be mapped into the JavaScript environment, instead of heaving direct memory access with the native languages.
+%Web views also introduce new issues with the way, the app is used.
+%They change the way, users travel through the view hierarchy, because they don't support native gestures and special device needs, like the display notch on newer iPhones.
+%While it is very easy in iOS to let the native navigation bars handle the different devices, a web app has to calculate it by hand and has to be updated if new devices are introduced.
+
+The most substantial issue is the dependence on expensive developers and the overhead to create a lot of apps, that all are based on the same principles, and are all running on the latest hardware, with the latest software features.
+Changes to the platform have to be made in all apps, like supporting the notch, or system integration of password managers.
+Also, the dependence on third-party frameworks and the need to agree to their terms and conditions is a risk to the company.
+For example, the license of React prohibits the use of the framework, if the company is in a active lawsuit against Facebook or it`s affiliates.
 
 
 \section*{Motivation}
@@ -54,24 +56,49 @@ The license of React prohibits the use of the framework, if the company is in a 
 One of the solutions is an interpreter, that is running a description of the app.
 It loads changes from a service and can change it`s behavior, based on the configuration.
 The level of abstraction is a balance between simplicity and functionality.
-If the configuration is to simple, features of a new kind are not able to be configured.
+If the configuration is to simple, features of a new kind are not able to be configured, without changing the interpreter.
 If the configuration is to comprehensive, the effort and complexity is to high, because the features have to be configured in a highly detailed way.
 This approach is sensitive to errors, too.
 
-The configuration can be extensive on parts, where there need to be much possibility, and simple on the parts, where the most errors can occur.
-That is why, the ''mos'' configuration is designed to allows to configure the UI via layers in way that is equal to common UI frameworks.
-It even supports layout constraints, which enables relations between layers.
-Layers, that can have values like a text field, can be bound to a value in the database, so that the form is reactive and synchronized.
+The configuration can be extensive on parts, where there needs to be much variance and possibility, and simple on the parts, where the most errors can occur.
+Defining the apps layout has a high degree of expressiveness, since it is not very sensitive to errors and the requirements are precise.
+The apps dynamic is restricted to common actions, like uploading data or creating a event in the phones calendar.
 
-When it comes to dynamic functionality, the configuration is limited to a set of actions, which take arguments and trigger certain discrete changes.
-Common tasks, like writing data in the database, making network request or even create calendar entries and trigger the reload of a database table.
+%That is why, the ''mos'' configuration is designed to allows to configure the UI via layers in way that is equal to common UI frameworks.
+%It even supports layout constraints, which enables relations between layers.
+%Layers, that can have values like a text field, can be bound to a value in the database, so that the form is reactive and synchronized.
+%
+%When it comes to dynamic functionality, the configuration is limited to a set of actions, which take arguments and trigger certain discrete changes.
+%Common tasks, like writing data in the database, making network request or even create calendar entries and trigger the reload of a database table.
+%
+%The app`s infrastructure can also be customized in a way, that boilerplate code is not needed.
+%SQLite tables can be configured, that automatically sync with network endpoints or the configuration endpoint can be changed on the fly.
+%Image and data proxy endpoints can be added, that will be used to load compressed images, without changing every image layer.
 
-The app`s infrastructure can also be customized in a way, that boilerplate code is not needed.
-SQLite tables can be configured, that automatically sync with network endpoints or the configuration endpoint can be changed on the fly.
-Image and data proxy endpoints can be added, that will be used to load images. without changing every image layer.
+\section*{Research Question}
+
+The thesis aims to answer the question ''\textit{How well can a code interpreter be integrated in any domain?}''.
+
+\section*{Approach}
+
+This thesis examines the general validity of a code interpreter in the context of the application`s domains.
+The two main domains, mobile applications and digital signage, will be defined and compared to each other, by outlining their differences and similarities.
+
+Then, the design process of the configuration syntax will be examined and how the domain is adapted to the interpreters structure.
+In addition, the level of compensation that is done by the configuration syntax and the interpreters to eliminate platform differences will be outlined.
+
+An outlook will be given, that will debate other domains and use cases.
+The current implementation and general code interpreters are considered separately.
+
 
 \section*{Limitation}
 
+This thesis will not describe the development experience nor the initial expense of the project.
+Neither will this thesis evaluate financial aspects and at which point, the project was or is worth the development costs.
 
 
 \end{document}
+
+
+
+
