@@ -24,7 +24,7 @@ City marketing agencies are hosting these terminals to be part of the digital tr
 The content, that is delivered to the user by the apps and terminals is loaded from back-ends, which are powered by common content management systems like Joomla or Wordpress.
 The customers have access and act as editors, who manage their own content.
 Some of the data is loaded through a custom proxy service, that is pre-processing data, before it gets downloaded by the apps.
-The app is then able to only load images in the needed size, so it may not be way to large to load over a mobile internet access.
+The app is then able to only load images in the needed size, so it may not be way too large to load over a mobile internet access.
 
 \section*{Problem definition}
 
@@ -33,7 +33,7 @@ The customers not only want to edit their data and content live, but there is th
 If the app runs on a digital signage terminal, the new app version has to be deployed to all of the devices, which can be a hard process, if there is no automatic deploy mechanism.
 If the app is targeted for mobile devices, changes have to be made for both platforms, and changes have to be reviewed by Apple and Google, which may take hours to days, which means that last minutes changes are not possible.
 
-Some solutions for faster app deployment have been evaluated by the engineering team.
+Some solutions for faster app deployment have been evaluated by the engineering team at the company.
 Solutions like web apps (Ionic), or native apps with JavaScript bundles (React Native) have some significant downsides.
 The apps have to support native capabilities like push notifications, camera, beacons and GPS.
 Using these special features in a highly customizable way and independent of the framework vendors implementation is not possible.
@@ -56,13 +56,13 @@ For example, the license of React prohibits the use of the framework, if the com
 One of the solutions is an interpreter, that is running a description of the app.
 It loads changes from a service and can change it`s behavior, based on the configuration.
 The level of abstraction is a balance between simplicity and functionality.
-If the configuration is to simple, features of a new kind are not able to be configured, without changing the interpreter.
-If the configuration is to comprehensive, the effort and complexity is to high, because the features have to be configured in a highly detailed way.
+If the configuration is too simple, features of a new kind are not able too be configured, without changing the interpreter.
+If the configuration is too comprehensive, the effort and complexity is too high, because the features have to be configured in a highly detailed way.
 This approach is sensitive to errors, too.
 
 The configuration can be extensive on parts, where there needs to be much variance and possibility, and simple on the parts, where the most errors can occur.
 Defining the apps layout has a high degree of expressiveness, since it is not very sensitive to errors and the requirements are precise.
-The apps dynamic is restricted to common actions, like uploading data or creating a event in the phones calendar.
+The apps dynamic is restricted to common actions, like uploading data or creating a event in the phones calendar, to prevent common errors.
 
 %That is why, the ''mos'' configuration is designed to allows to configure the UI via layers in way that is equal to common UI frameworks.
 %It even supports layout constraints, which enables relations between layers.
