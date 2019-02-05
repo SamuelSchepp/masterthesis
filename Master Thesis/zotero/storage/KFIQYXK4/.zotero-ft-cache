@@ -1,0 +1,2254 @@
+Modellgetriebene Softwareentwicklung in der Praxis1 (SE5012)
+Wolf Rost2 und Steﬀen Vaupel3
+2Technische Hochschule Mittelhessen, 3Philipps-Universit¨at Marburg
+13. August 2018 (Tag 1) Technische Hochschule Mittelhessen (Gießen)
+1Blockveranstaltung 13.08.2018 - 24.08.2018
+
+Block 1 – U¨bersicht
+
+Die Pr¨asenzzeit ist in 40 Bl¨ocke ´a 1,5 Stunden eingeteilt.
+
+Tag und Uhrzeit
+09:50 11:20
+11:30 13:00
+13:00 14:00 14:00 15:30 15:45 17:15
+
+Montag 13.08.2018
+(Tag 1)
+U¨ bersicht
+Einstieg in MDD
+Einfu¨hrung EMF U¨ bung EMF
+
+Dienstag 14.08.2018
+(Tag 2) MDD Infrastruktur I (Sprachen) MDD Infrastruktur II (Generatoren)
+
+Mittwoch 15.08.2018
+(Tag 3) Weitere Aspekte von MDD Themenvergabe Seminar
+
+Mittagspause
+
+U¨bung Infrastruktur I (Sprachen) U¨bung Infrastruktur II (Generatoren)
+
+Seminar I Seminar II
+
+Donnerstag 16.08.2018
+(Tag 4) Seminar III
+Seminar IV
+Zwischenbesprechung I
+Zwischenbesprechung II
+
+Freitag 17.08.2018
+(Tag 5) Vorbereitung Pr¨asentation I
+Vorbereitung Pr¨asentation II
+Pr¨asentation I
+Pr¨asentation II
+
+Der Zeitaufwand fu¨r das Selbststudium (Projektarbeit) betr¨agt etwa 120 Stunden.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 2
+
+1.1 Inhalt, zeitlicher Umfang und Gliederung
+
+Tag und Uhrzeit
+09:50 11:20 11:30 13:00 13:00 14:00 14:00 15:30 15:45 17:15
+
+Montag 20.08.2018
+(Tag 6) Vorgehensmodelle
+fu¨r MDD Themenvergabe
+Projekt
+Projektarbeit I Projektarbeit II
+
+Dienstag 21.08.2018
+(Tag 7) Stand-upMeeting I Projektarbeit III
+
+Mittwoch 22.08.2018
+(Tag 8) Stand-upMeeting II Projektarbeit VI
+
+Mittagspause
+
+Projektarbeit IV Projektarbeit V
+
+Projektarbeit VII Projektarbeit VIII
+
+Donnerstag 23.08.2018
+(Tag 9) Stand-upMeeting III Projektarbeit IX
+Projektarbeit X Projektarbeit XI
+
+Freitag 07.09.2018 (Tag 10) Stand-upMeeting III
+Projektarbeit XII
+Zwischenbesprechung III
+Zwischenbesprechung IV
+
+Montag 27.08.2018 - Freitag 07.09.2018 (Woche 3 und 4: Projektarbeit) ab Montag 10.09.2018 (Projektfertigstellung) Montag 28.09.2018 (Projektpr¨asentation)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 3
+
+1.2 Voraussetzungen fu¨r das Bestehen des Moduls
+Anwesenheit in mindestens 80% der Zeit, d.h. in 32 der 40 Bl¨ocke Anwesenheit bei allen Zwischenbesprechungen Anwesenheit bei der Seminar- und Projektpr¨asentation Aktive Mitarbeit, d.h. Lo¨sung aller gestellten Aufgaben Rechtzeitige Fertigstellung der Projektarbeit Individuelle, eigenst¨andige Lo¨sung, keine Plagiate Das Modul ist gem. § 9 der Allg. Bestimmungen (Teil 1 der PO) benotet. Fu¨r die Teilnahme an dem Modul wird ein Laptop (inkl. Internetverbindung) beno¨tigt.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 4
+
+1.3 Literatur
+1. M. Brambilla u. a. Model-Driven Software Engineering in Practice: Second Edition. Synthesis Lectures on Software Engineering. Morgan & Claypool Publishers, 2017
+2. V. Gruhn, D. Pieper und C. R¨ottgers. MDA R : Eﬀektives Software-Engineering mit UML2 R und EclipseTM. Xpert.press. Springer Berlin Heidelberg, 2007
+3. M. V¨olter u. a. Model-Driven Software Development: Technology, Engineering, Management. Wiley Software Patterns Series. Wiley, 2013
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 5
+
+Block 2 – Einstieg in MDD
+
+Dilbert – c Scott Adams
+
+Softwareentwicklung - Prinzipien und Methoden Modelle und Modellierung Model-driven Development (MDD) Abgrenzung zu anderen Modelltechniken Modelltransformation Infrastrukturen fu¨r Model-driven Development Rollen Pro und Kontra MDD
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 1
+
+2.1 Softwareentwicklung - Prinzipien und Methoden
+
+”lePgrti.n“z(iVpigeln.
+
+sind Grunds¨atze, die man Balzert 2010 [5, S. 25 ﬀ.])
+
+seinem
+
+Handeln
+
+zugrunde
+
+In der Softwaretechnik werden diese Prinzipien h¨auﬁg aus Erfahrungswissen gewonnen.
+
+Ein wichtiges Prinzip in der Softwareentwicklung ist die Abstraktion.
+
+Unter Abstraktion versteht man eine Verallgemeinerung des Sachverhalts.
+
+Das Abstraktionsprinzip kennt mehrere Abstraktionsebenen.
+
+Durch Abstraktion kann die Komplexit¨at eines Sachverhalts deutlich reduziert werden.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 2
+
+2.1 Softwareentwicklung - Prinzipien und Methoden
+
+Beispiel (Abstraktion):
+00 00 00 00 07 20 20 20 46 20 20 20 20 20 20 20 25 20 20 1a 21 20 20 1a 02 20 20 17 20 20 20 0d 20 20 20 07 20 20 20 1e 20 20 20 0e 20 20 20 1b 20 20 20 0d fd ff ff 0f 20 20 20 08 20 20 20 0e 20 20 20 1b 20 20 20 0d
+... 20 0e 20 20 20 1b
+a) Maschinencode
+
+void main() { local Int x; local Int y; x = readInt(); y = readInt(); while (x!=y) { if (x > y) { x = x - y; } else { y = y - x; } } writeInt(x);
+} b) Programmcode
+
+x
+
+y
+
+gcd
+
+x
+
+c) Modell
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 3
+
+2.1 Softwareentwicklung - Prinzipien und Methoden
+
+V”Moregtehheondsewneissiennd
+
+planm¨aßig angewandte, begru¨ndete zur Erreichung von festgelegten Zielen.“
+
+(Vgl.
+
+Balzert 2010 [5, S. 53 ﬀ.])
+
+Blaeuiﬀsp¨aiheilg: eMs iStoMftwetahroesdyest”exm“
+
+kann aus einer Anforderungsbeschreibung erstellt werden.
+
+ein
+
+Modellierung von Daten, Funktionen u. Zust¨anden sind wichtige Konzepte in der Softwareentwicklung.
+
+Objektorientierte Modellierungssprachen (z.B. UML, SysML) werden u¨berwiegend fu¨r die Analyse (OOA) und das Design (OOD) eines Softwaresystems genutzt.
+
+Modellierung steht im engen Zusammenhang mit der Abstraktion (Vgl. Inhetveen und Luft 1983 [18], Luft 1984 [23] und Kramer 2007 [22])
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 4
+
+2.1 Softwareentwicklung - Prinzipien und Methoden
+Beispiel (Methode – Vgl. Hempel 2018 [16]):
+Entwickeln Sie ein Minigolf-Spiel. Ziel des Spieles ist es, einen Ball auf dem Spielfeld um ein Hindernis so zu bewegen, dass er in ein Loch f¨allt. Der Ball darf dabei das Spielfeld nicht verlassen. Triﬀt er auf das Hindernis, so prallt er von diesem ab.
+a) Anforderung Oﬀensichtlich gibt es als Objekte einen Ball, ein Hindernis, ein Loch, ein Spielfeld und einen Spieler. Das Spielfeld besteht aus Hindernis und Loch. Ein Schiedsrichter ist sinnvoll, damit der Spielverlauf u¨berwacht werden kann. Dieser kennt den Ball, das Loch und das Spielfeld, um zu pru¨fen, ob der Ball außerhalb des Spielfeldes oder im Loch ist. Der Ball muss das Hindernis kennen, um von ihm abzuprallen.
+b) OO-Analyse
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 5
+
+2.1 Softwareentwicklung - Prinzipien und Methoden
+Alle Objekte mit Ausnahme des Schiedsrichters mu¨ssen auf der GUI gezeichnet werden. Der Ball bekommt zus¨atzlich eine Uhr, um seine Bewegung zu koordinieren. Das Hautprogramm wird in die Klasse Anwendung gepackt. Außerdem mu¨ssen Konstruktoren festgelegt werden. ... Damit der Ball pru¨fen kann, ob er auf ein Hindernis getroﬀen ist, muss die Klasse Spielfeld dem Ball die Dienste des Hindernisses zur Verfu¨gung stellen, denn nur das Spielfeld hat Zugang zur Klasse Hindernis. Das Gleiche gilt fu¨r Schiedsrichter und Loch.
+b) OO-Design (textuell) Regelm¨aßig werden w¨ahrend der Analyse (OOA) und des Entwurfs (OOD) bereits Diagramme (visuelle Notationen) benutzt.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 6
+
+2.1 Softwareentwicklung - Prinzipien und Methoden
+
+1..* hat
+
+Anwendung c:Canvas
+
+1 hat
+
+draw() ...
+
+1 hat
+
+1 ist auf
+
+Ball
+
+1 sieht
+
+x force:Int
+
+y force:Int
+
+Spielfeld
+
+c:Clock;
+
+Schiedsrichter
+
+1 hat
+
+p:List<Point>
+getLoch():Loch getHindernis():Hindernis ...
+
+isCollided():Bool onClockIntervall(); ...
+1 sieht
+
+goal():Bool fail():Bool ...
+
+Loch
+
+Hindernis
+
+interface
+
+p:Point
+
+1 hat
+
+p:List<Point>
+
+Drawable draw(Canvas c)
+
+a) OO-Design (in OO-Notation)
+
+Nach dem OO-Design (Entwurf) folgt die Implementierung in einer objektorientierten Programmiersprache (OOP).
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 7
+
+2.2 Modelle und Modellierung
+Was ist ein Modell? – Verschiedene Deﬁnitionen je nach Disziplin.
+Allgemeine Modelltheorie (nach Stachowiak 1973 [38]): Ein Modell ... repr¨asentiert ein Original (Abbildung), reduziert die Details des Originals (Reduktion), erlaubt Aktionen die am Original nicht m¨oglich sind (Pragmatismus).
+Beispiel (Physisches Modell – Crashtest-Dummy):
+
+a) Original
+
+b) Abbildung und Reduktion
+(Foto: Brady Holt)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+c) Pragmatismus
+13.08.2018 8
+
+2.2 Modelle und Modellierung
+In vielen Disziplinen werden Modelle zur Beschreibung, Erkl¨arung, Messung und Vorhersage eingesetzt. Das Original kann i.d.R. nicht ver¨andert werden → Deskriptive Modelle
+In der Softwareentwicklung geht es gerade darum, ein Original (=Softwaresystem) zu erstellen.
+Spezielle Modelltheorie (u.A. nach Seidewitz 2003 [35]): Ein Modell ... speziﬁziert eine Menge von Originalen (Normierung) und jedes Original erfu¨llt die Eigenschaften des Modells (Validit¨at).
+Das Modell existiert vor dem/den Original/en → Normative o. Preskriptive Modelle
+Bemerkung: Im Gegensatz zu anderen normativen Modellen (z.B. Bauplan einer Maschine) ist eine Softwaremodell nicht immer eindeutig d.h. es kann i. A. mehrere valide Implementierungen geben.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 9
+
+2.2 Modelle und Modellierung
+Weitere Besonderheit: Softwaremodelle sind, solange keine Implementierung vorliegt, normativ. Sobald eine oder mehrere Implementierungen vorliegen, haben Softwaremodelle auch deskriptiven Charakter.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 10
+
+2.2 Modelle und Modellierung
+
+Beispiel (Logisches Modell – OO-Datenmodell; Vgl. Ambler 2012 [2]):
+
+table Artikel
+
+Artikel
+
+Name:String Preis:Double Typ:Char Hersteller:String Einkaufspreis:Double Dauer:Date Stundensatz:Double
+
+Name:String Preis:Double
+
+b) Implementierung 1 (Original)
+
+Ware
+Hersteller:String Einkaufspreis:Double
+
+Leistung
+Dauer:Date Stundensatz:Double
+
+table Ware
+Name:String Preis:Double Hersteller:String Einkaufspreis:Double
+
+table Leistung
+Name:String Preis:Double Dauer:Date Stundensatz:Double
+
+a) OO-Datenmodell
+
+c) Implementierung 2 (Original)
+
+table Artikel
+Name:String Preis:Double Typ:Char Ref:Id
+
+table Ware
+Id:Int Hersteller:String Einkaufspreis:Double
+
+table Leistung
+Id:Int Dauer:Date Stundensatz:Double
+
+c) Implementierung 3 (Original)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 11
+
+2.2 Modelle und Modellierung
+
+Wie und womit kann ein Modell modelliert werden?
+
+Eine weitere Deﬁnition des Modellbegriﬀs (Kleppe et al. 2003 [21, S. 16]):
+
+”laAngmuaogdee.l
+
+is A
+
+a description of (part well-deﬁned language
+
+of) is a
+
+a system written in a well-deﬁned language with well-deﬁned form
+
+(syntax) and meaning (semantics) [...]“
+
+Zur Modellierung wird eine wohldeﬁnierte Sprache (well-deﬁned language) mit einer bestimmten Form (Syntax) und Bedeutung (Semantik) ben¨otigt.
+
+Zwei Mo¨glichkeiten (Vgl. Wimmer 2005 [43]): a) Grammatiken b) Deklarative Metamodelle
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 12
+
+2.2 Modelle und Modellierung
+Beispiel (Grammatik): func_dec: void ID LPAREN par_dec_list RPAREN LCURL lvar_dec_list stm_list RCURL | type ID LPAREN par_dec_list RPAREN LCURL lvar_dec_list stm_list RCURL;
+
+stm_list : /* empty */ | stm stm_list;
+
+stm: empty_stm | compound_stm | assign_stm | if_stm | while_stm | do_stm | break_stm | call_stm | return_stm;
+a) Grammatik (Auszug)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+void main() { local Int x; local Int y; x = readInt(); y = readInt(); while (x!=y) { if (x > y) { x = x - y; } else { y = y - x; } } writeInt(x);
+} b) Programmcode
+13.08.2018 13
+
+2.2 Modelle und Modellierung
+
+Beispiel (Deklaratives Metamodell):
+
+EPackage
+
+EClassiﬁer
+
+name:String nsURI:String
+
+0..* eClassiﬁers
+
+name:String
+
+0..* eSuperTypes
+
+1 eReferenceType
+
+EClass abstract:boolean
+
+EDataType
+
+0..* eStructuralFeatures
+
+EStructuralFeature
+
+name:String lowerBound:int upperBound:int
+
+EReference containment:boolean
+eOpposite 0..1
+
+1 eAtttributeType
+EAttribute
+eOpposite 0..1
+
+a) Metamodell
+
+W. Rost und S. Vaupel
+
+SE5012
+
+Person vorname:String name:String
+1 hat Adresse strasse:String hausnummer:Integer pLZ:Integer
+b) Modell
+13.08.2018 14
+
+2.2 Modelle und Modellierung
+describes M3 Meta-metamodel
+describes
+
+describes MOF
+describes
+
+M2
+
+Metamodel
+
+UML Metamodel
+
+describes
+
+describes
+
+M1
+
+Model
+
+UML Model
+
+describes
+
+describes
+
+M0
+
+User data
+
+Instances
+
+Abstraktionsprinzip durch Metamodellierungsebenen und Abstraktionsebenen der UML
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 15
+
+2.3 Model-driven Development (MDD)
+Modellgetriebene Entwicklung ist eine Methode zur Entwicklung von Softwaresystemen. Ein Modell wird in der Analyse- und Entwurfsphase modelliert. In der Implementierungsphase wird es zur automatischen o. semi-automatischen Generierung von Programmcode genutzt.
+
+Dom¨anenentwickler
+
+modelliert
+
+Instanz
+
+Modell
+
+Eingabe
+
+nutzt
+
+entspricht Softwaresystem
+Ausgabe
+
+Metamodell (Sprache)
+
+Generator
+
+Modellgetriebene Infrastruktur
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 16
+
+2.3 Modelle und Modellierung
+Beispiel (Modell-driven Development – Vgl. Vaupel et. al. 2018 [41]):
+
+modellieren (1)
+
+Entwickler
+
+Android-Projekt installieren (3)
+
+generieren (2)
+
+Softwaremodell (Designmodell)
+
+generieren (2)
+
+iOS-Projekt installieren (3)
+
+GPS
+
+Kein GPS
+
+Benutzer
+
+Benutzer
+
+Android Plattform
+
+iOS Plattform
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 17
+
+2.4 Abgrenzung zu anderen Modelltechniken
+
+Model-driven Architecture (MDA)
+
+Standard [33] der OMG mit ausschließlicher Verwendung von OMG Standards (Vgl. Favre 2004 [13])
+
+MBE MDE MDD MDA
+Abgrenzung der Modelltechniken
+
+Model-driven Development (MDD)
+Verallgemeinerung von MDA d.h. dom¨anenunabh¨angige Modellierungssprache (GPML) sowie dom¨anenspeziﬁsche Modellierungssprachen (DSML), deklarative und konstruktive Sprachdeﬁnitionen Modelle sind best¨andige Artefakte
+Model-driven Engineering (MDE)
+Verallgemeinerung von MDD d.h. Code-Refactoring, Reverse- und Re-Engineering, Test, etc.
+
+Model-based Engineering (MBE)
+
+Schwache Version von MDE Modelle sind unbest¨andige Artefakte
+
+Fokus der Veranstaltung auf dem Bereich MDD und MDE.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 18
+
+2.5 Modelltransformation
+
+Die MDD/MDE Methode besteht in der (semi-)automatischen U¨berfu¨hrung (Transformation) eines initialen, berechnungsunabh¨angigen Modells (CIM) in den Programmcode eines Softwaresystems.
+Dabei ko¨nnen Zwischenmodelle (Plattformunabh¨angiges Modell – PIM, Plattformspeziﬁschen Modell – PSM) verwendet werden.
+
+M2M
+endogen
+
+M2M
+
+CIM
+
+exogen
+
+M2M
+endogen
+
+PIM
+
+M2M
+exogen
+
+M2M
+endogen
+
+PSM
+
+M2C
+exogen
+
+Code
+
+Fu¨hrt eine Transformation zu einem Modell in einer anderen Sprache (z.B. CIM → PIM), so wird die Transformation als exogen bezeichnet. Wird das Modell in der vorhandenen Sprache modiﬁziert liegt eine endogene Transformation vor (Vgl. Mens and Van Gorp 2006 [25]).
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 19
+
+2.6 Infrastrukturen fu¨r Model-driven Development
+
+Dom¨anenentwickler
+Infrastrukturentwickler entwickelt
+
+modelliert
+
+Instanz
+
+Modell
+
+Eingabe
+
+nutzt
+
+entspricht Softwaresystem
+Ausgabe
+
+Metamodell (Sprache)
+
+Generator
+
+Modellgetriebene Infrastruktur
+
+Wesentliche Komponenten einer MDD Infrastruktur: Modellierungssprache (Metamodell) Modelleditoren (o. Abb.) Codegenerator(en)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 20
+
+2.6 Infrastrukturen fu¨r Model-driven Development
+Modellierungssprache: Beschreibt die Syntax (Form und Anordnung der Sprachelemente).
+Semantik: Die Bedeutung eines Modells wird i.d.R. nicht formal deﬁniert, sondern natu¨rlichsprachlich. Sie kann auch durch die Semantik eines generierten Programmcodes deﬁniert werden.
+Syntax: Die Syntax wird in abstrakte Syntax (AS) und konkrete Syntax (CS) unterteilt. Die abstrakte Syntax (AS) ist eine darstellungsunabh¨angige Struktur der Modellierungssprache, w¨ahrend die konkrete Syntax (CS) darstellungsabh¨angig ist.
+Die konkrete Syntax kann textuell und/oder graﬁscher Natur sein.
+Modellierungssprachen sind dom¨anenspeziﬁsch (Domain-speciﬁc modeling language – DSML) oder allgemein (General-purpose modeling language – GPML). DSMLs k¨onnen auch in einer GPML eingebettet auftreten.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 21
+
+2.6 Infrastrukturen fu¨r Model-driven Development
+
+Beispiel (Abstrakte und konkrete Syntax, Semantik):
+
+func par
+2 name:Func
+
+1 ret
+
+Int name:String
+
+enum Func
+gcd
+
+a) Abstrakte Syntax (Metamodell)
+
+x
+
+y
+
+Die Funktion gcd erh¨alt
+
+zwei ganzzahlige posi-
+
+gcd
+
+tive Eingabewerte. Sie
+
+liefert den gr¨oßten ge-
+
+meinsamen Teiler als
+
+x
+
+Ru¨ckgabewert zuru¨ck.
+
+b) Graﬁsche konkrete
+
+c) Semantik
+
+Syntax
+
+(natu¨rlichsprachlich)
+
+func_dec: int func1 LPAREN int ID COL int ID RPAREN | ...; func1: ’gcd’ LPAREN: ’(’ ...
+d) Abstrakte Syntax (Grammatik)
+
+x = gcd(x,y) e) Textuelle konkrete
+Syntax
+
+int gcd(int x,y) { while (x!=y) { if (x > y) { x = x - y; } else { y = y - x; }} return x;
+}
+f) Semantik (Programmcode)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 22
+
+2.6 Infrastrukturen fu¨r Model-driven Development
+Beispiel (Textueller Modelleditor):
+
+Textueller Modelleditor zur Datenmodellierung (basierend auf einer Grammatik in erweiterter Backus-Naur-Form – EBNF)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 23
+
+2.6 Infrastrukturen fu¨r Model-driven Development
+Beispiel (Graﬁscher Modelleditor):
+
+UML Modelleditor (Bearbeitung eines Klassendiagramms)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 24
+
+2.6 Infrastrukturen fu¨r Model-driven Development
+Codegenerator: Ein Codegenerator u¨bersetzt o. transformiert gu¨ltige Modelle in Programmcode oder weitere Artefakte (z.B. SQL-Abfragen, GUIs, etc.).
+Gu¨ltige Modelle mu¨ssen dem Metamodell oder der Grammatik entsprechen, damit der Codegenerator diese verarbeiten kann.
+Bei der Generierung werden drei Arten von Programmcode erzeugt: Statischer Programmcode Schematisch wiederkehrender Programmcode Individueller Programmcode
+Codegeneratoren generieren direkt lauﬀ¨ahige Anwendungen o. Anwendungsru¨mpfe. Zu Generierung werden Programmcodeschablonen (Templates) eingesetzt.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 25
+
+2.6 Infrastrukturen fu¨r Model-driven Development
+
+Modelleditor
+
+Modellierungssprache
+
+Visio [27] Gaphor [29]
+
+UML, ERM UML
+
+StructureViews [39] UML
+
+Violet UML Tool [17] UML
+
+Modeliosoft [28]
+
+UML, BPMN, BPEL, SysML
+
+Yaoqiang [46]
+
+BPMN
+
+Dia [8] Papyrus [31] SmartDraw [37]
+
+UML,ERM UML, SysML PAP (Flowchart)
+
+Generator
+
+Modellierungssprache
+
+Acceleo [1] AndroMDA [6]
+
+EMF UML
+
+YACC [20]
+
+EBNF
+
+Graphviz [15]
+
+DOT
+
+Werkzeuge (Infrastrukturen fu¨r die modellgetriebene Entwicklung)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 26
+
+2.6 Infrastrukturen fu¨r Model-driven Development
+
+Modelleditor und Generator
+
+Modellierungssprache
+
+Apollo [3]
+
+UML
+
+Artisan Studio [4]
+
+UML, SysML
+
+CodeFluent Entities [7]
+
+ERM
+
+ECO Enterprise Core Objects [10]
+
+UML
+
+Enterprise Architect [11]
+
+UML, BPEL, BPMN
+
+ER/Studio [12]
+
+UML
+
+MagicDraw [24]
+
+UML, SysML, BPMN
+
+objectiF [30]
+
+UML, BPMN
+
+radCASE [32]
+
+UML, SysML
+
+Rhapsody [33]
+
+UML,SysML
+
+RISE Editor [34]
+
+ERM, UML
+
+Select Architect [36]
+
+UML, BPMN
+
+WebRatio Development Environment [42] WebML, BPMN
+
+YAKINDU Statechart Tools [45]
+
+Statecharts
+
+Integrierte Werkzeuge (Infrastrukturen fu¨r die modellgetriebene Entwicklung)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 27
+
+2.6 Infrastrukturen fu¨r Model-driven Development
+
+Meta-Werkzeug
+
+Modellierungssprache
+
+Eclipse Modeling Framework (EMF) [9]
+
+Ecore
+
+Graphical Modeling Framework (GMF) [14] Ecore
+
+MetaEdit+ [26]
+
+eigene
+
+Xtext/Xtend [44]
+
+EBNF, Ecore
+
+Meta-Werkzeuge (zu Entwicklung von Infrastrukturen)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 28
+
+2.7 Rollen
+Top-Down vs. Bottom-Up Ansatz Parallele Entwicklung von Prototyp und Infrastruktur Unmittelbares Feedback zwischen den Str¨angen Infrastruktur ist den Anwendungsmodellen min. eine Iteration voraus
+
+Modell Dom¨anenspeziﬁsche Modellierungssprache
+/Codegeneratoren
+Referenzanwendung(en)
+Anwendung
+
+Entwicklung der dom¨anenspeziﬁschen Infrastruktur
+
+abstrahieren generieren
+
+Entwicklung konkreter Anwendungen (Prototypen)
+
+erweitern
+
+Infrastrukturentwickler
+Dom¨anenentwickler
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 29
+
+2.7 Rollen
+Infrastrukturentwickler: hat Technologiewissen, aber i.d.R. kein Dom¨anenwissen Aufgaben: Entwurf der Modellierungssprache (Metamodell o. Grammatik) (ggf. zusammen mit einem Dom¨anenspezialisten) Implementierung der Modellierungssprache (API) Entwurf und Implementierung von Modelleditoren (textuell o. graﬁsch) Entwurf und Implementierung der Codegeneratoren Test, Dokumentation, etc. Abgrenzung: Entwickelt keine konkreten Anwendungen, oftmals aber Prototypen zum Test der MDD Infrastruktur Nutzt Meta-Werkzeuge zur Generierung von Infrastrukturkomponenten (z.B. Modell-zu-Modell Transformationen)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 30
+
+2.7 Rollen
+Dom¨anenentwickler: hat Dom¨anenwissen, aber i.d.R. kein Technologiewissen Aufgaben: Entwicklung von Referenzanwendungen fu¨r die Infrastrukturentwickler Weiterentwicklung von generierten Prototypen Entwurf der Modellierungssprache (ggf. zusammen mit dem Infrastrukturentwickler) Entwurf eines oder mehreren Anwendungsmodellen Generiert konkrete Anwendungen und erg¨anzt ggf. den Programmcode Abgrenzung: Entwickelt keine MDD Infrastruktur Nutzt die MDD Infrastruktur nur zur modellgetriebenen Entwicklung
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 31
+
+2.7 Rollen
+
+Beispiel (Iterative Entwicklung einer Infrastruktur zur modellgetriebenen Entwicklung von mobilen Anwendungen – Vgl. Vaupel et al. 2015 [40]):
+
+1. (Rev. 896)
+
+#EClass
+
+DSML (25)
+
+Editor
+
+LoC
+
+(68129)
+
+LoC(Android)/ LoC (iOS)
+
+Generator (10484/1419)
+
+#EClass + #Process + #Task + #Page
+
+Prototype app model (12)
+
+#Use case
+
+Prototype app (1)
+
+6. (Rev. 1304)
+DSML (30)
+Editor (80211)
+Generator (23203/1415)
+Prototype app model (30)
+Prototype app (6)
+
+12. (Rev. 1809)
+DSML (39)
+Editor (108033)
+Generator (23629/2767)
+Prototype app model (53)
+Prototype app (12)
+
+19. (Rev. 2351)
+DSML (46)
+Editor (217458)
+Generator (30141/11121)
+Prototype app model (83)
+Prototype app (19)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 32
+
+2.8 Pro und Kontra MDD
+
+Pro (Vgl. de Haan 2009 [21]):
+
+Kontra (Vgl. de Haan 2009a [19]):
+
+MDD ist eﬃzient (Zeit, Kosten)
+MDD ist qualitativ (Fehler, SW-Qualit¨at, Validierung) MDD teilt das Produkt von der Produktion
+MDD fordert Entwickler und fo¨rdert Dom¨anenexperten MDD ist stabil hinsichtlich neuer Technologien
+MDD erlaubt up-to-date Dokumentation
+
+MDD ist unﬂexibel MDD ist nie fertig (Bottom-Up Ansatz) MDD ist schwer erlernbar MDD erfordert Erfahrung MDD erlaubt keine Innovation MDD erlaubt kaum Versionskontrolle
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 33
+
+Block 2 – Zusammenfassung
+Abstraktion (Prinzip) und Modellierung (Methode) sind grundlegend fu¨r die MDD. Modelle sind deskriptiv und/oder preskriptiv, je nachdem ob das Softwaresystem besteht oder geplant ist. Modelle beno¨tigten eine formale Sprachdeﬁnition (Metamodell o. Grammatik). Modellierungssprachen haben eine (abstrakte/konkrete) Syntax und eine Semantik. MDD Infrastrukturen bestehen aus einer Modellierungssprache, einem Modelleditor und einem oder mehreren Codegeneratoren. MDD Infrastrukturen werden von Infrastrukturentwicklern entworfen und von Dom¨anenentwicklern genutzt. MDD ist aufgrund von Vor- und Nachteilen nicht unumstritten.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 34
+
+Block 2 – Literatur I
+
+[1]
+
+Acceleo Version 3.3.3. http://www.acceleo.org. Eclipse Foundation, 2013.
+
+[2]
+
+S. Ambler. Agile Database Techniques: Eﬀective Strategies for the Agile Software Developer. Wiley, 2012.
+
+[3]
+
+Apollo Version 3.0.1. http://www.gentleware.com/apollo.html. Gentleware, 2007.
+
+[4]
+
+Artisan Studio Version 7.4. http://www.artisansoftwaretools.com/de/. Artisan Software Tools, 2012.
+
+[5]
+
+H. Balzert u. a. Lehrbuch der Softwaretechnik: Basiskonzepte und Requirements Engineering. Lehrbu¨cher der
+
+Informatik. Spektrum Akademischer Verlag, 2010.
+
+[6]
+
+Matthias Bohlen. AndroMDA Version 3.3. www.andromda.org. AndroMDA, 2008.
+
+[7]
+
+CodeFluent Entities Version 1.0.6. http://www.softfluent.com/products/codefluent-entities. SoftFluent,
+
+2013.
+
+[8]
+
+Dia Version 0.97.2. https://liveDIA.gnome.org/Dia. Dia Developers, 2011.
+
+[9]
+
+Eclipse Modeling Framework (EMF) Version 2.8.3. www.eclipse.org/emf. Eclipse Foundation, 2013.
+
+[10]
+
+ECO Enterprise Core Objects Version 6.
+
+http://www.new.capableobjects.com/products/eco-model-driven-framework/. CapableObjects.com, 2012.
+
+[11]
+
+Enterprise Architect Version 10. http://www.sparxsystems.com.au/. Sparx Systems, 2013.
+
+[12]
+
+ER/Studio Version 9.5.0. http://www.embarcadero.com/de/products/er-studio. Embarcadero Technologies,
+
+2013.
+
+[13]
+
+AJepapnl-icMatairoiensF: aUvMre.L”2T0o0w4arSdasteallibtaesAicctthiveiotireys
+
+to model model driven engineering“. In: UML Modeling Languages Lisbon, Portugal, October 11-15, 2004, Revised Selected Papers.
+
+and
+
+Hrsg. von N.J. Nunes u. a. Lecture Notes in Computer Science. Springer Berlin Heidelberg, 2004, S. 44–45.
+
+[14]
+
+Graphical Modeling Framework (GMF) Version 3.0.2. http://www.eclipse.org/modeling/gmp/. Eclipse
+
+Foundation, 2013.
+
+[15]
+
+Graphviz Version 2.30.1. http://www.graphviz.org/. AT&T Labs Research, 2013.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 35
+
+Block 2 – Literatur II
+
+[16]
+
+Tino Hempel. Musterbeispiel zum Objektorientierten Modellieren. url:
+
+https://tinohempel.de/info/info/softwareentwicklung/musterbeispiel.htm.
+
+[17]
+
+Cay S. Horstmann und Alexandre de Pelleg. Violet UML Editor Version 0.21.1.
+
+http://alexdp.free.fr/violetumleditor/page.php. 2007.
+
+[18]
+
+KRuoendstigruerktIinohnetuvnedenVeurniﬁdkAatlfiorendvLo.nLSuoftft.w”aArbe-sStryasktetimone,n“Id.eaInlis:ieArnugnegwuannddtMe oIndfeolrlmierautnikg
+
+bei der Speziﬁkation, 25.12 (1983), S. 541–548.
+
+[21]
+
+Johan den Haan. 15 Reasons Why You Should Start Using Model Driven Development.
+
+http://www.theenterprisearchitect.eu/blog/2009/11/25/. (last downloaded 19. August 2018).
+
+[19]
+
+Johan den Haan. 8 reasons why Model-Driven Development is dangerous.
+
+http://www.theenterprisearchitect.eu/blog/2009/06/25/. (last downloaded 19. August 2018).
+
+[20]
+
+Stephen C. Johnson. Yacc: Yet Another Compiler Compiler. http://dinosaur.compilertools.net/yacc/. 1975.
+
+[21]
+
+Anneke .G. Kleppe, Jos .B. Warmer und Wim Bast. MDA Explained, the Model Driven Architecture: Practice and
+
+Promise. Boston (MA) USA: Addison-Wesley, 2003.
+
+[22]
+
+Jeﬀ Kramer. ”Is abstraction the key to computing?“ In: Communications of the ACM 50.4 (2007), S. 36–42.
+
+[23]
+
+IAnlfforermd aLt.ikLu5ft(.19”Z84u)r,
+
+Bedeutung von S. 189–196.
+
+Modellen
+
+und
+
+Modellierungs-Schritten
+
+in
+
+der
+
+Softwaretechnik“.
+
+In: Angewandte
+
+[24]
+
+MagicDraw Version 17.0.2. http://www.nomagic.com. No Magic, Inc., 2012.
+
+[25]
+
+Tom Mens und Pieter Computer Science 152
+
+Van Gorp. (2006), S.
+
+”1A25T–a1x4o2n.omy
+
+of
+
+Model
+
+Transformation“.
+
+In: Electronic Notes in Theoretical
+
+[26]
+
+MetaEdit+ Version 5.0. http://www.metacase.com/de/. MetaCase, 2012.
+
+[27]
+
+Microsoft Visio 2010. http://visio.microsoft.com/de-de/Seiten/Home-DE.aspx. Microsoft Corporation, 2012.
+
+[28]
+
+Modeliosoft Version 2.2.1. http://www.modeliosoft.com/. Modeliosoft, 2012.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 36
+
+Block 2 – Literatur III
+
+[29]
+
+Arjan Molenaar, Artur Wroblewski und Jeroen Vloothuis. Gaphor Version 0.17.1.
+
+http://www.gaphor.sourceforge.net/. 2011.
+
+[33]
+
+Object Management Group (OMG). The Model-Driven Architecture, Guide Version 1.0.1.
+
+www.omg.org/cgi-bin/doc?omg/03-06-01.pdf. (last downloaded 19. August 2018).
+
+[30]
+
+objectiF Version 7.1. http://www.microtool.de/objectif/de/index.asp. microTOOL, 2010.
+
+[31]
+
+Papyrus Version 4.0.0. http://www.eclipse.org/papyrus/. Eclipse Foundation, 2018.
+
+[32]
+
+radCASE Version 4.4. http://www.radcase.com/try-it/. IMACS GmbH, 2009.
+
+[33]
+
+Rhapsody Version 8.0.2. http://www-142.ibm.com/software/products/us/en/ratirhapfami/. International
+
+Business Machines (IBM), 2013.
+
+[34]
+
+RISE Editor Version 4.5.0.12. http://www.risetobloome.com/Page_1_S_NodeListing.aspx?item=412. RISE to
+
+Bloome Software, 2012.
+
+[35]
+
+Ed Seidewitz. ”What Models Mean“. In: IEEE Software 20.5 (2003), S. 26–32.
+
+[36]
+
+Select Architect Version 8.0. http://www.selectbs.com/analysis-and-design/select-architect. Select
+
+Business Solutions, 2012.
+
+[37]
+
+SmartDraw Version 2012. http://www.smartdraw.com/. SmartDraw, 2011.
+
+[38]
+
+Herbert Stachowiak. Allgemeine Modelltheorie. (in german). Berlin, Heidelberg GER: Springer, 1973.
+
+[39]
+
+StructureViews Version 1.7.8. http://www.agilej.com/. AgileJ, 2012.
+
+[40]
+
+Steﬀen Vaupel Proceedings of
+
+uth. ea.W”AorgkislehoBpototnomFl-eUxpiblDeeMveolodpeml Denritveonf
+
+Domain-Speciﬁc IDEs for Model-Driven Engineering co-located with ACM/IEEE
+
+Development“. In: 18th International
+
+Conference on Model Driven Engineering Languages & Systems (MoDELS 2015), Ottawa, Canada, September 29,
+
+2015. Hrsg. von Davide Di Ruscio, Juan de Lara und Alfonso Pierantonio. Bd. 1470. CEUR Workshop Proceedings.
+
+CEUR-WS.org, 2015.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 37
+
+Block 2 – Literatur IV
+
+[41]
+
+vSatreiﬀaebnilitVya“u.peInl :uS. ao.ft”wMaroedaenl-ddrSivyesntedmevMeloopdmelienngt
+
+of mobile applications 17.1 (2018), S. 35–63.
+
+for
+
+Android
+
+and
+
+iOS
+
+supporting
+
+role-based
+
+app
+
+[42]
+
+WebRatio Development Environment Version 6.1.4. http://www.webratio.com/content/en/product-overview.
+
+WebRatio, 2013.
+
+[43]
+
+MMoanDuEeLl SW2im00m5eCr ounnfderGenecreh,arMdoKDrEamLSler2.0”0B5rIindtgeinrngaGtioranmalmWarowrkasrheoapnsd,
+
+Modelware“. In: Satellite Events at the Doctoral Symposium, Educators Symposium,
+
+Montego Bay, Jamaica, October 2-7, 2005, Revised Selected Papers. Hrsg. von Jean-Michel Bruel. Bd. 3844. Lecture
+
+Notes in Computer Science. Springer, 2005, S. 159–168.
+
+[44]
+
+Xtext Version 2.3.1. http://www.eclipse.org/Xtext/. Eclipse Foundation, 2012.
+
+[45]
+
+YAKINDU Statechart Tools Version 2.0. http://statecharts.org/. itemnis AG, 2012.
+
+[46]
+
+Shi Yaoqiang. Yaoqiang BPMN Editor Version 2.1.26. http://sourceforge.net/projects/bpmn/. 2013.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 38
+
+Block 3 – Einfu¨hrung in EMF
+
+Copyright c Eclipse Foundation, Inc.
+
+Zweck von EMF Bestandteile von EMF Verwendung von EMF Die Modellierungssprache Ecore Installation Dokumentation Demonstration EMF
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 1
+
+3.1 Zweck von EMF
+Das Eclipse Modeling Framework (EMF) ist ein Modellierungs- und Codegenerierungswerkzeug zur Erstellung von datengetriebenen Anwendungen und Werkzeugen (Vgl. Steinberg et al. 2009 [1]). Es erlaubt die Erstellung einer Laufzeitumgebung/Programmierschnittstelle (API) und Modelleditoren auf Basis eines individuellen Datenmodells. Im Kontext von EMF haben sich zahlreiche Zusatzwerkzeuge1 etabliert z.B. ATL (Atlas Transformation Language), EMFCompare, SiDiﬀ, Henshin, CDO (Connected Data Objects), Xtext/Xtend, Sirius/GMF, ... EMF wird im akademischen und industriellen Umfeld eingesetzt.
+
+1https://en.wikipedia.org/wiki/List of Eclipse Modeling Framework based software
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 2
+
+3.2 Bestandteile von EMF
+EMF – Eclipse Modeling Framework: Ecore-Metamodell: Modellierungssprache (konform mit dem EMOF-Standard) Domain model: Struktur zum Anlegen konkreter Instanzen des Ecore-Metamodells Domain generator model: Model fu¨r den EMF-Codegenerator JET – Java Emitter Templates: Codeschablonen werden von dem Codegenerator zur Codeerzeugung genutzt. JMerge: Unterstu¨tzung zur bidirektionalen Bearbeitung von Modell und Programmcode
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 3
+
+3.2 Verwendung von EMF
+
+Dom¨anenentwickler erstellen das Domain model in der Modellierungssprache Ecore.
+Ein weiteres Model (Domain generator model) dient der Generierung verschiedener Eclipse-Plugin-Projekte. Diese lassen sich innerhalb von Eclipse bzw. auf der EMF Runtime ausfu¨hren.
+
+ Domain Model
+(*.ecore)
+
+ Domain Generator-
+model (*.genmodel)
+
+ǈ your.language ǈ your.language.edit ǈ your.language.editor
+
+EMF SDK (Generation Framework)
+
+EMF Runtime
+
+Eclipse Platform
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 4
+
+3.3 Die Modellierungssprache Ecore
+Das Ecore-Metamodell enth¨alt Sprachkonstrukte, welche die Modellierung von Klassen mit Attributen sowie Referenzen zwischen den Klassen erlaubt. Fu¨r die Attribute werden Datentypen bereitgestellt.
+
+Ecore Metamodel (Auszug) – Vgl. Steinberg et al. 2009 [1, S.16])
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 5
+
+3.4 Installation
+
+(Fast) fertige Eclipse Installationen:
+
+a) Eclipse Modeling Tools
+(https://www.eclipse.org/downloads/packages/release/photon/r/ eclipse-modeling-tools)
+b) Eclipse IDE for Java and DSL Developers
+(https://www.eclipse.org/downloads/packages/release/photon/r/ eclipse-ide-java-and-dsl-developers)
+Relevante Pakete (Eclipse Update Sites):
+
+GMF (http://download.eclipse.org/modeling/gmp/gmf-tooling/updates/
+dev-snapshots/3.3/)
+Epsilon (EuGENia) (http://download.eclipse.org/epsilon/updates/) Emfatic (http://download.eclipse.org/emfatic/update/) QVT Operational SDK
+(http://download.eclipse.org/mmt/qvto/updates/releases)
+Xtext/Xtend (http://download.eclipse.org/modeling/tmf/xtext/
+updates/composite/releases/)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 6
+
+3.5 Dokumentation
+EMF: EMF Tutorial
+http://www.vogella.com/tutorials/EclipseEMF/article.html
+Ecore-Tools Tutorial
+http://www.eclipse.org/ecoretools/doc/
+GMF:
+http://wiki.eclipse.org/Graphical_Modeling_Framework/Tutorial/Part_1
+Epsilon/EuGENia:
+http://www.eclipse.org/epsilon/doc/articles/
+Xtext:
+http://www.eclipse.org/xtext
+Xtend
+http://www.eclipse.org/xtend
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 7
+
+3.6 Demonstration EMF
+Projekt
+
+Palette
+
+Zeichenfläche Properties
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 8
+
+3.7 Demonstration EMF
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 9
+
+3.8 Demonstration EMF
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 10
+
+3.9 Demonstration EMF
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 11
+
+Block 3 – Zusammenfassung
+EMF ist eine MDD Infrastruktur zur Erstellung datengetriebener Anwendungen. EMF nutzt die Modellierungssprache Ecore. EMF erlaubt die Generierung einer Programmierschnittstelle (API) und einfachen Modelleditoren. EMF hat eine generelles Dom¨anenmodell (*.ecore) und ein speziﬁscheres Generierungsmodell (*.genmodel)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 12
+
+Block 3 – Literatur I
+
+[1]
+
+Dave Steinberg u. a. EMF: Eclipse Modeling Framework. Boston (MA) USA: Addison-Wesley, 2009.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 13
+
+Block 4 – U¨bung EMF
+Aufgabe (siehe a-emf.pdf)
+Bearbeiten Sie in diesem Block die U¨bungseinheit Eclipse Modeling Framework (EMF).
+
+W. Rost und S. Vaupel
+
+SE5012
+
+13.08.2018 1
+
+Modellgetriebene Softwareentwicklung in der Praxis1 (SE5012)
+Wolf Rost2 und Steﬀen Vaupel3
+2Technische Hochschule Mittelhessen, 3Philipps-Universit¨at Marburg
+14. August 2018 (Tag 2) Technische Hochschule Mittelhessen (Gießen)
+1Blockveranstaltung 13.08.2018 - 24.08.2018
+
+Block 5 – MDD Infrastruktur I (Sprachen)
+
+P. Bruegel d. A¨. – Turmbau zu Babel 1563 (Kunsthistorisches Museum Wien)
+
+GPML (General-purpose Modeling Language) o. DSML (Domain-speciﬁc Modeling Language) Graﬁsche oder textuelle Syntax Graphical Editing Framework (GEF) und Graphical Modeling Framework (GMF) Visuellen Editoren mit EMF, GMF und GEF Visuelle Editoren mit EuGENia Demonstration EuGENia Xtext Textuelle Editoren mit Xtext Demonstration Xtext Installation Dokumentation
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 1
+
+5.1 GPML (General-purpose Modeling Language) o. DSML (Domain-speciﬁc Modeling Language)
+UML, ERM, BPMN, BPEL, SysML, PAP, EMF sind etablierte Sprachen der GPML Kategorie, die sowohl von Dom¨anenexperten als auch von Technologieexperten gesprochen werden (Linguae Francae) Niedrige Abstraktion erlaubt Dom¨anen- und Technologiemodellierung (z.B. Entit¨at (Auto), Datenbankzugriﬀsklasse (Auto)) → Gefahr der Verschmelzung von CIM, PIM, PSM Besser: DSML fu¨r Dom¨anenexperten DSML bietet eine hohe Abstraktion von der Technologie (aber eine niedrige Abstraktion hinsichtlich der Dom¨ane) – Vgl. Frank 2011 [2] Mehr Know-How im Generator notwendig, da von einem konkreten DSML-Element auf eine komplexeres technisches Konstrukt der GPML/des Codes abgebildet werden muss.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 2
+
+5.2 Graﬁsche oder textuelle Syntax
+Graﬁsche Syntax Darstellung: mehrdimensional Basiselemente: Graﬁken, 2D/3D-Formen Relationen zwischen Basiselementen: R¨aumliche Anordnung, enth¨alt (Container), explizit (z.B. Kanten) Bearbeitung: Meist abh¨angig vom Aufbau des Metamodells
+Textuelle Syntax Darstellung: eindimensional (S¨atze) in Leserichtung Basiselemente: W¨orter aus Zeichen, Ziﬀern, Sonderzeichen usw. Relationen zwischen Basiselementen: Bezugnahme durch folgende Referenzen (z.B. var a; a = ... ;) Bearbeitung: Freihand - Unabh¨angig von der Grammatik (Parser)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 3
+
+5.3 Graphical Editing Framework (GEF) und Graphical Modeling Framework (GMF)
+Graphical Editing Framework (GEF):
+Toolsammlung verschiedener Zeichenframeworks (z.B. DOT, FX, Graph, etc.)
+Draw2d, GEF (MVC) enthalten Komponenten fu¨r die (manuelle) Entwicklung graﬁscher Modellierungswerkzeuge
+Graphical Modeling Framework (GMF):
+Framework zur modellgetriebenen Entwicklung graﬁscher Modellierungssprachen und Editoren
+Erzeugt einen graﬁschen Modelleditor auf Basis des Ecore-Dom¨anenmodells (Abstrakte Syntax) und einer speziﬁzierten konkreten Syntax.
+Verbindung zwischen EMF und GEF (Vgl. Rubel et al. 2011 [7])
+GMF-Metamodell beschr¨ankt die graﬁsche Syntax auf graphartige (Knoten und Kanten) Strukturen (Vgl. Minas 2002 [6])
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 4
+
+5.4 Visuellen Editoren mit EMF, GMF und GEF
+
+ Domain Model
+(*.ecore)
+
+ Domain Generator-
+model (*.genmodel)
+
+ǈ your.language ǈ your.language.edit ǈ your.language.editor
+
+EMF SDK (Generation Framework)
+
+ Graphical Deﬁnition
+Model (*.gmfgraph)
+
+ Mappingmodel
+(*.gmfmap)
+
+ Diagram Generator-
+model (*.gmfgen)
+
+EMF Runtime
+ǈ your.editor.visual .language.diagram
+
+ Tool Deﬁnition
+Model (*.gmftool)
+GMF SDK (Generation Framework)
+Eclipse Platform
+
+GMF Runtime GEF Runtime
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 5
+
+5.4 Visuellen Editoren mit EMF, GMF und GEF
+Beispiel (Zuweisung einer konkreten graﬁschen Syntax):
+ProcessContainer
+
+processes 0..* Process
+startTask 1 Task
+Create
+
+<diagram> <compartments>
+<nodes> <compartments>
+<nodes>
+
+<descriptors> CreateFigure
+<canvas> wcore
+<nodes> Create
+
+<rectangle> Rectangle
+<label> NameFigure
+
+Domain Model (EMF)
+W. Rost und S. Vaupel
+
+Graphical
+
+Mapping Model Deﬁnition Model
+
+(GMF)
+
+(GMF)
+
+GEF Constructs
+
+SE5012
+
+14.08.2018 6
+
+5.4 Visuellen Editoren mit EMF, GMF und GEF
+
+Ergebnis (aus Sicht des Dom¨anenexperten/Modellierers)
+
+Create (node)
+
+Create.name Create.permissions (compartment) Create.eClass.name Create.return.name’:’Create.return.type
+
+EMF, GMF und GEF bilden eine m¨achtige Werkzeugkette zur modellgetriebenen Entwicklung von graﬁschen Modelleditoren.
+Die manuelle Modellierung der graﬁschen Syntax und deren Abbildung auf das Dom¨amenmodell (Schritte 3-5) ist dennoch sehr anspruchsvoll. Fu¨r einfache Modelleditoren kann das Werkzeug EuGENia genutzt werden.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 7
+
+5.5 Visuellen Editoren mit EuGENia
+Mit EuGENia (und Emfatic) kann das Dom¨anenmodell mit einfachen Hinweisen (Annotationen) zur graﬁschen Darstellung der Elemente ausgestattet werden (Vgl. Kolovos et al. 2017 [3], [5]; Kolovos et al. 2010 [4]) EuGENia generiert daraufhin automatisch die GMF-Modelle (Mapping, Tooling und Deﬁnition Model). Bei Bedarf ko¨nnen die generierten GMF-Modelle verfeinert werden.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 8
+
+5.5 Visuellen Editoren mit EuGENia
+Wichtige Annotation zur Steuerung der graﬁschen Darstellung: @gmf – Zur Validation notwendig @gmf.diagram – Zur Angabe des Wurzelelements (Zeichenﬂ¨ache) @gmf.node – Zur Angabe der Knoten im Diagramm @gmf.link – Verlinkung zwischen Nicht-Containments @gmf.compartment – Containments als Teilbereich innerhalb eines Knoten @gmf.aﬃxed – Containment als Teil eines Links @gmf.label – Deﬁnition von Beschriftungen
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 9
+
+5.6 Demonstration EuGENia
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 10
+
+5.7 Demonstration EuGENia
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 11
+
+5.8 Demonstration EuGENia
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 12
+
+5.9 Xtext
+Xtext (Vgl. Bettini 2016 [1]):
+Framework zur Entwicklung von Programmiersprachen und dom¨anenspeziﬁschen Sprachen Teil des Eclipse Modeling Frameworks (EMF) Grammatiken zur Sprachdeﬁnition
+Grammatiken in Erweiterter-Backus-Naur-Form (EBNF) Meta-Syntax zur Deﬁnition von kontextfreien Grammatiken Deﬁnition von Terminal- und Nicht-Terminalsymbolen Grammatiken bestehen aus einer Menge von Regeln, jede Regel entspricht einem Metamodellelement
+Generierung von ASTs (Abstrakter Syntaxbaum), EMF Metamodellen, Parsern und textueller Modelleditoren (Eclipse Plugins)
+Selten: Ableitung einer Grammatik aus einem vorhandenen EMF Metamodell
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 13
+
+5.9 Xtext
+
+Beispiel (Xtext Grammatik in ENBF):
+
+1 grammar org . example . domainmodel . Domainmodel with
+
+2
+
+o r g . e c l i p s e . x t e x t . common . T e r m i n a l s
+
+3 generate domainmodel
+
+4
+
+” h t t p : / /www . e x a m p l e . o r g / domainmodel / Domainmodel ”
+
+5 Model :
+
+6 g r e e t i n g s+=G r e e t i n g ∗ ;
+
+7
+
+8 Greeting :
+
+9 ’ H e l l o ’ name=ID ’ ! ’ ;
+
+Zeile 1 bestimmt den Grammatiknamen und weitere genutzte Grammatiken. Zeile 3 deklariert das zu generierende EMF Metamodell. Zeile 5 enth¨alt das Start-Symbol (Model) und die erste Produktionsregel. Zeilen 8 und 9 enthalten eine Produktionsregel mit Terminalen.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 14
+
+5.9 Xtext
+Operatoren/Kardinalit¨aten/Klammerung: Genau ein Element (Voreinstellung, kein expliziter Operator) Ein oder kein Element (Operator ’ ?’) 0 bis n Elemente (Operator ’*’) 1 oder mehr Elemente (Operator ’+’) Alternativen (Operator ’|’) Klammerung ’(’ u. ’)’ zur Gruppierung von Symbolen
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 15
+
+5.9 Xtext
+Vorgefertigte Terminale:
+terminal ID : ’ˆ ’?( ’a ’.. ’ z ’| ’A’.. ’Z’| ’ ’)( ’a ’.. ’ z ’| ’A’.. ’Z’| ’ ’| ’0 ’.. ’9 ’)∗;
+t e r m i n a l INT r e t u r n s e c o r e : : EInt : ( ’0 ’.. ’9 ’)+;
+... Aufz¨ahlungstypen u¨ber das Schlu¨sselwort enum:
+Greeting : G r e e t i n g L a n g u a g e name=ID ’ ! ’ ;
+... enum G r e e t i n g L a n g u a g e h e ll o = ’ Hello ’ | hallo = ’ Hallo ’ | hola = ’ Hola ’ ;
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 16
+
+5.9 Xtext
+
+Problem mit der Linksrekursion:
+...
+Model : expr = Expr ;
+
+Model Expr Op Expr
+
+Expr : Expr Op Expr | INT ;
+
+Expr Op Expr
+
+Op : ’+ ’ | ’ − ’ ;
+
+1 + 2+2
+
+Top-Down-Parser (ANTLR) liest von links nach rechts u. von oben nach unten. Es wird nur das n¨achste Zeichen betrachtet.
+
+Problem: Unklar wie tief im Baum abgestiegen werden muss, damit die restlichen Zeichnen noch erkannt werden ko¨nnen.
+
+Beseitigung: A → Aα|β ⇒ A → βA sowie A → αA | ⇒ A → βα∗
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 17
+
+5.9 Xtext
+
+Auﬂo¨sung der Linksrekursion:
+...
+Model : expr = Expr ;
+Expr : INT (Op Expr ) ∗ ;
+Op : ’+ ’ | ’ − ’ ;
+
+Model
+
+Expr
+
+Op Expr
+
+Op Expr
+
+1+2+
+
+2
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 18
+
+5.10 Textuelle Editoren mit Xtext
+Nachdem eine fehlerfreie Grammatik in Xtext modelliert wurde kann direkt ein textueller Modelleditor generiert werden.
+Die Angabe und Zuweisung einer Syntax entf¨allt, da die Terminale und Schlu¨sselwo¨rter neben den mo¨glichen Bezeichnern die textuelle Syntax bilden.
+Beispiel (Textueller Editor fu¨r Ausdru¨cke):
+
+Fehleingabe (Irrelevantes Zeichen ’+’; Erwartet Regel INT)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 19
+
+5.11 Demonstration Xtext
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 20
+
+5.12 Demonstration Xtext
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 21
+
+5.13 Installation
+
+(Fast) fertige Eclipse Installationen:
+
+a) Eclipse Modeling Tools
+(https://www.eclipse.org/downloads/packages/release/photon/r/ eclipse-modeling-tools)
+b) Eclipse IDE for Java and DSL Developers
+(https://www.eclipse.org/downloads/packages/release/photon/r/ eclipse-ide-java-and-dsl-developers)
+Relevante Pakete (Eclipse Update Sites):
+
+GMF (http://download.eclipse.org/modeling/gmp/gmf-tooling/updates/
+dev-snapshots/3.3/)
+Epsilon (EuGENia) (http://download.eclipse.org/epsilon/updates/) Emfatic (http://download.eclipse.org/emfatic/update/) QVT Operational SDK
+(http://download.eclipse.org/mmt/qvto/updates/releases)
+Xtext/Xtend (http://download.eclipse.org/modeling/tmf/xtext/
+updates/composite/releases/)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 22
+
+5.14 Dokumentation
+EMF: EMF Tutorial
+http://www.vogella.com/tutorials/EclipseEMF/article.html
+Ecore-Tools Tutorial
+http://www.eclipse.org/ecoretools/doc/
+GMF:
+http://wiki.eclipse.org/Graphical_Modeling_Framework/Tutorial/Part_1
+Epsilon/EuGENia:
+http://www.eclipse.org/epsilon/doc/articles/
+Xtext:
+http://www.eclipse.org/xtext
+Xtend
+http://www.eclipse.org/xtend
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 23
+
+Block 5 – Zusammenfassung
+GPMLs sind ﬂexibel und weit verbreitet, sind aber nicht unkritisch bei der Trennung von fachlichen und technischen Belangen. DSMLs sind gut fu¨r Dom¨anenexperten geeignet. Neue DSMLs beno¨tigen eine eigene graﬁsche oder textuelle Syntax. Mit GMF und GEF steht die Mo¨glichkeit zu Deﬁnition von graﬁscher Syntax und der automatisierten Generierung von visuellen Modelleditoren bereit. EuGENia erlaubt eine weitergehende Automatisierung durch Annotationen in dem Dom¨anenmodell. Xtext erlaubt die Deﬁnition von DMSLs auf Basis von EBNF-Grammatiken. Mit Xtext k¨onnen automatisiert textuelle Modelleditoren generiert werden.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 24
+
+Block 5 – Literatur I
+
+[1]
+
+L. Bettini. Implementing Domain-Speciﬁc Languages with Xtext and Xtend. Packt Publishing, 2016. isbn:
+
+9781786463272. url: https://books.google.de/books?id=NkrWDQAAQBAJ.
+
+[2]
+
+UMloridcehllFinrganakn.d”SInofmoremGatuiiodnelSinyesstefmors
+
+the Conception of Domain-Speciﬁc Modelling Languages“. In: Architectures: Proceedings of the 4th International Workshop
+
+Enterprise on Enterprise
+
+Modelling and Information Systems Architectures, EMISA 2011, Hamburg, Germany, September 22-23, 2011.
+
+Hrsg. von Markus Nu¨ttgens, Oliver Thomas und Barbara Weber. Bd. 190. LNI. GI, 2011, S. 93–106. url:
+
+http://subs.emis.de/LNI/Proceedings/Proceedings190/article6462.html.
+
+[3]
+
+Dimitrios editors“.
+
+SIn.:KSoolfotvwoasreu.aan.d”SEyusgteenmiaM: toodwealrindgs
+
+disciplined and automated development of GMF-based graphical model 16.1 (2017), S. 229–255. doi: 10.1007/s10270-015-0455-3. url:
+
+https://doi.org/10.1007/s10270- 015- 0455- 3.
+
+[4]
+
+Dimitrios S. Kolovos u. a. Languages and Systems -
+
+1”3TtahmIinntgerEnMatFionaanldCGoMnfFereUnscine,gMMOoDdeElLTSra2n0s1fo0r,mOastlioo,nN“.orwIna:yM, Oodcteol bDerriv3e-n8,E2n0g1i0n,eering
+
+Proceedings, Part I. Hrsg. von Dorina C. Petriu, Nicolas Rouquette und Øystein Haugen. Bd. 6394. Lecture Notes in
+
+Computer Science. Springer, 2010, S. 211–225. doi: 10.1007/978-3-642-16145-2\_15. url:
+
+https://doi.org/10.1007/978- 3- 642- 16145- 2\_15.
+
+[5]
+
+Dimitris S. Kolovos und Workshop on Modelling
+
+Richard F. in Software
+
+PEaniggien.e”eTrihneg,EMpsiSiloEn@IPCaStEter2n01L7a,nBguuaegneo“s.
+
+In: 9th IEEE/ACM International Aires, Argentina, May 21-22, 2017.
+
+IEEE,
+
+2017, S. 54–60. doi: 10.1109/MiSE.2017.8. url: https://doi.org/10.1109/MiSE.2017.8.
+
+[6]
+
+Mark Minas. 72.2 (2002),
+
+S”S. p1e0c2i–fy1i1n1g.
+
+Graph-like
+
+Diagrams
+
+with
+
+DIAGEN“.
+
+In: Electronic Notes in Theoretical Computer Science
+
+[7]
+
+D. Rubel, J. Wren und E. Clayberg. The Eclipse Graphical Editing Framework (GEF). Boston (MA) USA:
+
+Addison-Wesley, 2011.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 25
+
+Block 6 – MDD Infrastruktur II (Generatoren)
+Codegenerierung (M2C) und Modellgenerierung (C2M) Modellu¨bersetzung vs. Modellinterpretation Aufbau von Codegeneratoren Codegeneratoren mit Xtend Installation Dokumentation Demonstration Xtend
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 1
+
+6.1 Codegenerierung (M2C)
+Codegenerierung ist eine spezielle Form der Modelltransformation (Vgl. Mens und Gorp 2006 [2]), die auch als vertikale exogene Modelltransformation bezeichnet wird. Das Modell wird vollst¨andig in Programmcode u¨bersetzt (synthetisiert). Das Modell ist zur Ausfu¨hrung des Programms nicht mehr notwendig.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 2
+
+6.1 Modellgenerierung (C2M)
+Die Ru¨cku¨bersetzung o. Gegenrichtung zur Extraktion eines Modells aus dem Programmcode (C2M) ist nur mo¨glich, wenn:
+der Programmcode generiert wurde (z.B. Fujaba) oder das Modell auf einzelne Aspekte beschr¨ankt ist. Bei der Ru¨cku¨bersetzung werden i.d.R. viele (technische) Informationen hinzugefu¨gt, da technische und dom¨anenrelevante Information kaum unterschieden werden k¨onnen.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 3
+
+6.2 Modellu¨bersetzung
+Ein u¨bersetztes Modell, d.h. eine generierte Anwendung, repr¨asentiert genau ein Modell. Zwei (fast) identische Modelle bilden immer zwei (fast) identische Anwendungen.
+
+Was w¨are, wenn man den abweichenden Modellanteil erst zur Laufzeit auswerten ko¨nnte?
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 4
+
+6.2 Modellinterpretation
+Ein idealtypischer Modellinterpreter implementiert ein Metamodell und kann beliebige Instanzen des Metamodells zur Laufzeit interpretieren.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 5
+
+6.2 Modellu¨bersetzung (Vorteile)
+Schutz des Know-Hows Die Anwendung realisiert nur ein Modell. Der Anwender kann die Anwendung nur bestimmungsgem¨aß nutzen.
+Plattformspeziﬁsch und Architekturgerecht Die Anwendung kann fu¨r eine bestimmte Architektur generiert werden. Die native Umsetzung garantiert eine hohe Performanz.
+Verst¨andlichkeit Der generierte Programmcode ist i.d.R. gut verst¨andlich und von guter Qualit¨at.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 6
+
+6.2 Modellinterpretation (Vorteile)
+Schnelle A¨nderungen Modell¨anderungen setzten keinen U¨bersetzung des Modells und keine U¨bersetzung des generierten Programmcodes voraus.
+A¨nderungen zur Laufzeit Anwendungen lassen sich zur Laufzeit konﬁgurieren.
+Portabilit¨at Plattformunabh¨angige Modelle (PIM) lassen sich auf allen Plattformen ausfu¨hren, fu¨r dies es einen Interpreter gibt (Vgl. Java)
+Sicherheit Die Installation einer potentiell unsicheren mobilen Anwendung kann durch die Ausfu¨hrung eines gepru¨ften Modellinterpreters vermieden werden.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 7
+
+6.2 Exkurs: Compreter MDD Infrastruktur
+Mu¨ssen sich Infrastrukturentwickler zwischen Modellu¨bersetzung (Compiler) und Modellinterpretation entscheiden?
+Beispiel (MDD Compreter fu¨r die Entwicklung mobiler Anwendungen):
+
+Compile time
+
+Near to me (non GPS) Near to me (GPS)
+
+modelling (1)
+Process model
+
+Android project single deploy (3)
+
+generated to (2)
+
+App model (M1)
+
+generated to (2)
+
+iOS project single deploy (3)
+
+(Angestellter)
+
+GPS instance of
+
+interpreted in (5)
+
+ProvPid(rMoerv0imd)(Meord0m)elodel
+
+Kein GPS
+interpreted in (5)
+
+(Manager)
+
+Runtime
+
+modelling (4)
+
+Android platform
+
+iOS platform
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 8
+
+6.3 Aufbau von Codegeneratoren
+Codegeneratoren bestehen aus zwei wesentlichen Komponenten: Laden, Validieren, Transformieren eines Modells und Aufruf von Generierungstemplates (Verarbeitungskomponente) Templates (Generierungskomponente)
+Die Entwicklung der Verarbeitungskomponente kann in Abh¨angigkeit des Abstraktionsgrades des Eingabenmodells sehr komplex werden. Fu¨r die Entwicklung der Templates wird h¨auﬁg ein Bottom-Up Ansatz gew¨ahlt d.h. Abstraktion der Templates aus vorhandenem Programmcode.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 9
+
+6.3 Aufbau von Codegeneratoren
+Entwicklung von Templates:
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 10
+
+6.4 Codegeneratoren mit Xtend
+Xtend (Vgl. Bettini 2016 [1]): Programmiersprache fu¨r die Java Virtual Maschine mit kompakter Syntax (im Vergleich zu Java) Objektorientiert mit funktionalen Bestandteilen Bestandteil des Eclipse-Projektes (Eclipse Public License) Urspru¨nglich im Xtext Projekt entwickelt und genutzt Erlaubt die Codegenerierung auf Basis von Xtext-Modellen und EMF-Modellen Template-basiertet Ansatz zur Modell-zu-Code Transformation (¨ahnlich den Vorg¨angern Xpand und JET)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 11
+
+6.5 Installation
+
+(Fast) fertige Eclipse Installationen:
+
+a) Eclipse Modeling Tools
+(https://www.eclipse.org/downloads/packages/release/photon/r/ eclipse-modeling-tools)
+b) Eclipse IDE for Java and DSL Developers
+(https://www.eclipse.org/downloads/packages/release/photon/r/ eclipse-ide-java-and-dsl-developers)
+Relevante Pakete (Eclipse Update Sites):
+
+GMF (http://download.eclipse.org/modeling/gmp/gmf-tooling/updates/
+dev-snapshots/3.3/)
+Epsilon (EuGENia) (http://download.eclipse.org/epsilon/updates/) Emfatic (http://download.eclipse.org/emfatic/update/) QVT Operational SDK
+(http://download.eclipse.org/mmt/qvto/updates/releases)
+Xtext/Xtend (http://download.eclipse.org/modeling/tmf/xtext/
+updates/composite/releases/)
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 12
+
+6.6 Dokumentation
+EMF: EMF Tutorial
+http://www.vogella.com/tutorials/EclipseEMF/article.html
+Ecore-Tools Tutorial
+http://www.eclipse.org/ecoretools/doc/
+GMF:
+http://wiki.eclipse.org/Graphical_Modeling_Framework/Tutorial/Part_1
+Epsilon/EuGENia:
+http://www.eclipse.org/epsilon/doc/articles/
+Xtext:
+http://www.eclipse.org/xtext
+Xtend
+http://www.eclipse.org/xtend
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 13
+
+6.7 Demonstration Xtend
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 14
+
+6.7 Demonstration Xtend
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 15
+
+6.7 Demonstration Xtend
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 16
+
+Block 6 – Zusammenfassung
+Die Codegenerierung (M2C) ist eine spezielle Form der Modelltransformation Sie kann i. A. nicht umgekehrt werden (Modellgenerierung C2M), da die technische und fachlichen Belange nicht automatisch getrennt werden ko¨nnen Bei der U¨berfu¨hrung eines Modells in ein Softwaresystem kann die Modellu¨bersetzung oder Modellinterpretation Anwendung ﬁnden. Codegeneratoren (Modellu¨bersetzer) enthalten eine Verarbeitungkomponente und eine Generierungskomponente. Die Generierungskomponente setzt sich aus Codeschablonen (Templates) zusammen. Templates werden aus gew¨ohnlichen Anwendungen gewonnen.
+
+W. Rost und S. Vaupel
+
+SE5012
+
+14.08.2018 17
+
