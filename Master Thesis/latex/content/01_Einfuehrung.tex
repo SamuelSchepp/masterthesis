@@ -15,7 +15,7 @@ The current development indicates, that the differences will be further eliminat
 
 \section{Problem definition}
 
-Mobile applications have significant disadvantages, that push the development of web apps.
+Mobile applications have significant disadvantages, that push the development of web apps forward.
 Changes have to be approved by the phone vendors, in order to be able to release update to the app.
 This causes development delays and reduces the ability to react to events or customer requirements.
 
@@ -28,9 +28,27 @@ Every change has to go through one of each platform experts, so development is e
 
 \section{Motivation}
 
-use of native mobile features, camera, background gps, beacons, push notification (with payload). caching, fast ui, good battery life.
+To be able to delivery the full mobile application experience, the app has to be native.
+This will change, when all of the phones hardware interface is exposed to the web browser.
+But for now, the only way to use these features and be good on battery life and data usage is by providing a native app, that is written in the native language and uses features, directly provided by the phone vendors.
 
-no need to depend on third party frameworks, direct use of phone vendor's apis.
+Web app wrapper like ''ionic'' are able to use these features and provide their own interface to the web app.
+In this way, an web app can in fact use restricted components like push notifications and beacons.
+
+With this approach, every new app still has to be developed and old ones have to be maintained individually.
+In addition, it involves the dependence on third party framework vendors. 
+Building apps with ionic creates a massive list of dependencies: ionic, angular, npm and nodejs.
+Native apps have the ability to reduce reliance, by only using native libraries, which are very comprehensive by default.
+
+To be able to create many apps with little effort, a model driven approach can be considered.
+A well abstracted model can have the ability to be easy to understand by users and the platforms can bring their respected implementation in, so any app looks and feels native.
+A service can deliver pre-rendered sub-models, so that complex client workload can be moved to the server.
+
+Existing apps are easy to maintain, because there is only one code base per framework.
+One bug fix applies to all apps.
+Also, it is easy for anyone to change small things like a label, a background color or the sorting of a list.
+The goal is, to be able to configure new apps in one day, together with the customer.
+
 
 \section{Distinction}
 
