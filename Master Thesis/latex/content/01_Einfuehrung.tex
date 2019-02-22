@@ -1,7 +1,7 @@
 \chapter{Introduction}
 
 Mobile application and digital media usage is still on the rising\cite{perkins_internet_2018}.
-Apps are one of many possible ways to interact with customers and consumers.
+Mobile applications are one of many possible ways to interact with customers and consumers.
 A web appearance on social media or a dedicated web page can also fulfill these needs.
 The way, the user interacts with a web page is more shallow, because of lower expectations.
 A user needs to log in most of the time.
@@ -9,7 +9,7 @@ A user needs to log in most of the time.
 A mobile application can enable user specific features without logging in, because the user can be identified with an identification token, that is generated, while the user installs the app.
 It is possible to activate special features like geofencing, push notifications or local data storage, that is synchronized with the platform cloud services (e.g. Apple iCloud or Google Drive).
 
-A mobile app integrated more deeply into the device, than a web app.
+A mobile app is integrated more deeply into the device, than a web app.
 However, web browser already support a lot of the features by now, that originally were only available to native apps.
 The current development indicates, that the differences will be further eliminated by the browser vendors.
 
@@ -17,19 +17,35 @@ The current development indicates, that the differences will be further eliminat
 
 Mobile applications have significant disadvantages, that push the development of web apps forward.
 Changes have to be approved by the phone vendors, in order to be able to release updates to the app.
-This causes development delays and reduces the ability to react to events or customer requirements.
+This causes development delays and reduces the ability to react to events or customer requirement changes.
 
-In addition, managing a lot of apps (> 20) requires a lot of work, since all of them have to be maintained.
+All apps have to be kept in good condition, which creates more work, the more apps there need to be maintained.
 New operating system features have to be implemented in all of the apps, which can cause inconsistencies.
 All apps have to be tested in detail, to make sure that all apps implement the required change correctly.
-
+Platform changes can only be dealt with one by one.
 Developers need deep system knowledge to develop the apps.
 Every change has to go through one of each platform experts, so development is expensive.
+
+An example for a change, that all apps should implement is the display notch.
+It causes the screen to extend to the edge of the display.
+However some of the screen is cut out to make room for sensors and the camera.
+
+\begin{figure}[h]
+	\label{notch}
+	\centering{
+		\includegraphics[width=\linewidth/3]{images/introduction/notch.pdf}
+	}
+	\caption{Display notch with safe area, Apple iPhone X}
+\end{figure}
+
+The notch is integrated to the default interface framework, so that developers can react accordingly and use the provided margins.
+This change requires all apps to implement a correct way to handle that.
+Developers have to go though every screen and correct the view.
 
 \section{Motivation}
 
 To be able to deliver the full mobile application experience, the app has to be native.
-This will change, when all of the phone's hardware interface is exposed to the web browser.
+This will change, when all of the phone's hardware interface is exposed to the web browser and user interface performance is better.
 But for now, the only way to use these features and be good on battery life and data usage is by providing a native app, that is written in the native language and uses features, directly provided by the phone vendors.
 
 Web app wrapper like ''ionic'' are able to use these features and provide their own interface to the web app.
@@ -54,11 +70,11 @@ The goal is, to be able to configure new apps in one day, together with the cust
 
 This thesis will not describe the development experience nor the initial expense of the project.
 Neither will this thesis evaluate financial aspects and at which point, the project was or is worth the development costs.
-The domain examination will be narrowed down to the two main ones.
+The domain examination will be narrowed down to the two main ones, mobile phones and digital signage.
 
 The thesis aims to answer the question:
 \begin{quote}
-	Can a code interpreter be integrated in the domain of mobile applications?
+	How can a code interpreter be integrated in the domain of mobile applications?
 \end{quote}
 
 \section{Structure}
