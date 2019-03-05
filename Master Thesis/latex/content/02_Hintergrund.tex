@@ -12,25 +12,71 @@ The app categories range from retail to event to city marketing apps\footnote{\u
 
 The creator of the system is Fabrik 19 GmbH.
 The company is based in Gießen, Hesse, Germany and was founded 20XX by Mark Pralle and Sven Herchenhein.
+At the moment, the company has bout 25 employees.
+Besides of apps, there are also other projects and solutions, like consulting and webhosting.
 
 \subsection{Markets}
 
 Fabrik19 does not deliver apps directly to customers, but is partner of retail corporations and city marketing agencies.
-The current flagship is the Gießen App, which was developed in cooparation with DISTAMA GmbH.
-The App has 34,000 downloads and 20 active users per day.
+The current flagship is the Gießen App, which was developed in cooperation with DISTAMA GmbH.
+The app was downloaded 34,000 times and has 20 distinct and active users per day.
 
 Besides mobile apps, digital signage is another important market.
 The companion to the Gießen App is a stele that contains a large touchscreen and runs an app that is optimized for big touchscreens.
 It is located on the main pedestrian shopping street in Gießen and provides respective informations on the stores and points of interests\footnote{\url{https://distama.de/bid-seltersweg/}}.
 Other stele systems are also active in Globus hardware stores and Globus grocery stores.
 
-\subsection{Customers}
-
 \section{Mobility Suite}
+
+The main development focus lays on the app interpreter platform ''mos''.
+It supports the two major platforms iOS and Android, but there is also a lightweight version available in .Net, which is running on the steles as a Windows app.
+A web client is also actively in development, which aims to replace the .Net version.
+
+A configuration are multiple JSON files, that represent the app meta information, its layout and its behavior.
+The files are called node.
+There is one root node, whose url is baked into the app while compiling.
+This root node defines the first screen of the app.
+All the other screens can be defined in other nodes.
+When displaying another node, the new node is loaded from cache or network and its new view is pushed on the view stack, which is done by the interpreter.
+On the particular platforms, this action will look different and will use the platforms native animations.
+Web apps like Ionic have their own push animations which makes them feel foreign.
+The previous node can pass data, like the ID of the item that should be displayed.
+
+The goal is, to be able to create a new app in one day, by meeting with the customer and configuring the app together.
+The syntax of the configuration is designed to abstract all of an apps standard behavior.
+Because of a custom layout system, that can be described with constraints and will layout automatically, it is not possible to recognize that it is only a configured app, instead of a custom native one.
+
+The apps have sophisticated caching and optimization mechanisms, which makes it possible to use them completely offline, without any additional configuration effort.
+The configuration, images and data are cached heavily, which makes the apps very fast.
+But because of the dynamic design of the configuration syntax, it is possible to clear the caches and force new versions.
+The cache first policy of the interpreter makes sure, that contents are always available and loads changes in the background.
+
+Besides of displaying data, the client is highly intractable and can perform various custom tasks on the device, like uploading local data, saving data to the devices user settings and providing push, beacon and location infrastructure.
+
+This data can be used in describing the layout by defining layer conditions, which makes the app behave accordingly.
+
 
 \subsection{Use cases}
 
+The main use cases are marketing and customer interaction.
+The concept is data source driven and enables configuration of any data source.
+Because of a template engine, data can be arranged for display in an intuitive way.
+
+Since the configuration can be changed on the fly and without the need of providing an update via app store, the contents can be adjusted to fit current events like holidays or promotions.
+Especially for digital signage it is important to be able to change the contents without any updates.
+
+
 \subsection{Interoperability}
 
-lorem
+The app can be loaded with data via common REST services, that deliver JSON data.
+The app now uses HTTP mechanisms and a custom delta system to only load new data.
+The mos backend system also has a custom data proxy, which can load any data and provide it for the apps.
+This way, it is possible to use any data source and still be able to change the templates and layouts without updates.
+
+It is possible to integrate an app in a Wordpress instance, a chat service like Mattermost or an secured API that uses authentication methods like client certificates, auth headers or JSON web tokens.
+
+By default any network communication is secured with an app specific client certificate.
+Other authentication methods have to be configured.
+
+
 
