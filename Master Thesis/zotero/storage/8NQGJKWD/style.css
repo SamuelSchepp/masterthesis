@@ -1,0 +1,137 @@
+img.JournalCover {
+    border: 0;
+    width: 96px;
+    height: 125px;
+    margin: 0 5px 3px 0;
+    float: left;
+}
+
+.ecommRecommendArticles p {
+    margin-left: 10px;
+}
+
+#coverArtListing {
+    float: left;
+    width: 548px;
+    /* use padding of parent element
+    margin:12px 0px 0px 12px;
+    */
+    display: inline;
+}
+
+.coverArtRow {
+    float: left;
+    clear: left;
+    border-bottom: 1px solid #CCCC99;
+    width: 100%;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+
+.coverArtContainer {
+    width: 182px;
+    float: left;
+    text-align: center;
+}
+
+.coverArtContainer a:link, .coverArtContainer a:active, .coverArtContainer a:visited, .coverArtContainer a:hover {
+    font-weight: bold;
+}
+
+.coverArtImage {
+    position: relative;
+    height: 220px;
+    width: 150px;
+    margin: 0px auto 0px auto;
+}
+
+.ecommConf ul {
+    list-style: none;
+}
+
+.coverArtImage img {
+    position: absolute;
+    bottom: 0px;
+    left: 5px;
+}
+
+.BeforeFilter, .AfterFilter {
+    display: inline;
+}
+
+.creativeCommons {
+    float: left;
+    padding-right: 5px;
+}
+
+#mobileDevicePairing_login form {
+    width: 47%;
+    float: left;
+    margin: 1em 0;
+}
+
+#mobileDevicePairing_login .personLogin {
+    margin-right: 5%;
+    font-size: 12px;
+}
+
+#mobileDevicePairing_login .emailLogin {
+    font-size: 12px;
+}
+
+#mobileDevicePairing_login .login_link {
+    margin: 10px 0 10px 0;
+    display: inline-block;
+}
+
+#mobileDevicePairing_login label {
+    float: left;
+    width: 12em;
+}
+
+#mobileDevicePairing_login .field {
+    clear: left;
+    margin: 0.25em 0;
+}
+
+#searchFormLeft {
+    width: 75%;
+    float: left;
+}
+
+.search_result_right {
+    width: 100%;
+}
+
+.search_result_refine {
+    text-align: center;
+    width: 25%;
+    float: right;
+    margin: 10px 0 0 0;
+}
+
+#searchResultsAll ,.relatedPublications{
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-width: 760px;
+    max-width: 860px;
+}
+td.refineText{
+    float: right;
+}
+td.sourceArticle{
+    float:left;
+}
+.SourceArticleHeading{
+    margin-left: 0px;
+    margin-bottom: 10px;
+}
+
+.MathJax_Display {
+    width: 95%;
+}
+
+.disp-formulaLabel {
+    float: right;
+    margin-top: 20px;
+}

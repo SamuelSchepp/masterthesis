@@ -1,0 +1,927 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"><head>
+        <style>
+
+        </style>
+        <link href="core.txt" rel="stylesheet" type="text/css">
+
+
+        
+        <title>Model-Driven Software Engineering in Practice, Second Edition | Synthesis Lectures on Software Engineering</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="SHORTCUT ICON" href="https://www.morganclaypool.com/templates/jsp/_midtier/_mcp/favicon.ico">
+        <meta name="robots" content="noarchive">
+
+
+
+
+
+
+
+
+<link rel="schema.DC" href="http://purl.org/DC/elements/1.0/"><meta name="dc.Title" content=" Model-Driven Software Engineering in Practice, Second Edition "><meta name="dc.Creator" content="Marco 
+Brambilla"><meta name="dc.Creator" content="Jordi 
+Cabot"><meta name="dc.Creator" content="Manuel 
+Wimmer"><meta name="dc.Subject" content="modeling; software engineering; UML; domain-specific language; model-driven engineering; code generation; reverse engineering; model transformation; MDD; MDA; MDE; MDSE; OMG; DSL; EMF; Eclipse"><meta name="dc.Description" content="Abstract This book discusses how model-based approaches can improve the daily practice of software professionals. This is known as Model-Driven Software Engineering (MDSE) or, simply, Model-Driven Engineering (MDE). MDSE practices have proved to increase efficiency and effectiveness in software development, as demonstrated by various quantitative and qualitative studies. MDSE adoption in the software industry is foreseen to grow exponentially in the near future, e.g., due to the convergence of software development and business analysis. The aim of this book is to provide you with an agile and flexible tool to introduce you to the MDSE world, thus allowing you to quickly understand its basic principles and techniques and to choose the right set of MDSE instruments for your needs so that you can start to benefit from MDSE right away. The book is organized into two main parts. The first part discusses the foundations of MDSE in terms of basic concepts (i.e., models and transformations), driving principles, a..."><meta name="dc.Publisher" content=" Morgan &amp; Claypool Publishers "><meta name="dc.Date" scheme="WTN8601" content="2017-03-30"><meta name="dc.Type" content="other"><meta name="dc.Format" content="text/HTML"><meta name="dc.Identifier" scheme="doi" content="10.2200/S00751ED2V01Y201701SWE004"><meta name="dc.Language" content="en"><meta name="dc.Coverage" content="world"><meta name="dc.Rights" content="Copyright © 2017 by Morgan &amp; Claypool"><meta name="keywords" content="modeling, software engineering, UML, domain-specific language, model-driven engineering, code generation, reverse engineering, model transformation, MDD, MDA, MDE, MDSE, OMG, DSL, EMF, Eclipse">
+        
+        
+
+        
+            <link rel="meta" type="application/atom+xml" href="https://doi.org/10.2200%2FS00751ED2V01Y201701SWE004">
+            <link rel="meta" type="application/rdf+json" href="https://doi.org/10.2200%2FS00751ED2V01Y201701SWE004">
+            <link rel="meta" type="application/unixref+xml" href="https://doi.org/10.2200%2FS00751ED2V01Y201701SWE004">
+        
+    
+<meta name="MSSmartTagsPreventParsing" content="true">
+
+<link rel="meta" type="application/rdf+xml" href="https://doi.org/10.2200%2FS00751ED2V01Y201701SWE004">
+<link rel="meta" type="application/json" href="https://doi.org/10.2200%2FS00751ED2V01Y201701SWE004">
+<link rel="meta" type="application/unixref+xml" href="https://doi.org/10.2200%2FS00751ED2V01Y201701SWE004">
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+    
+        
+            <script type="text/javascript" async="" src="ga.js"></script><script type="text/javascript">
+                var _gaq = _gaq || [];
+                _gaq.push(['_setAccount', 'UA-117529654-1']);
+                _gaq.push(['_trackPageview']);
+
+                (function() {
+                    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+                })();
+            </script>
+        
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+        <link href="style_003.css" rel="stylesheet" type="text/css">
+<link href="style.css" rel="stylesheet" type="text/css">
+<link href="style_002.css" rel="stylesheet" type="text/css">
+
+        <script type="text/javascript" src="script.js"></script>
+<script type="text/javascript" src="script_002.js"></script>
+
+            
+            
+            
+            
+            
+            
+            
+            
+            
+        
+
+
+
+
+
+
+
+
+    <script src="casa.js" async=""></script>
+
+        
+<link rel="alternate" type="application/rss+xml" title="RSS - eTOC alert for Synthesis Lectures on Software Engineering" href="https://www.morganclaypool.com/action/showFeed?ui=0&amp;mi=64wn2f&amp;ai=1hd&amp;jc=swe&amp;type=etoc&amp;feed=rss">
+<link rel="alternate" type="application/rss+xml" title="RSS - Cited articles" href="https://www.morganclaypool.com/action/showFeed?ui=0&amp;mi=64wn2f&amp;ai=2o4&amp;doi=10.2200%2FS00751ED2V01Y201701SWE004&amp;type=citrack&amp;feed=rss">
+
+            
+    </head>
+    <body onload="onLoadAction()" onresize="onResizeAction()" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+    <div id="container">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+
+
+<table class="headerLogo" width="775" border="0" cellspacing="0" cellpadding="0">
+ <tbody><tr>
+  <td valign="top" align="left">
+   <img src="logo.gif" alt="Morgan &amp; Claypool Publishers logo" width="775" height="106" border="0" hspace="0" align="left">
+  </td>
+
+ </tr>
+</tbody></table>
+
+    
+
+
+
+
+
+
+
+    
+
+
+<table class="identitiesBar" width="775" border="0" cellspacing="0" cellpadding="0">
+ <tbody><tr>
+  
+    <td align="left">
+        Hello. <a href="https://www.morganclaypool.com/action/showLogin?uri=%2Fdoi%2F10.2200%2FS00751ED2V01Y201701SWE004"> Sign in </a> to personalize your visit.  New user? <a href="https://www.morganclaypool.com/action/registration">Register now</a>.
+        <span class="identitiesName"></span>
+    </td>
+    <td align="right">
+     
+     
+     
+    </td>
+   
+ </tr>
+</tbody></table>
+
+
+
+    
+
+    <div class="menu-container">
+        
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+    
+
+
+
+    <ul class="dropDownNav linkList menu">
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/">Home</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/synthesis">Synthesis</a>
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="submenu menu">
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/browseLbS.jsp">Subject Areas</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/ForthcomingSynthesisLectures">Recent &amp; Forthcoming Titles</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/coll_one">Complete Collections</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/Pricing">Institutional Pricing</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/aboutSynthesis.jsp">About</a>
+                
+            </li>
+        
+    </ul>
+
+
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/LSindex">Colloquium</a>
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="submenu menu">
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/browseCbS">Subject Areas</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/ForthcomingColloquium">Recent &amp; Forthcoming Titles</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/colloquium_one">Complete Collections</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/mcls_pricing">Institutional Pricing</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/colloquium">About</a>
+                
+            </li>
+        
+    </ul>
+
+
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/search/simple">Search</a>
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="submenu menu">
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/search/simple">Simple Search</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/search/advanced">Advanced Search</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/help?context=search">Help</a>
+                
+            </li>
+        
+    </ul>
+
+
+                
+            </li>
+        
+            <li class="">
+                <a href="">Profile</a>
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="submenu menu">
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/action/showPreferences?menuTab=Journals&amp;type=favorite&amp;type=subscribed">Series</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/action/showPreferences?menuTab=Alerts">Sign Up For E-Alerts</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/action/showPreferences?menuTab=AccountInfo">Account Info</a>
+                
+            </li>
+        
+    </ul>
+
+
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/authors.jsp">Author</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/help?context=main">Help</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="">About</a>
+                
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+    <ul class="submenu menu">
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/aboutSynthesis.jsp">Synthesis</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/colloquium">Colloquium</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/page/aboutMcp.jsp">Morgan &amp; Claypool Publishers</a>
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypool.com/feedback/show">Contact</a>
+                
+            </li>
+        
+    </ul>
+
+
+                
+            </li>
+        
+            <li class="">
+                <a href="https://www.morganclaypoolpublishers.com/">Bookstore</a>
+                
+            </li>
+        
+    </ul>
+
+
+    </div>
+
+    
+    <table width="775" border="0" cellspacing="0" cellpadding="0">
+        <tbody><tr><td>
+            <br>
+            <br>
+            
+
+
+
+
+
+<div id="cartinfo">
+    
+</div>
+        </td></tr>
+    </tbody></table>
+    
+
+
+
+<table style="quickSearch" width="775" border="0">
+    <tbody><tr><td><div style="display:inline">
+        <form action="/action/doSearch" name="quickSearchLineForm" class="quickSearch" method="get"><table width="100%" border="0" cellspacing="1"><tbody><tr><td style="vertical-align: top" valign="top" align="left"><table><tbody><tr>
+                <td> &nbsp; <label for="QSFSearchText" accesskey="t">Quick search:</label></td>
+                <td><input id="QSFSearchText" class="textInput" name="AllField" size="" onfocus="javascript:if(this.value=='Enter keyword'){this.value='';}" placeholder="Enter keyword" type="text"></td>
+                <td><label for="QSFSearchFilter" accesskey="f">within:</label></td>
+                <td nowrap="nowrap"><select id="QSFSearchFilter" class="textInput">
+
+                    <option value="issue" selected="selected">This issue</option>
+                    <option value="single">This series</option>
+                    <option value="">All series</option>
+                </select>
+</td>
+                <td><input onclick="return checkAndAddValues(QSFSearchText.value, 'Enter keyword', 'Please enter search terms', '3','2017','1','swe');" value="" src="goButton.gif" alt="Go" border="0" type="image"></td></tr></tbody></table></td>
+                <td valign="top" align="right">&nbsp;
+                </td></tr></tbody></table></form>
+    </div></td></tr>
+    <tr height="1"><td class="hr"><img src="singlePixel.gif" border="0"></td></tr>
+</tbody></table>
+
+
+    
+    <table class="pageBody" width="775" border="0" cellspacing="0" cellpadding="0">
+    <tbody><tr><td class="pageBody">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+<!-- // hide it from old browsers
+
+var anyDbId = -1;
+var sideParts = {
+    citation: "<tr><td class=\"black9pt\" width=\"15\" valign=\"top\">&nbsp;&bull;&nbsp;<\/td><td class=\"black9pt\" valign=\"top\"><a href=\"javascript:newWindow('{$linkoutUrl}')\">{$display}<\/a><\/td><\/tr>",
+    citingIsi: "<tr><td class=\"black9pt\" width=\"15\" valign=\"top\">&nbsp;&bull;&nbsp;<\/td><td class=\"black9pt\" valign=\"top\">Search for citing articles in:<br/>&nbsp;<a href=\"javascript:newWindow('/servlet/linkout?suffix=s0&dbid=128&doi={$doi}&url={$urlEnc}')\">ISI Web of Science<\/a> ({$citNum} or more)<\/a><\/td><\/tr>",
+    citingCrossref: "<tr><td class=\"black9pt\" width=\"15\" valign=\"top\">&nbsp;&bull;&nbsp;<\/td><td class=\"black9pt\" valign=\"top\"><a href=\"{$url}\">Citing articles in Crossref<\/a><\/td><\/tr>",
+    quicksearch: "<option value=\"{$value}\">{$display}<\/option>",
+    related: ", <a href=\"javascript:newWindow('{$linkoutUrl}')\">{$display}<\/a>"
+};
+
+function genSide(part, dbid, linkoutUrl, display, doi, url, citNum, value) {
+    if (dbid != anyDbId && (562949953421311 & dbid) == 0) return;
+    var content = sideParts[part];
+    if (linkoutUrl) { content = content.replace(/{\$linkoutUrl}/g, linkoutUrl); }
+    if (display) { content = content.replace(/{\$display}/g, display); }
+    if (doi) { content = content.replace(/{\$doi}/g, doi); }
+    if (url) {
+        content = content.replace(/{\$url}/g, url);
+        content = content.replace(/{\$urlEnc}/g, encodeURIComponent(encodeURIComponent(url)));
+    }
+    if (citNum) { content = content.replace(/{\$citNum}/g, citNum); }
+    if (value) { content = content.replace(/{\$value}/g, value); }
+    document.write(content);
+}
+
+function hasSfxLinks() {
+	return false;
+}
+
+
+function genSfxLinks(id, url, doi) { }
+
+var sfxRefDisplay = {
+64:"ADS",
+32:"CAS",
+8192:"CIS",
+256:"CSA",
+16:"Crossref",
+128:"ISI",
+4096:"JSTOR",
+8:"Medline",
+1099511627776: "Ichushi",
+17592186044416: "Medical Online",
+8796093022208: "J-Stage",
+2199023255552: "Medical Finder",
+4398046511104: "Pier Online"
+};
+
+window.onload=disableRefLinkWrite ;
+
+function genRefLink(dbid, id, key, textOfLink) {
+    if (562949953421311 & dbid != 0) {
+        if (typeof textOfLink === "undefined") {
+            if (sfxRefDisplay[dbid].substring(0,1) == "[") {
+                textOfLink = sfxRefDisplay[dbid];
+            } else {
+                textOfLink = "["+sfxRefDisplay[dbid]+"]";
+            }
+            // ToDo: move '[' and ']' to sfxRefDisplay (UPDATE: finish changing sfxRefDisplays and remove this branch)
+        }
+        else{ textOfLink = unescape(textOfLink)};
+
+        if(document.disableRefLinkWrite == null){
+            document.write("<a class='ref' href=\"javascript:popRefLink("+dbid+",'"+id+"','"+key+"')\">"+textOfLink+"<\/a>");
+        }
+    }
+}
+
+function disableRefLinkWrite () {
+    document.disableRefLinkWrite = true;
+}
+
+function popRefLink(dbid, id, key) {
+    var redirect = "/servlet/linkout?suffix=" + id + "&dbid=" + dbid + "&doi=10.2200%2FS00751ED2V01Y201701SWE004&key=" + key;
+    return newWindow(redirect);
+}
+function popRefFull(rid, citart, ptype, area) {
+    return popRefImplFull(rid, citart, ptype, area, 600, 500);
+}
+function popRefImplFull(rid, citart, ptype, area, width, height) {
+    var doi = "10.2200%2FS00751ED2V01Y201701SWE004";
+    if (! ptype) { ptype = ""; }
+    var pt = rid.charAt(0) + "S00751ED2V01Y201701SWE004" + ptype;
+    return popupFull(rid, doi, pt, area, width, height);
+}
+function popRef(rid, citart, ptype, area) {
+    return popRefImpl(rid, citart, ptype, area, 600, 500);
+}
+function popRef2(rid, citart, ptype, area) {
+    return popRefImpl(rid, citart, ptype, area, 400, 100);
+}
+function popRefImpl(rid, citart, ptype, area, width, height) {
+    var doi = "10.2200%2FS00751ED2V01Y201701SWE004";
+    if (! citart) { citart = "citart1"; }
+    if (! ptype) { ptype = ""; }
+    var pt = rid.charAt(0) + "S00751ED2V01Y201701SWE004" + ptype;
+    return popupRef(citart, rid, doi, pt, area, width, height);
+}
+
+
+
+function genCitingCrossref() {
+}
+
+var citLinkDisplay = {
+    
+    0:"SYSTEM",
+4:"SYSTEM",
+20:"SYSTEM",
+64:"ADS",
+32:"CAS",
+8192:"CIS",
+256:"CSA",
+16:"Crossref",
+128:"ISI",
+4096:"JSTOR",
+8:"MEDLINE"
+};
+var feeBasedMask = 4480;
+
+function genCitLink(dbid, suffix, key) {
+    if (dbid != anyDbId && (feeBasedMask & dbid) != 0 && (562949953421311 & dbid) == 0) return;
+
+    var param = "/servlet/linkout?suffix=" + suffix + "&dbid=" + dbid + "&doi=10.2200%2FS00751ED2V01Y201701SWE004&key=" + key;
+    var display = citLinkDisplay[dbid];
+    var img = "/templates/jsp/_midtier/_mcp/images/" + display + "_btn.gif";
+
+
+
+    document.write("<a class='ref' href='javascript:newWindow(\"" + param + "\")'>");
+    document.write("<" + "img src='"+img+"' width='85' height='20' align='BOTTOM' alt='"+display+" Abstract' border='0'/>");
+    document.write("<\/a>");
+}
+// stop hiding -->
+</script>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tbody><tr>
+    <td valign="top">
+    
+    
+
+    <!-- when referer is not from literatum (referer is null or not equals to the default host), display note on abstarct page -->
+    
+
+    <h1 class="articleTitle">Model-Driven Software Engineering in Practice, Second Edition</h1>
+    <h2 class="journalTitle"><a href="https://www.morganclaypool.com/toc/swe/3/1">Synthesis Lectures on Software Engineering</a></h2>
+    <div>March 2017,
+            207 pages, (<a href="https://doi.org/10.2200/S00751ED2V01Y201701SWE004">https://doi.org/10.2200/S00751ED2V01Y201701SWE004</a>)</div>
+        
+        <!-- Start full text content -->
+        
+
+        <!-- abstract content --><div class="Authors"> <span class="name noWrap">Marco<span class="NLM_x"> </span>Brambilla</span><span class="wbr">​‌</span><div class="aff"> <span class="institution"> Politecnico di Milano, Italy </span> </div>  <span class="name noWrap">Jordi<span class="NLM_x"> </span>Cabot</span><span class="wbr">​‌</span><div class="aff"> <span class="institution"> ICREA and Open University of Catalonia (UOC), Spain </span> </div>  <span class="name noWrap">Manuel<span class="NLM_x"> </span>Wimmer</span><span class="wbr">​‌</span><div class="aff"> <span class="institution"> TU Wien, Austria </span> </div> </div><div class="hlFld-Abstract"> <p class="summary-title"><b>Abstract</b></p> <p>
+ This book discusses how model-based approaches can improve the daily 
+practice of software professionals. This is known as Model-Driven 
+Software Engineering (MDSE) or, simply, Model-Driven Engineering (MDE). </p> <p>MDSE
+ practices have proved to increase efficiency and effectiveness in 
+software development, as demonstrated by various quantitative and 
+qualitative studies. MDSE adoption in the software industry is foreseen 
+to grow exponentially in the near future, e.g., due to the convergence 
+of software development and business analysis. </p> <p>The aim of this 
+book is to provide you with an agile and flexible tool to introduce you 
+to the MDSE world, thus allowing you to quickly understand its basic 
+principles and techniques and to choose the right set of MDSE 
+instruments for your needs so that you can start to benefit from MDSE 
+right away. </p> <p>The book is organized into two main parts.</p> <p> </p><ul class="NLM_list-list_type-bullet"> <li> <p class="inline"> The first part discusses the <i>foundations of MDSE</i>
+ in terms of basic concepts (i.e., models and transformations), driving 
+principles, application scenarios,  and current standards, like the 
+well-known MDA initiative proposed by OMG (Object Management Group) as 
+well as the practices on how to integrate MDSE in existing development 
+processes. </p> </li> <li> <p class="inline"> The second part deals with the <i>technical aspects of MDSE</i>,
+ spanning from the basics on when and how to build a domain-specific 
+modeling language, to the description of Model-to-Text and 
+Model-to-Model transformations, and the tools that support the 
+management of MDSE projects. </p> </li> </ul> <p></p> <p>The second edition of the book features: </p> <p> </p><ul class="NLM_list-list_type-bullet"> <li> <p class="inline">a
+ set of completely new topics, including: full example of the creation 
+of a new modeling language (IFML), discussion of modeling issues and 
+approaches in specific domains, like business process modeling, user 
+interaction modeling, and enterprise architecture </p> </li> <li> <p class="inline"> complete revision of examples, figures, and text, for improving readability, understandability, and coherence </p> </li> <li> <p class="inline"> better formulation of definitions, dependencies between concepts and ideas </p> </li> <li> <p class="inline"> addition of a complete index of book content </p> </li> </ul> <p></p> <p>In addition to the contents of the book, more resources are provided on the book's website <a class="ext-link" href="http://www.mdse-book.com/" target="_blank">http://www.mdse-book.com</a>, including the examples presented in the book. </p><p class="last">
+ Table of Contents: Foreword / Acknowledgments / Introduction / MDSE 
+Principles / MDSE Use Cases / Model-driven Architecture (MDA) / 
+Integration of MDSE in your Development Process / Modeling Languages at a
+ Glance / Developing your Own Modeling Language / Model-to-Model 
+Transformations / Model-to-Text Transformations / Managing Models / 
+Summary / Bibliography / Authors' Biographies / Index </p> </div><!-- /abstract content --><!-- fulltext content --><!-- /fulltext content -->
+
+        <div class="article_link">
+        <table cellspacing="10" align="center">
+        <tbody><tr>
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+        
+            <td nowrap="nowrap" align="center">
+                <a href="https://www.morganclaypool.com/doi/pdf/10.2200/S00751ED2V01Y201701SWE004" class="header4" target="_blank">
+                    PDF
+                    <span class="fileSize">
+                        
+                        (3911 KB)
+                    </span>
+                </a>
+            </td>
+            
+    
+            
+            <td nowrap="nowrap" align="center">
+                <a href="https://www.morganclaypool.com/doi/pdfplus/10.2200/S00751ED2V01Y201701SWE004" class="header4" target="_blank">
+                    PDF Plus
+                    <span class="fileSize">
+                        
+                        (2864 KB)
+                    </span>
+                </a>
+            </td>
+            
+       
+        
+        
+
+    
+    
+    
+
+
+</tr>
+        </tbody></table>
+        </div>
+
+        
+        
+        <div class="citedBySection" id="citart1"><a name="citedBySection"></a><h2>Cited by</h2><div class="citedByEntry"><span class="name noWrap">Marwa<span class="NLM_x"> </span>Hentati</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Abdelwaheb<span class="NLM_x"> </span>Trabelsi</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Lassaad<span class="NLM_x"> </span>Benammar</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Adel<span class="NLM_x"> </span>Mahfoudhi</span><span class="wbr">​‌</span>.  (2019) Search-based software engineering for optimising usability of user interfaces within model transformations. <i><span class="NLM_source">IET Software</span></i>. <br>Online publication date: 25-Jan-2019.<br><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1049/iet-sen.2018.5161" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Atefeh<span class="NLM_x"> </span>Nirumand</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Bahman<span class="NLM_x"> </span>Zamani</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Behrouz<span class="NLM_x"> </span>Tork Ladani</span><span class="wbr">​‌</span>.
+  (2019) VAnDroid: A framework for vulnerability analysis of Android 
+applications using a model-driven reverse engineering technique. <i><span class="NLM_source">Software: Practice and Experience</span></i> <b>49</b>:1, 70-99. <br>Online publication date: 15-Oct-2018.<br><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1002/spe.2643" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Naziha<span class="NLM_x"> </span>Laaz</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Samir<span class="NLM_x"> </span>Mbarki</span><span class="wbr">​‌</span>.
+ 2019. An MDA Approach Based on UML and ODM Standards to Support Big 
+Data Analytics Regarding Ontology Development. Transactions on 
+Large-Scale Data- and Knowledge-Centered Systems XLI, 211-225. <br><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1007/978-3-030-11196-0_19" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">César A.<span class="NLM_x"> </span>Collazos</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Francisco L.<span class="NLM_x"> </span>Gutiérrez</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Jesús<span class="NLM_x"> </span>Gallardo</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Manuel<span class="NLM_x"> </span>Ortega</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Habib M.<span class="NLM_x"> </span>Fardoun</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Ana Isabel<span class="NLM_x"> </span>Molina</span><span class="wbr">​‌</span>.  (2018) Descriptive theory of awareness for groupware development. <i><span class="NLM_source">Journal of Ambient Intelligence and Humanized Computing</span></i> <b>7</b>. <br>Online publication date: 14-Dec-2018.<br><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1007/s12652-018-1165-9" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Akhan<span class="NLM_x"> </span>Akbulut</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Sezer<span class="NLM_x"> </span>Toprak</span><span class="wbr">​‌</span>.  (2018) Code generator framework for smart TV platforms. <i><span class="NLM_source">IET Software</span></i>. <br>Online publication date: 18-Sep-2018.<br><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1049/iet-sen.2018.5157" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Marwa<span class="NLM_x"> </span>Hentati</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Abdelwaheb<span class="NLM_x"> </span>Trabelsi</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Lassaad<span class="NLM_x"> </span>Ben&nbsp;Ammar</span><span class="NLM_x"><x xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">, </x></span><span class="name noWrap">Adel<span class="NLM_x"> </span>Mahfoudhi</span><span class="wbr">​‌</span>.  (2018) MoTUO: An Approach for Optimizing Usability Within Model Transformations. <i><span class="NLM_source">Arabian Journal for Science and Engineering</span></i> <b>11</b>. <br>Online publication date: 4-Aug-2018.<br><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1007/s13369-018-3462-1" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div><div class="citedByEntry"><span class="name noWrap">Eric J.<span class="NLM_x"> </span>Rapos</span><span class="wbr">​‌</span>.  (2018) We'll make modelers out of 'em yet. <i>Proceedings
+ of the 21st ACM/IEEE International Conference on Model Driven 
+Engineering Languages and Systems Companion Proceedings - MODELS '18</i>, 130-134. <br><span class="CbLinks"><!--noindex--><a class="ref" href="https://doi.org/10.1145/3270112.3270113" target="_blank" title="Opens new window"> Crossref </a><!--/noindex--></span></div></div>  
+    </td>
+
+    <td width="10">&nbsp;</td>
+
+    <!-- side region -->
+    <td width="170" valign="top">
+    
+
+
+
+
+
+
+<!-- Start top Links -->
+<table width="100%" cellspacing="0" cellpadding="0">
+<tbody><tr>
+<td class="gray9pt">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table class="breadcrumbs" border="0" cellspacing="0" cellpadding="0"><tbody><tr>
+<td><a href="https://www.morganclaypool.com/">Home</a></td>
+
+<td>&nbsp;&gt;</td><td></td><td nowrap="nowrap"><a href="https://www.morganclaypool.com/toc/swe/3/1">Series home</a></td>
+
+<td>&nbsp;&gt;</td><td></td><td nowrap="nowrap">Abstract</td>
+
+</tr></tbody></table>
+
+<br>
+
+
+
+
+
+
+<!-- Previous and Next Articles -->
+<img class="defaultCover" src="journal_jacket_generic.gif">
+<br><br>
+
+
+
+
+
+Prev. lecture
+|
+Next lecture
+
+<br>
+
+
+    <a href="https://www.morganclaypool.com/doi/pdf/10.2200/S00751ED2V01Y201701SWE004" target="_blank">View/Print PDF <span class="fileSize">(3911 KB)</span></a><br>
+
+
+    <a href="https://www.morganclaypool.com/doi/pdfplus/10.2200/S00751ED2V01Y201701SWE004" target="_blank">View PDF Plus <span class="fileSize">(2864 KB)</span></a><br>
+
+    
+
+<a href="https://www.morganclaypool.com/personalize/addFavoritePublication?doi=10.2200%2FS00751ED2V01Y201701SWE004">Add to favorites</a><br>
+<a href="https://www.morganclaypool.com/action/showMailPage?href=%2Fdoi%2F10.2200%2FS00751ED2V01Y201701SWE004&amp;title=Model-Driven+Software+Engineering+in+Practice%2C+Second+Edition&amp;doi=10.2200%2FS00751ED2V01Y201701SWE004">Email to a friend</a><br>
+
+
+
+
+
+
+<font color="#000000"><a href="https://www.morganclaypool.com/action/showFeed?ui=0&amp;mi=64wn2f&amp;ai=1hd&amp;jc=swe&amp;type=etoc&amp;feed=rss"><img src="xml.gif" border="0" align="absbottom"> TOC Alert</a></font>
+| <font color="#000000"><a href="https://www.morganclaypool.com/action/showFeed?ui=0&amp;mi=64wn2f&amp;ai=2o4&amp;doi=10.2200%2FS00751ED2V01Y201701SWE004&amp;type=citrack&amp;feed=rss">Citation Alert</a></font>
+
+
+<small><a href="https://www.morganclaypool.com/help?context=Rss" onclick="popupHelp(this.href); return false;" class="view_link">What is RSS?</a></small>
+<br>
+
+
+
+    <!-- placeholder id=null, description=FSG advert placeholder -->
+</td></tr>
+<!-- End Top Links -->
+
+<tr><td align="right">
+<br><table width="170" cellspacing="0" cellpadding="0"><tbody><tr><td valign="top"><table width="170" border="0" cellspacing="0" cellpadding="2"><tbody><tr><td class="section_head quickLinks_head" align="center">Quick Links</td></tr><tr><td class="quickLinks_content"><table width="100%" border="0" cellspacing="0" cellpadding="1"><tbody><tr><td class="black9pt fullSideBullet"> • </td><td class="black9pt" valign="top"><a href="https://morganclaypoolpublishers.com/">Purchase print or personal eBook</a></td></tr><script type="text/javascript">genCitingCrossref()</script><tr><td class="black9pt fullSideBullet"> • </td><td class="black9pt" valign="middle">Alert me when:<br><a href="https://www.morganclaypool.com/action/addCitationAlert?doi=10.2200%2FS00751ED2V01Y201701SWE004">New articles cite this article</a></td></tr><tr><td class="black9pt fullSideBullet"> • </td><td class="black9pt" valign="top"><a href="https://www.morganclaypool.com/action/showCitFormats?doi=10.2200%2FS00751ED2V01Y201701SWE004">Download to citation manager</a></td></tr><tr><td class="black9pt fullSideBullet"> • </td><td class="black9pt" valign="middle">Related articles found in:<br><a href="https://www.morganclaypool.com/action/doSearch?target=related&amp;DOI=10.2200%2FS00751ED2V01Y201701SWE004">Morgan &amp; Claypool</a></td></tr><tr><td class="black9pt fullSideBullet"> • </td><td class="black9pt" valign="middle"><a href="https://www.morganclaypool.com/action/showMostReadArticles?journalCode=swe">View Most Downloaded Articles</a></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td> </td></tr><tr><td> </td></tr><tr><td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="2"><tbody><tr><td class="section_head quickSearch_head" align="center">Quick Search</td></tr><tr><td class="quickSearch_content"><form method="get" action="/action/searchDispatcher" name="frmQuickSearch"><input name="type" value="simple" type="hidden"><input name="pageSize" value="10" type="hidden"><input name="displaySummary" value="false" type="hidden"><table width="100%" border="0" cellspacing="0" cellpadding="4" bgcolor="#FFFFFF"><tbody><tr><td width="100%" valign="top"><span class="black9pt"><select name="searchService" size="1"><option value="mcp" selected="selected">Morgan &amp; Claypool</option>   </select> for </span></td></tr><!-- quicksearch authors --><tr><td class="pageTitle" width="100%" valign="top">Authors:</td></tr><tr><td class="black9pt" width="100%" valign="top"><table width="100%" border="0" cellspacing="1" cellpadding="2"><tbody><tr><td valign="top"><input class="input_boxes" value="Brambilla, Marco" name="author" type="checkbox"></td><td> Marco
+ Brambilla <br></td></tr><tr><td valign="top"><input class="input_boxes" value="Cabot, Jordi" name="author" type="checkbox"></td><td> Jordi
+ Cabot <br></td></tr><tr><td valign="top"><input class="input_boxes" value="Wimmer, Manuel" name="author" type="checkbox"></td><td><input name="checkboxNum" value="3" type="HIDDEN"> Manuel
+ Wimmer </td></tr></tbody></table></td></tr><!-- /quicksearch authors --><!-- quicksearch keywords --><tr><td class="pageTitle" width="100%" valign="top">Keywords:</td></tr><tr><td class="black9pt" width="100%" valign="top"><table width="100%" border="0" cellspacing="1" cellpadding="2"><tbody><tr><td valign="top"><input class="input_boxes" value="Modeling" name="Keyword" type="checkbox"></td><td><div class="kwd">modeling</div></td></tr><tr><td valign="top"><input class="input_boxes" value="Software Engineering" name="Keyword" type="checkbox"></td><td><div class="kwd">software engineering</div></td></tr><tr><td valign="top"><input class="input_boxes" value="UML" name="Keyword" type="checkbox"></td><td><div class="kwd">UML</div></td></tr><tr><td valign="top"><input class="input_boxes" value="Domain-specific Language" name="Keyword" type="checkbox"></td><td><div class="kwd">domain-specific language</div></td></tr><tr><td valign="top"><input class="input_boxes" value="Model-driven Engineering" name="Keyword" type="checkbox"></td><td><div class="kwd">model-driven engineering</div></td></tr><tr><td valign="top"><input class="input_boxes" value="Code Generation" name="Keyword" type="checkbox"></td><td><div class="kwd">code generation</div></td></tr><tr><td valign="top"><input class="input_boxes" value="Reverse Engineering" name="Keyword" type="checkbox"></td><td><div class="kwd">reverse engineering</div></td></tr><tr><td valign="top"><input class="input_boxes" value="Model Transformation" name="Keyword" type="checkbox"></td><td><div class="kwd">model transformation</div></td></tr><tr><td valign="top"><input class="input_boxes" value="MDD" name="Keyword" type="checkbox"></td><td><div class="kwd">MDD</div></td></tr><tr><td valign="top"><input class="input_boxes" value="MDA" name="Keyword" type="checkbox"></td><td><div class="kwd">MDA</div></td></tr><tr><td valign="top"><input class="input_boxes" value="MDE" name="Keyword" type="checkbox"></td><td><div class="kwd">MDE</div></td></tr><tr><td valign="top"><input class="input_boxes" value="MDSE" name="Keyword" type="checkbox"></td><td><div class="kwd">MDSE</div></td></tr><tr><td valign="top"><input class="input_boxes" value="OMG" name="Keyword" type="checkbox"></td><td><div class="kwd">OMG</div></td></tr><tr><td valign="top"><input class="input_boxes" value="DSL" name="Keyword" type="checkbox"></td><td><div class="kwd">DSL</div></td></tr><tr><td valign="top"><input class="input_boxes" value="EMF" name="Keyword" type="checkbox"></td><td><div class="kwd">EMF</div></td></tr><tr><td valign="top"><input class="input_boxes" value="Eclipse" name="Keyword" type="checkbox"></td><td><div class="kwd">Eclipse</div></td></tr></tbody></table></td></tr><tr><td class="black9pt"><input name="AllField" size="15" class="input_boxes" type="TEXT"></td></tr><!-- /quicksearch keywords --><tr><td class="black9pt" width="100%" valign="top"><input name="result" value="true" type="hidden"><input name="type" value="simple" type="hidden"><span class="black9pt"><input src="searchButton.gif" alt="Search" border="0" type="image" align="right"></span></td></tr></tbody></table></form></td></tr></tbody></table></td></tr></tbody></table>
+</td></tr>
+</tbody></table>
+
+
+    </td>
+</tr>
+</tbody></table>
+
+<span id="hide"><a href="https://www.morganclaypool.com/doi/pdf/10.1046/9999-9999.99999"><!-- Spider trap link --></a></span>
+
+
+
+
+
+</td></tr>
+</tbody></table>
+<table width="775" border="0" cellspacing="0" cellpadding="0">
+<tbody><tr><td width="10"></td><td>
+<table width="100%" cellspacing="0" cellpadding="0">
+<tbody><tr><td class="hr" colspan="2"><img src="singlePixel.gif" height="1"></td></tr>
+<tr><td colspan="2" align="center">
+<table border="0" cellpadding="5">
+<tbody><tr>
+<td><a href="https://www.morganclaypool.com/" class="main_menu">Home</a></td>
+<td> | </td>
+<td><a href="https://www.morganclaypool.com/page/synthesis.jsp" class="main_menu">Synthesis</a></td>
+<td> | </td>
+<td><a href="https://www.morganclaypool.com/search/advanced" class="main_menu">Search</a></td>
+<td> | </td>
+<td><a href="https://www.morganclaypool.com/action/showPreferences" class="main_menu">Profile</a></td>
+<td> | </td>
+<td><a href="https://www.morganclaypool.com/page/access.jsp" class="main_menu">Access</a></td>
+<td> | </td>
+<td><a href="https://www.morganclaypool.com/page/authors.jsp" class="main_menu">Author</a></td>
+<td> | </td>
+
+<td><a href="https://www.morganclaypool.com/help?context=main#_top" onclick="popupHelp(this.href); return false;" target="_blank">Help</a></td>
+<td> | </td>
+<td><a href="https://www.morganclaypool.com/feedback/show" class="main_menu">About</a></td>
+</tr></tbody>
+</table>
+</td></tr>
+<tr><td colspan="2" align="center">Technology Partner - <a href="http://www.atypon.com/" target="_blank">Atypon Systems, Inc.</a></td></tr>
+<tr>
+ <td align="left">
+  <a href="http://www.crossref.org/" target="_blank"><img src="CRMemberLogo.gif" width="75" height="35" border="0"></a>
+ </td>
+ <td align="right">
+  <a href="http://www.atypon.com/" target="_blank"><img src="AtyponLogo.gif" width="97" height="29" border="0"></a>
+ </td>
+</tr>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+
+</div><!--end container-->    
+
+
+
+
+
+</body></html>
