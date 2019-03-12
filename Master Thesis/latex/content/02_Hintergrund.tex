@@ -8,7 +8,7 @@ It is in active development and poweres over 50 apps that all are available in t
 The app categories range from retail to event to city marketing apps\footnote{\url{https://fabrik19.de/technologie/}}.
 
 
-\section{Fabrik19}
+\section{Company}
 
 The creator of the system is Fabrik 19 GmbH.
 The company is based in Gießen, Hesse, Germany and was founded 20XX by Mark Pralle and Sven Herchenhein.
@@ -26,7 +26,18 @@ The companion to the Gießen App is a stele that contains a large touchscreen an
 It is located on the main pedestrian shopping street in Gießen and provides respective informations on the stores and points of interests\footnote{\url{https://distama.de/bid-seltersweg/}}.
 Other stele systems are also active in Globus hardware stores and Globus grocery stores.
 
-\section{Mobility Suite}
+\subsection{City Marketing}
+
+Since the apps use live data and have the ability to change it's content structure, an active support and maintenance is needed to keep the app alive.
+
+To be able to advertise and publish city marketing apps as a service, Distama GmbH was founded which is a subsidiary firm of Fabrik19.
+The goal was to combine technology knowledge with marketing, to be able to provide the app and the attached customer support.
+City marketing agencies are not always able to support an app, because they lack experience and domain knowledge.
+Distama is the mediator between the developer, the customer and the user.
+
+
+
+\section{Model Interpreter System}
 
 The main development focus lays on the app interpreter platform ''mos''.
 It supports the two major platforms iOS and Android, but there is also a lightweight version available in .Net, which is running on the steles as a Windows app.
@@ -56,7 +67,7 @@ Besides of displaying data, the client is highly intractable and can perform var
 This data can be used in describing the layout by defining layer conditions, which makes the app behave accordingly.
 
 
-\subsection{Use cases}
+\subsection{Use Cases}
 
 The main use cases are marketing and customer interaction.
 The concept is data source driven and enables configuration of any data source.
@@ -68,12 +79,12 @@ Especially for digital signage it is important to be able to change the contents
 
 \subsection{Interoperability}
 
-The app can be loaded with data via common REST services, that deliver JSON data.
-The app now uses HTTP mechanisms and a custom delta system to only load new data.
-The mos backend system also has a custom data proxy, which can load any data and provide it for the apps.
+The app can be filled with data via common REST services, that deliver JSON data.
+The app uses HTTP mechanisms and a custom delta system to only load new data.
+The mos backend system also has a data proxy, which can load any data and provide it in a simpler, preprocessed format, so it is simple for the apps to download.
 This way, it is possible to use any data source and still be able to change the templates and layouts without updates.
 
-It is possible to integrate an app in a Wordpress instance, a chat service like Mattermost or an secured API that uses authentication methods like client certificates, auth headers or JSON web tokens.
+The apps have the capability to be integrated in a Wordpress instance, a chat service like Mattermost or an secured API that uses authentication methods like client certificates, auth headers or JSON web tokens.
 
 By default any network communication is secured with an app specific client certificate.
 Other authentication methods have to be configured.
