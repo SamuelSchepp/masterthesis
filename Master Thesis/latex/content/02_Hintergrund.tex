@@ -97,10 +97,10 @@ Other authentication methods have to be configured.
 
 \section{Models}
 
-Since the mos-Framework tries to abstract mobile application platforms into a common language, the configuration could be considered to be a abstract model of a mobile application.
+Since the mos-Framework tries to abstract mobile application platforms into a common language, the configuration could be considered to be an abstract model of a mobile application.
 To classify and evaluate the model approach for this domain, the following section will discuss models and their properties.
 
-\subsection{General Models Specification}
+\subsection{General Model Theory}
 
 A general model is described by Herbert Stachowiak\footnote{\cite{stachowiak_allgemeine_1973} 131}.
 He defines three properties, that apply to all models.
@@ -123,9 +123,26 @@ If theses properties apply an object, i can be called model according to Stachow
 It can be applied by numerous of common usages of the word.
 Mathematical models, philosophical models, simulations and concrete object models are some examples, that fit the requirements.
 
-\subsection{Descriptive Models}
+\subsection{Specialized Model Theory}
 
-\subsection{Prescriptive Models}
+To classify models in a more concrete way, they can be categorized as descriptive and prescriptive models.
+A descriptive model represents an existing system, as it describes it's current behavior.
+The general model specifications can still be applied, since all three properties are true for such a model.
+It cannot be modified unless the original changes, since it is representing it directly.
+A change to one of them without updating the other would result in the model not representing the original, which makes it a prescriptive model.
+A change on the original which is not relevant to the model will keep its validity.
+
+Models, that represent a fictive object or system are called prescriptive models.
+The prefix ''pre-'' indicates, that the model exists before the original.
+The model is then used to prototype a system, and test their behavior and properties, without the need to create the full system.
+
+According to Seidewitz 2003 \cite{seidewitz_what_2003} both descriptive and prescriptive models define a set of originals.
+That means, that a original can be derived to an original by combining the model with other information that does not contradict each other.
+Often times, the information that must be added is trivial or can be fetched from somewhere else.
+That is possible, because the model has by definition all of the necessary information.
+
+A derived original fulfills all of the models properties, otherwise the original is not a correct derivation.
+
 
 \section{Model Driven Development}
 
