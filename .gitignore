@@ -12,3 +12,4 @@
 *.gz
 *.toc
 *.bak
+*.fdb_latexmk
