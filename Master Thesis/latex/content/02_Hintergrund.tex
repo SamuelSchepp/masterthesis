@@ -13,6 +13,7 @@ The app categories range from retail to event to city marketing apps\footnote{\u
 \section{Company}
 
 The creator of the system is Fabrik 19 GmbH.
+% todo
 The company is based in Gießen, Hesse, Germany and was founded 20XX by Mark Pralle and Sven Herchenhein.
 At the moment, the company has bout 25 employees.
 Besides of apps, there are also other projects and solutions, like consulting and webhosting.
@@ -146,9 +147,26 @@ That is possible, because the model has by definition all of the necessary infor
 
 A derived original fulfills all of the models properties, otherwise the original is not a correct derivation.
 
-
 \section{Model Driven Development}
 
+Models can be used in a software development process (\ac{MDSD}) or as part of a software architecture (\ac{MDA}).
+Software is also a model, which represents real life objects and procedures.
+Since it is well structured by default, it is fairly easy to create model from a existing code basis.
+\ac{UML} is a widely used modeling languages, which can represent static, dynamic and interactive aspects of software systems.
+
+The problem is, that the domain specific structure of the code can be hard to understand, because the abstrcation level of a modern object oriented programming language is much lower, than the domain requires.
+\MakeUppercase{Völter} and \MakeUppercase{Stahl} describe the result of scattering relevant informtion in the code as:
+\textquote{The much-treasured inner structure is present in a cloudy, distributed, and of course also a strongly individualized form.}\footnote{\cite{stahl_model-driven_2006} 14}
+That means, that the domain's structure, components and behaviour definition is represented in the software code, but in a way that is hard to understand.
+That is, because the relevant parts and the domain critical definitions are spread in the software's code.
+It is also harder to unterstand a domains properties, by only reading the programming language.
+
+\subsection{Modeling Software Systems}
+
+A software model, like an \ac{UML} class diagram are an old tool to document and model software systems.
+The problem here is, that the abstraction level of an \ac{UML} class diagram is often times the same as the programming language itself.
+A developer might find himself tranforming a class into a diagram or generating a diagram, which does not contribute to the understanding.
+ 
 \subsection {Code Generators}
 
 \subsection {Model Interpreters}
