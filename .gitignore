@@ -1,7 +1,10 @@
-.DS_Store
 *.aux
+*.bak
 *.bbl
 *.blg
+*.fdb_latexmk
+*.fls
+*.gz
 *.idx
 *.lof
 *.log
@@ -9,7 +12,5 @@
 *.lot
 *.nlo
 *.out
-*.gz
 *.toc
-*.bak
-*.fdb_latexmk
+.DS_Store
