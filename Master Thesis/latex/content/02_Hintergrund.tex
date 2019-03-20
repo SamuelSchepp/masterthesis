@@ -6,7 +6,7 @@
 
 The system, that is discussed here, is a model interpreter that is designed to run mobile applications on iOS and Android.
 The system, which includes the interpreters and the backends are called \ac{mos}.
-It is in active development and poweres over 50 apps that all are available in the Apple AppStore and Google PlayStore.
+It is in active development and powers over 50 apps that all are available in the Apple AppStore and Google PlayStore.
 The app categories range from retail to event to city marketing apps\footnote{\url{https://fabrik19.de/technologie/}}.
 
 
@@ -15,7 +15,7 @@ The app categories range from retail to event to city marketing apps\footnote{\u
 The creator of the system is Fabrik 19 GmbH.
 The company is based in Gießen, Hesse, Germany and was founded 2013 by Mark Pralle and Sven Herchenhein.
 At the moment, the company has bout 25 employees.
-Besides of apps, there are also other projects and solutions, like consulting and webhosting.
+Besides of apps, there are also other projects and solutions, like consulting and web hosting.
 
 \subsection{Markets}
 
@@ -92,7 +92,7 @@ The app uses HTTP mechanisms and a custom delta system to only load new data.
 The mos backend system also has a data proxy, which can load any data and provide it in a simpler, preprocessed format, so it is simple for the apps to download.
 This way, it is possible to use any data source and still be able to change the templates and layouts without updates.
 
-The apps have the capability to be integrated in a Wordpress instance, a chat service like Mattermost or an secured API that uses authentication methods like client certificates, auth headers or JSON web tokens.
+The apps have the capability to be integrated in a Wordpress instance, a chat service like Mattermost or an secured API that uses authentication methods like client certificates, authorization headers or JSON web tokens.
 
 By default any network communication is secured with an app specific client certificate.
 Other authentication methods have to be configured.
@@ -128,7 +128,7 @@ Mathematical models, philosophical models, simulations and concrete object model
 
 \subsection{Specialized Model Theory}
 
-To classify models in a more spicific way, they can be categorized as descriptive and prescriptive models.
+To classify models in a more specific way, they can be categorized as descriptive and prescriptive models.
 A descriptive model represents an existing system, as it describes it's current behavior.
 The general model specifications can still be applied, since all three properties are true for such a model.
 It cannot be modified unless the original changes, since it is representing it directly.
@@ -140,7 +140,7 @@ The prefix ''pre-'' indicates, that the model exists before the original.
 The model is then used to prototype a system, and test their behavior and properties, without the need to create the full system.
 
 According to Seidewitz 2003 \cite{seidewitz_what_2003} both descriptive and prescriptive models define a set of originals.
-That means, that a original can be derived from a moel by adding additional information that does not contradict each other.
+That means, that a original can be derived from a model by adding additional information that does not contradict each other.
 Often times, the information that must be added is trivial or can be fetched from somewhere else.
 That is possible, because the model has by definition all of the necessary information.
 
@@ -154,19 +154,19 @@ Since it is well structured by default, it is fairly easy to create model from a
 \ac{UML} is a widely used modeling languages, which can represent static, dynamic and interactive aspects of software systems.
 
 The problem is, that the domain specific structure of the code can be hard to understand, because the abstrcation level of a modern object oriented programming language is much lower, than the domain requires.
-\MakeUppercase{Völter} and \MakeUppercase{Stahl} describe the result of scattering relevant informtion in the code as:
+\MakeUppercase{Völter} and \MakeUppercase{Stahl} describe the result of scattering relevant information in the code as:
 \textquote{The much-treasured inner structure is present in a cloudy, distributed, and of course also a strongly individualized form.}\footnote{\cite{stahl_model-driven_2006} 14}
-That means, that the domain's structure, components and behaviour definition is represented in the software code, but in a way that is hard to understand.
+That means, that the domain's structure, components and behavior definition is represented in the software code, but in a way that is hard to understand.
 That is, because the relevant parts and the domain critical definitions are spread in the software's code.
 It is also harder to unterstand a domains properties, by only reading the programming language.
 
 A software model, like an \ac{UML} class diagram are an old tool to document and model software systems.
 The problem here is, that the abstraction level of an \ac{UML} class diagram is often times the same as the programming language itself.
-A developer could find himself tranforming a class into a diagram or generating a diagram, which does not contribute to the understanding of the domain structure.
+A developer could find himself transforming a class into a diagram or generating a diagram, which does not contribute to the understanding of the domain structure.
 This happens, because the programming language itself is abstracted, but not the domain itself.
 
-To adress the problem of widely spreaded domain implementations, the programs importan and relevant structure is compressed in a model, which defines and represents the program on a abstract and formal level.
-The model can be a textual \ac{DSL}, a graphical diagram or even an unformal text, that is then converted into a concrete syntax.
+To address the problem of widely spread domain implementations, the programs important and relevant structure is compressed in a model, which defines and represents the program on a abstract and formal level.
+The model can be a textual \ac{DSL}, a graphical diagram or even an informal text, that is then converted into a concrete syntax.
 It contains all the domain relevant information, which is required to derive a full implementation from it.
 
 This procedure results in a model becoming part of the source of a program, and not only the documentation.
@@ -174,7 +174,7 @@ A good model syntax can lead to the model being the documentation itself.
 
 \subsection{Modeling a Software System}
 
-An existing implementation can be analysed, to create a model from it.
+An existing implementation can be analyzed, to create a model from it.
 If no model infrastructure exists, this is the way to approach the transformation.
 
 \begin{figure}[h]
@@ -187,16 +187,20 @@ If no model infrastructure exists, this is the way to approach the transformatio
 
 Figure \ref{fig:mdsd1} shows, how the code basis of an existing implementation of a software system can be split into three categories\footnote{\cite{stahl_model-driven_2006} 15}.
 
-The \textbf{schematic repetetive code} is the part, that needs to be abstracted into a model.
+The \textbf{schematic repetitive code} is the part, that needs to be abstracted into a model.
 It contains the application specific logic, that is later modeled by a user.
 It does not contain code, that is equal for all applications in the same domain.
 
-\textbf{Generic code} is code that is derived from the domain itself and not from the concrete application.
+\textbf{Generic code} is derived from the domain and target platform and not from the concrete application.
 Therefore, it is not modeled, but generated by the domain's \ac{MDD} infrastructure.
+It is mostly boilerplate code, that should not be part of the model.
+It is the same for every application and is later part of the generator templates.
 
 \textbf{Individual code} is unable to be represented in the model, because it is to specific and does not fit into the domain.
-The tools need to make sure that this code can be intregrated into the generated code later.
-To simplify the \ac{MDSD} process, individual code should be avoided as far as possible.
+The tools need to make sure that this code can be integrated into the generated code later.
+To simplify the \ac{MDSD} process, individual code should be avoided as far as possible, because in the worst case the individual code makes up all of the application code, which eliminates the possibility to use a model to represent the application.
+In the best case, the individual code portion is empty.
+This allows for a more simpler tools, because the application can be generated completely out of the model and there is no need for individual code interfaces.
 
 \begin{figure}[h]
 	\centering{
@@ -212,8 +216,9 @@ The application model and individual code should be checked into source control,
 
 Platform and domain code is part of the \ac{MDSD} tools.
 It is baked in, so that it is part of the output while generating.
+In case of code generators, this code would be part of the templates.
 In theory, it is now possible to develop any app, that fits into the domain, by only defining the model and the individual code.
-Extensions of the model's capabilites might need to be reflected in the platform or domain code.
+Extensions of the model's capabilities might need to be reflected in the platform or domain code.
 
 
 \subsection {Code Generators}
