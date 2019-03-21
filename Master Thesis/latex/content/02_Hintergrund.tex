@@ -221,7 +221,68 @@ In theory, it is now possible to develop any app, that fits into the domain, by 
 Extensions of the model's capabilities might need to be reflected in the platform or domain code.
 
 
-\subsection {Code Generators}
+\section {Code Generators}
 
-\subsection {Model Interpreters}
+Now that there is a model of an application, a concrete implementation has to be created from the model.
+Code generators can take the model and generate a software system, that is an instance if the model.
+Another approach are model interpreters, which execute the model directly, similar to a virtual machine.
+
+\subsection{Meta Programming}
+
+Code generation enables advantages, that are available to the generated code.
+By using meta programming more concepts can be expressed than the target language allows.
+
+\subsubsection{Code efficiency}
+
+A code generator has the privilege to build highly efficient code, by using the fastest statements, which have the fewest overhead.
+Modern programming language features like flexible syntax, polymorphism or reflection cause the application to run slower then needed\footnote{according to \cite{stahl_model-driven_2006} 181}.
+A code generator can perform polymorphism and reflection on generation time and generate direct code, that is fast.
+The flexibility now lies in the model and not in the generated code, which tends to be impossible to maintain, because of the optimization potential.
+Code size can also be reduced, by only writing the needed parts.
+
+\subsubsection{Platform language restrictions}
+
+Is is possible to break out of the target language's restrictions.
+The level of abstraction of the meta model and its defined language does not need to match that of the target language.
+A code generator can generate code that reflects higher level of features.
+It is possible to generate code that integrates the concept of \ac{OOP} into a non \ac{OOP}-language.
+For example: A generator can generate structs and function pointers in a C/C++ application to imitate objects.
+The generated code on it's own is not considered safe or structured, but the static context analysis what is done while creating the model performs the sames checks as an \ac{OOP}-compiler.
+Another example are generics, that can by used generating untyped objects\footnote{$Object$ (Java), $void*$ (C/C++), $any$ (JavaScript)} and perform a static context analysis while generating the code.
+Any feature that is known from modern languages can be used by imitating the compiler and its static context analysis.
+In a more extreme case, a virtual machine can be integrated into the application which can run any code.
+
+Generated code with flat hierarchies is easy to analyze statically, because much of the logic is not abstracted into frameworks.
+
+\subsubsection{Compatibility}
+
+The higher the abstraction level of the meta model, the more platforms can be supported.
+The static context analysis is independent to the platform and should not integrate platform specific restrictions.
+A transition to another platform or supporting multiple platforms at once is possible and is one of the core strengths of \ac{MDD}.
+
+\subsection{Generation}
+
+
+\section {Model Interpreters}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
