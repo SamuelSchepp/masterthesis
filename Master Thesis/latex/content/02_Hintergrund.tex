@@ -92,7 +92,7 @@ The app uses HTTP mechanisms and a custom delta system to only load new data.
 The mos backend system also has a data proxy, which can load any data and provide it in a simpler, preprocessed format, so it is simple for the apps to download.
 This way, it is possible to use any data source and still be able to change the templates and layouts without updates.
 
-The apps have the capability to be integrated in a Wordpress instance, a chat service like Mattermost or an secured API that uses authentication methods like client certificates, authorization headers or JSON web tokens.
+The apps have the capability to be integrated in a Wordpress instance, a chat service like Mattermost or an secured \ac{API} that uses authentication methods like client certificates, authorization headers or JSON web tokens.
 
 By default any network communication is secured with an app specific client certificate.
 Other authentication methods have to be configured.
@@ -265,6 +265,7 @@ The static context analysis is independent to the platform and should not integr
 A transition to another platform or supporting multiple platforms at once is possible and is one of the core strengths of \ac{MDD}.
 
 \subsection{Generation}
+\label{sec:generation}
 
 Now that a model exists, code can be generated out of it.
 Before code can be generated, the model has to be transformed into a generation oriented model.
@@ -275,7 +276,7 @@ In cases of which the model's abstraction level is low and close to the target p
 A typical example is a high level model, which could be implemented in any imperative language would be transformed into a \ac{UML} class model.
 Object oriented programming code can then be generated out of the class model trivially.
 There are techniques to create program code from a transformed model.
-The two most popular ones\footnote{according to \cite{stahl_model-driven_2006} 186} are templates- and API-based code generators.
+The two most popular ones\footnote{according to \cite{stahl_model-driven_2006} 186} are templates- and \ac{API}-based code generators.
 
 \subsubsection{Template Based Generators}
 
@@ -389,6 +390,15 @@ In that case, only the model would be part of the version control and thus the a
 	\caption{The generated HTML file viewed in a web browser}
 	\label{fig:licences_html}
 \end{figure}
+
+In larger projects, the template can become very complex.
+Using intermediate models as described in section \ref{sec:generation} that are generated from the source model, can reduce the complexity, branching and nesting, because the intermediate model has either the same or a correspondingly pleasant structure.
+Nevertheless, templates will get very big very fast and are bound to the structure of the target platform.
+In \cite{stahl_model-driven_2006} this approach is called ''Templates and Metamodel'', while \textit{Metamodel} is the intermediate model, that is used to generate code directly.
+
+\subsubsection{API-based Generators}
+
+
 
 \section {Model Interpreters}
 
