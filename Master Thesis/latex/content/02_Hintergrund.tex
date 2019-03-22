@@ -25,7 +25,7 @@ The app was downloaded 34,000 times and has 20 distinct and active users per day
 
 Besides mobile apps, digital signage is another important market.
 The companion to the Gießen App is a stele that contains a large touchscreen and runs an app that is optimized for big touchscreens.
-It is located on the main pedestrian shopping street in Gießen and provides respective informations on the stores and points of interests\footnote{\url{https://distama.de/bid-seltersweg/}}.
+It is located on the main pedestrian shopping street in Gießen and provides respective information on the stores and points of interests\footnote{\url{https://distama.de/bid-seltersweg/}}.
 Other stele systems are also active in Globus hardware stores and Globus grocery stores.
 
 \subsection{City Marketing}
@@ -181,7 +181,7 @@ If no model infrastructure exists, this is the way to approach the transformatio
 	\centering{
 		\includegraphics[width=0.8\linewidth]{images/background/mdsd1.pdf}
 	}
-	\caption{Analysing an existing implementation.}
+	\caption{Analyzing an existing implementation}
 	\label{fig:mdsd1}
 \end{figure}
 
@@ -206,7 +206,7 @@ This allows for a more simpler tools, because the application can be generated c
 	\centering{
 		\includegraphics[width=0.8\linewidth]{images/background/mdsd2.pdf}
 	}
-	\caption{Separation of code into source code and steady code.}
+	\caption{Separation of code into source code and steady code}
 	\label{fig:mdsd2}
 \end{figure}
 
@@ -238,7 +238,11 @@ A code generator has the privilege to build highly efficient code, by using the 
 Modern programming language features like flexible syntax, polymorphism or reflection cause the application to run slower then needed\footnote{according to \cite{stahl_model-driven_2006} 181}.
 A code generator can perform polymorphism and reflection on generation time and generate direct code, that is fast.
 The flexibility now lies in the model and not in the generated code, which tends to be impossible to maintain, because of the optimization potential.
-Code size can also be reduced, by only writing the needed parts.
+Code size can also be reduced, by only creating the needed parts.
+
+Aspects of the applications functionality that normally would be scattered around in the code can be modeled centralized and then generated into the depended locations.
+An example would be a dependency framework, that is used by many classes.
+Instead of copy the import code to every class, it can be modeled as an decorator, that will provide the needed boilerplate code to all classes.
 
 \subsubsection{Platform language restrictions}
 
@@ -262,6 +266,129 @@ A transition to another platform or supporting multiple platforms at once is pos
 
 \subsection{Generation}
 
+Now that a model exists, code can be generated out of it.
+Before code can be generated, the model has to be transformed into a generation oriented model.
+It's purpose is the simplification of the generation process by providing the target structure, which then can be converted to text directly.
+The transformed model is an model instance, that is targeting a specific platform.
+In cases of which the model's abstraction level is low and close to the target platforms, the transformation is not needed, since it brings a new level of complexity and abstraction to the process.
+
+A typical example is a high level model, which could be implemented in any imperative language would be transformed into a \ac{UML} class model.
+Object oriented programming code can then be generated out of the class model trivially.
+There are techniques to create program code from a transformed model.
+The two most popular ones\footnote{according to \cite{stahl_model-driven_2006} 186} are templates- and API-based code generators.
+
+\subsubsection{Template Based Generators}
+
+A template is a definition, that is iterating over the model and prints the values on the corresponding locations in a text file.
+A template mixes the concrete target code presets with a markup notation, that is getting and writing values.
+The handlebar notation is one of the simplest form of template based code generation.
+A well formed model, which is considered the input is applied to a template, which results into a resulting output.
+
+The following example tries to generate a HTML file with an overview of all used licenses of a mobile application, by using \ac{XSLT}.
+The model, which is created by a human user, contains only necessary information.
+Listing \ref{lst:licencesmodel} shows an example, that consists of three dependencies, two of which use an MIT and the other an Apache license.
+
+\begin{lstlisting}[caption={licences.xml - The model that is representing a licences web page}, language=html, label=lst:licencesmodel]
+<licences>
+	<carthage>
+		<name>Alamofire</name>
+		<url>https://github.com/Alamofire/Alamofire</url>
+		<id>MIT</id>
+		<copyright>Copyright (c) 2014-2018 Alamofire Software Foundation (http://alamofire.org/)</copyright>
+	</carthage>
+	<carthage>
+		<name>Changeset</name>
+		<url>https://github.com/osteslag/Changeset</url>
+		<id>MIT</id>
+		<copyright>Copyright (c) 2015-18 Joachim Bondo</copyright>
+	</carthage>
+	<carthage>
+		<name>Couchbase Lite</name>
+		<url>https://github.com/couchbase/couchbase-lite-ios</url>
+		<id>Apache</id>
+		<copyright>Version 2.0, January 2004 http://www.apache.org/licenses/</copyright>
+	</carthage>
+</licences>
+\end{lstlisting}
+
+Now, a template and processor needs to create a \ac{HTML} file, that displays the dependencies and a copy of their respective license.
+
+\begin{lstlisting}[caption={template.xslt - An XML file, that is later tranformed to XHTML}, language=html, label=lst:licensetemplate]
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<xsl:template match="/licences">
+		<hr />
+		<h1>iOS</h1>
+		<hr />
+		<xsl:apply-templates select="carthage"/>
+	</xsl:template>
+	<xsl:template match="carthage">
+		<h3><xsl:value-of select="name" /></h3>
+		<a>
+		<xsl:attribute name="href"><xsl:value-of select="url" /></xsl:attribute>
+		<xsl:value-of select="url" />
+		</a>
+		<h4><xsl:value-of select="id" /> License</h4>
+		<p><xsl:value-of select="copyright" /></p>
+		<xsl:if test="id = 'MIT'">
+			<p>Permission is hereby granted ...</p>
+		</xsl:if>
+		<xsl:if test="id = 'Apache'">
+			<p>TERMS AND CONDITIONS ...</p>
+		</xsl:if>
+		<hr />
+	</xsl:template>
+</xsl:stylesheet>
+\end{lstlisting}
+
+Listing \ref{lst:licensetemplate} reveals some major advantages:
+
+\begin{enumerate}
+	\item Changing the style and layout of the HTML file requires only a few changes. Adding or changing the \ac{CSS} classes of elements only requires to change the one occurrence in the template.
+	\item The \ac{URL} of an entry was displayed as the text content of an $a$ element, but also occurs in the $href$ attribute. Changing the \ac{URL} later, can cause inconsistencies, if one of the two occurrences are omitted.
+	\item Instead of copying the license text to each entry, only the identifier (e.g. $MIT$) has to be defined.
+	The template appends the correct text automatically.
+	\item Defining a template and a model of this size actually made the handling more easy and future changes can be made much faster, while keeping the file consistent.
+\end{enumerate}
+
+Since \ac{XSLT} was created for web applications, \ac{PHP} offers native support and an \ac{XSLT} processor.
+To generate the HTML file, the script in listing \ref{lst:phpxsltgenerate} can be ran.
+
+\begin{lstlisting}[caption={generate.php -  Generation script}, language=php, label=lst:phpxsltgenerate]
+<?php
+// Input
+$xml = new DOMDocument;
+$xml->load('licences.xml');
+
+// Template
+$xsl = new DOMDocument;
+$xsl->load('template.xslt');
+
+// Transformer
+$proc = new XSLTProcessor;
+$proc->importStyleSheet($xsl);
+$output = $proc->transformToXML($xml);
+
+// Write to file
+$file = fopen("./LICENCES.html", "w") or die("Unable to open file!");
+fwrite($file, $output);
+fclose($file);
+?>
+\end{lstlisting}
+
+Figure \ref{fig:licences_html} displays the resulting \ac{HTML} file.
+This file can now be bundled in to the app and enriched with CSS and be displayed in the apps license menu.
+The generation of the file can also be automated, by including the generation in the application's continues deployment pipeline.
+The model, the template and the generation script would be committed into version control.
+Another approach would bundle the template and the script into an external tool, which will be developed and maintained separately.
+In that case, only the model would be part of the version control and thus the application's source.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=\linewidth]{images/background/licences_html.png}
+	}
+	\caption{The generated HTML file viewed in a web browser}
+	\label{fig:licences_html}
+\end{figure}
 
 \section {Model Interpreters}
 
