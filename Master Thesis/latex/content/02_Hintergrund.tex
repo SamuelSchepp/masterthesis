@@ -447,6 +447,9 @@ That means, that existing solutions\footnote{E.g. CodeDOM for .NET Applications 
 
 This approach is suitable for large projects, that need a lot of generated code.
 If most of the generated code is boilerplate code, which has only few injected lines, templates might be the better approach.
+Since templates represent the resulting structure, they might be easy to read.
+\ac{API} generators are more maintainable since changes are type safe and less sensitive to errors.
+The initial expense could be higher in comparison to templates.
 It is possible to mix these approaches by generating parts independently.
 
 \section {Model Interpreters}
