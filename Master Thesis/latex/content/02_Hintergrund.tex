@@ -398,9 +398,61 @@ In \cite{stahl_model-driven_2006} this approach is called ''Templates and Metamo
 
 \subsubsection{API-based Generators}
 
+The downside of templates are their untyped and unsafe character.
+It is possible to make small syntactic errors, that are unsafe and could cause the result to fail.
+Especially in interpreted target languages like \ac{PHP} or \ac{HTML} the error only occurs when the respective line is parsed or ran.
+Since the template elements are scattered in the file and important characters are hard to make out, this approach might be unsuitable for large projects.
 
+An \ac{API}-based generator is a programming library for a development language, which provides an interface to the \ac{AST}.
+It's purpose is to build up an \ac{AST} using a type safe language like Java.
+Now the generator can be structured with Java's language features like Polymorphism, Interfaces and inheritance.
+The \ac{API} makes sure, that only syntactically correct code is produced, because the \ac{AST} does not allow it.
+
+It is also possible to generate code for different target languages, which use the same \ac{AST}.
+For example, it is possible to generate Kotlin instead of Java code, since Java is a subset of Kotlin.
+Also, the .NET runtime makes it possible to generate Visual Basic, C\# and C++ code from one \ac{AST}.
+
+\begin{lstlisting}[caption={Using an \ac{API} to generate Java code, written in Swift}, language=java, label=lst:javagenerator]
+let studentClass = ClassDeclaration(named: "Student");
+studentClass.baseType = personClass
+studentClass.typeAttributes = .public
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Java code result of lising \ref{lst:javagenerator}}, language=java, label=lst:generatredjava]
+public class Student extends Person {
+}
+\end{lstlisting}
+
+Listing \ref{lst:javagenerator} shows an example usage of an \ac{AST}-based Java code generator, which is written in Java itself.
+This form of meta programming allows the creation of any valid code by using an object oriented interface.
+Since it is independent from any textual representation of the language, syntax errors in the generated code are impossible and any other language with an compatible \ac{AST} can be generated.
+
+The \ac{AST} framework could make use of reflection to provide a more safe interface.
+For example, it could be possible to reference existing Java classes not by it's string name, but rather by using direct type references, like $typeof (System.Object)$.
+It might limit the set of compatible target languages, but in the example of Java, Kotlin is still compatible.
+
+Using jQuery to manipulate or build \ac{HTML} content is also a form of \ac{API}-based code generators, since jQuery provides a safe\footnote{Not all jQuery programming errors can be checked on compile time, despite a typed interface using TypeScript. Syntax errors in the generated code are not possible.} interface to the \ac{DOM}. The generated \ac{HTML} code can then be read from the jQuery \ac{AST} object.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=\linewidth]{images/background/apibasedgenerator.pdf}
+	}
+	\caption{API based code generator infrastructure}
+	\label{fig:apibasedgenerator}
+\end{figure}
+
+Figure \ref{fig:apibasedgenerator} illustrates the infrastructure of an \ac{API}-based code generator.
+The darker rectangles (\ac{API} and \ac{AST}) represent components, that are independent to the domain, but are directly derived from the target platform.
+That means, that existing solutions\footnote{E.g. CodeDOM for .NET Applications \url{https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/using-the-codedom}} can be used.
+
+This approach is suitable for large projects, that need a lot of generated code.
+If most of the generated code is boilerplate code, which has only few injected lines, templates might be the better approach.
+It is possible to mix these approaches by generating parts independently.
 
 \section {Model Interpreters}
+
+
+
 
 
 

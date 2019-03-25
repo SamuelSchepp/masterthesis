@@ -1,15 +1,15 @@
 {
 	"translatorID": "b6d0a7a-d076-48ae-b2f0-b6de28b194e",
+	"translatorType": 4,
 	"label": "ScienceDirect",
 	"creator": "Michael Berkowitz and Aurimas Vinckevicius",
 	"target": "^https?://[^/]*science-?direct\\.com[^/]*/((science/)?(article/|(journal|bookseries|book|handbook)/\\d)|search\\?|journal/[^/]+/vol)",
 	"minVersion": "3.0",
-	"maxVersion": "",
+	"maxVersion": null,
 	"priority": 100,
 	"inRepository": true,
-	"translatorType": 4,
 	"browserSupport": "gcsibv",
-	"lastUpdated": "2018-09-05 01:23:19"
+	"lastUpdated": "2019-03-24 22:05:00"
 }
 
 // attr()/text() v2
@@ -377,7 +377,8 @@ function processRIS(doc, text) {
 				item.attachments.push({
 					title: 'ScienceDirect Full Text PDF',
 					url: pdfURL,
-					mimeType: 'application/pdf'
+					mimeType: 'application/pdf',
+					proxy: false
 				});
 			}
 			item.complete();
