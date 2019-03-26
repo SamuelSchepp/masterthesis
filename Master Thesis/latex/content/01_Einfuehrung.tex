@@ -2,17 +2,15 @@
 
 \chapter{Introduction}
 
-Mobile application and digital media usage is still on the rising\cite{perkins_internet_2018}.
-Mobile applications are one of many possible ways to interact with customers and consumers.
+Mobile application and digital media usage is still on the rise\cite{perkins_internet_2018}.
+''Apps'' are one of many possible ways to interact with customers and consumers.
 A web appearance on social media or a dedicated web page can also fulfill these needs.
-The way, the user interacts with a web page is more shallow, because of lower expectations.
-A user needs to log in most of the time.
 
 A mobile application can enable user specific features without logging in, because the user can be identified with an identification token, that is generated, while the user installs the app.
-It is possible to activate special features like geofencing, push notifications or local data storage, that is synchronized with the platform cloud services (e.g. Apple iCloud or Google Drive).
+It is possible to activate special features like geo-fencing, push notifications or local data storage, that is synchronized with the platform specific cloud services (e.g. Apple iCloud or Google Drive), without any custom user authentication.
 
 A mobile app is integrated more deeply into the device, than a web app.
-However, web browser already support a lot of the features by now, that originally were only available to native apps.
+However, web browsers already support a lot of the features by now, that originally were only available to native apps\footnote{E. g. Local storage, push notifications}.
 The current development indicates, that the differences will be further eliminated by the browser vendors.
 
 \section{Problem definition}
@@ -71,17 +69,9 @@ The goal is, to be able to configure new apps in one day, together with the cust
 \section{Limitation}
 
 This thesis will not describe the development experience nor the initial expense of the project.
-Neither will this thesis evaluate financial aspects and at which point, the project was or is worth the development costs.
+Neither will this thesis evaluate financial aspects and at which point, the project is worth the development costs.
 The domain examination will be narrowed down to the two main ones, mobile phones and digital signage.
 
-The thesis aims to answer the following questions:
-\begin{quote}
-	Which requirements are placed on the model interpreter implementation.
-	
-	How can the specific model interpreter be implemented.
-	
-	How can the implementation be evaluated on the basis of the requirements?
-\end{quote}
 
 \section{Structure}
 
@@ -91,7 +81,7 @@ After that, the general concept of model driven development, code generators and
 
 The main content will then be about the concrete implementation, by describing the most significant design choices, overall infrastructure and usage examples.
 The focus will be on the two main platforms 'iOS' and 'Android'.
-The web and '.Net' clients are not considered, because they are not targeted for mobile devices and only support a subset of the model.
+The web and \textit{.NET} clients are not considered, because they are not targeted for mobile devices and only support a subset of the model.
 
 In the final chapter, the concept is applied to the implementation, to see how it fits the theoretical model of interpreters.
 Differences are worked out and discussed.
@@ -100,7 +90,7 @@ Also, an outlook will be given, where additional topics, like hybrid approaches,
 \subsection{Logical Approach}
 
 To be able to evaluate the interpreter, requirements are listed and described.
-Thees will be used to validate the implementation.
+These will be used to validate the implementation.
 
 Since the implementation for the iOS platform has been re-engineered to meet current demands, the problems with the old version will be outlined and compared to the new one.
 
@@ -110,8 +100,14 @@ Since the implementation for the iOS platform has been re-engineered to meet cur
 This thesis will show how a model interpreter can be evaluated against requirements and informal criteria.
 In addition, the re-engineering and model development processes will be compared to common approaches in modern literature.
 
-
-
+The following questions will be answered by applying theoretical approach to the given example.
+\begin{quote}
+	\textit{Which requirements are placed on the model interpreter implementation?}
+	
+	\textit{How can the specific model interpreter be implemented?}
+	
+	\textit{How can the implementation be evaluated on the basis of the requirements?}
+\end{quote}
 
 
 % kevin rulez
