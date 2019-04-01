@@ -2,22 +2,80 @@
 
 \chapter{Concept}
 
+This chapter will describe the goals of \ac{mos} and it's iOS implementation.
+The first section will describe the informal requirements to the model.
+Also, the model's evolution and progression is discussed, which is relevant to the main idea behind the model interpreter.
+
 \section{Implementation Goals}
 
+The main problem of mobile app development is the iteration process, which consists of collecting requirements, creating conceptual prototypes and implementing on the two main platforms.
+Since requirements are informal, incomprehensive or change during the development, multiple iterations have to be done to converge to the final product.
 
-Same day delivery
-
-easy configuration
-
-simple datasources
-
-common app tasks simplified
-
-content driven (wordpress, social media)
-
-reactive form elements
+To minimize implementation times and be able to do more iterations, \textit{Same Day Delivery}\footnote{The term originates from parcel shipping and means that a parcel arrives at the customer on the day of the order.} tries to eliminate the times, that is independent to the customer.
+That means together with the customer the app is designed and the model is created in one session.
+Since the functional scope is already defined and all of the feature are implemented in the interpreter, the domain expert who is directing the meeting can create the model live and on the fly.
+The App can be tested by the customer directly, without the need to compile an custom app.
+Common tasks like downloading data from a web source, forms and user interaction are configured on a high level, so the customer is able to understand aspects of the app.
 
 \subsection{Requirements}
+
+To be able to validate the meta model and an implementation, requirements have to be defined.
+A concrete model also has requirements, which are application specific however.
+That's why, only the meta model and the implementation are considered.
+Since this chapter is about the concept of the \ac{mos} interpreter, the discussion on the requirements of the implementation are found in chapter \ref{chap:implementation}.
+
+The following paragraph lists the functional requirements to the meta model.
+Those are aspects that have significantly influenced the design decisions.
+
+\begin{enumerate}
+	\item \textbf{Separation into independent sub-models}
+	
+	An app loads a root node, which then can navigate to a different node, or show it's preview.
+	
+	\item \textbf{Fully customizable layouts}
+	
+	A layout can be defined by arranging different kinds of layers by configuring layout constraints. Also, native navigation bar, tab bars and side menus can be set independent to the layout.
+	
+	\item \textbf{Reactive behavior}
+	
+	Everything that is depended on something else needs to update on changes. For example: If a layer is depended on an SQL query and the corresponding tables change their contents, the layer needs to update itself with the new data.
+	Another example are layers that have a form data key and thereupon synchronize their contents with the view's form.
+	
+	\item \textbf{Separation of data, templates and layouts}
+	
+	A template defines layer parameters by taking a dictionary of data and applies it to itself. The result can then be applied to a layout.
+	
+	\item \textbf{Database definitions}
+	
+	An SQL database can be designed, that is in sync with a data source.
+	
+	\item \textbf{Actions}
+	
+	An action can perform common tasks like uploading data, setting layer values, or triggering fetches. Action can be fired by clicking on a layer or are triggered by other actions, which take the result of the previous action as context data to use.
+\end{enumerate}
+
+The non-functional requirements are trivial, since they are primarily relevant to the client implementation.
+
+\begin{enumerate}
+	\item \textbf{Easy to understand}
+	
+	Existing models are easy to understand. Names are clear and there is no room for interpretation.
+	
+	\item \textbf{No boilerplate code}
+	
+	All of the configuration contains highly concentrated information and no boiler plate code has to be defined.
+	
+	\item \textbf{Easy to parse by an interpreter}
+	
+	The model is easy to parse and is encoded in a common format.
+	Validators can check for simple errors.
+	
+	\item \textbf{Backward compatibility}
+	
+	Adding new functionality has to be added without any old interpreters to fail on new models and a new interpreter to fail on old models.
+\end{enumerate}
+
+
 \subsection{Drawbacks}
 
 boundary conditions

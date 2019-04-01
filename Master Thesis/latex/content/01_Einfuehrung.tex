@@ -6,11 +6,11 @@ Mobile application and digital media usage is still on the rise\cite{perkins_int
 ''Apps'' are one of many possible ways to interact with customers and consumers.
 A web appearance on social media or a dedicated web page can also fulfill these needs.
 
-A mobile application can enable user specific features without logging in, because the user can be identified with an identification token, that is generated, while the user installs the app.
+A mobile application can enable user specific features without logging in, because the user can be identified by the installed instance, that is unique for every user.
 It is possible to activate special features like geo-fencing, push notifications or local data storage, that is synchronized with the platform specific cloud services (e.g. Apple iCloud or Google Drive), without any custom user authentication.
 
 A mobile app is integrated more deeply into the device, than a web app.
-However, web browsers already support a lot of the features by now, that originally were only available to native apps\footnote{E. g. Local storage, push notifications}.
+However, web browsers already support a lot of the features by now, that originally were only available to native apps\footnote{E. g. Local storage, push notifications. These features are now part of many browser's APIs.}.
 The current development indicates, that the differences will be further eliminated by the browser vendors.
 
 \section{Problem definition}
@@ -27,7 +27,7 @@ Developers need deep system knowledge to develop the apps.
 Every change has to go through one of each platform experts, so development is expensive.
 
 An example for a change, that all apps should implement is the display notch.
-It causes the screen to extend to the edge of the display.
+It allows the screen to extend to the edge of the display.
 However some of the screen is cut out to make room for sensors and the camera.
 
 \begin{figure}[h]
@@ -46,18 +46,20 @@ Developers have to go though every screen and correct the view.
 
 To be able to deliver the full mobile application experience, the app has to be native.
 This will change, when all of the phone's hardware interface is exposed to the web browser and user interface performance is better.
-But for now, the only way to use these features and be good on battery life and data usage is by providing a native app, that is written in the native language and uses features, directly provided by the phone vendors.
+But for now, the only way to use these features and be good on battery life and data usage, is by providing a native app, that is written in the native language and uses features, directly provided by the phone vendors.
 
 Web app wrapper like ''ionic'' are able to use these features and provide their own interface to the web app.
-In this way, a web app can in fact use restricted components like push notifications and beacons.
+In this way, a web app can use restricted components like push notifications and beacons.
 
 With this approach, every new app still has to be developed and old ones have to be maintained individually.
 In addition, it involves the dependence on third party framework vendors. 
 Building apps with ionic creates a massive list of dependencies: ionic, angular, npm and nodejs.
-Native apps have the ability to reduce reliance, by only using native libraries, which are very comprehensive by default.
+New operating features have to be implemented by the framework maintainers, which can cause massive delays and could completely prevent the implementation of new features.
+Native apps have the ability to reduce dependence, by only using native libraries, which are very comprehensive by default.
+New features are available immediately, since the native frameworks introduce them.
 
 To be able to create many apps with little effort, a model driven approach can be considered.
-A well abstracted model can have the ability to be easy to understand by users and the platforms can bring their respected implementation in, so any app looks and feels native.
+A well abstracted model can have the ability to be easy to understand by developers and the platforms can bring their respected implementation in, so any app looks and feels native.
 A service can deliver pre-rendered sub-models, so that complex client workload can be moved to the server.
 
 Existing apps are easy to maintain, because there is only one code base per platform.
@@ -71,6 +73,7 @@ The goal is, to be able to configure new apps in one day, together with the cust
 This thesis will not describe the development experience nor the initial expense of the project.
 Neither will this thesis evaluate financial aspects and at which point, the project is worth the development costs.
 The domain examination will be narrowed down to the two main ones, mobile phones and digital signage.
+Relevant aspects of model driven software development and interpreters are examined and applied to the discussed system.
 
 
 \section{Structure}
@@ -92,7 +95,7 @@ Also, an outlook will be given, where additional topics, like hybrid approaches,
 To be able to evaluate the interpreter, requirements are listed and described.
 These will be used to validate the implementation.
 
-Since the implementation for the iOS platform has been re-engineered to meet current demands, the problems with the old version will be outlined and compared to the new one.
+Since the implementation for the iOS platform has been re-engineered to meet current demands, the issues with the old version will be outlined and compared to the new one.
 
 
 \subsection{Goals}

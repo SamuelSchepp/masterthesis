@@ -443,7 +443,7 @@ Using jQuery to manipulate or build \ac{HTML} content is also a form of \ac{API}
 
 Figure \ref{fig:apibasedgenerator} illustrates the infrastructure of an \ac{API}-based code generator.
 The darker rectangles (\ac{API} and \ac{AST}) represent components, that are independent to the domain, but are directly derived from the target platform.
-That means, that existing solutions\footnote{E. g. CodeDOM for .NET Applications \url{https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/using-the-codedom}} can be used.
+That means, that pre-existing solutions\footnote{E. g. CodeDOM for .NET Applications \url{https://docs.microsoft.com/en-us/dotnet/framework/reflection-and-codedom/using-the-codedom}} can be used.
 
 This approach is suitable for large projects, that need a lot of generated code.
 If most of the generated code is boilerplate code, which has only few injected lines, templates might be the better approach.
@@ -455,13 +455,13 @@ It is possible to mix these approaches by generating parts independently.
 \section {Model Interpreters}
 
 Instead of generating code, it is possible to run the model directly.
-The model is parsed by an interpreter, which uses the meta model to define an \ac{AST}, which is the internal representation of a model.
-This representation can now be transformed be improve handling.
+The model is parsed by an interpreter, that uses the meta model to define an \ac{AST}, which is the internal representation of a model.
+This representation can now be transformed to improve handling.
 It is possible to generate internal code out of the model which then is interpreted.
-Examples for that are Java or JavaScript, which are converted to byte code that is then ran.
+Examples for that are Java or JavaScript, which are converted to byte code that is then ran in a virtual machine.
 The actual interpreter of the byte code is independent to the original \ac{AST}, so a more modular infrastructure is possible.
-Another approach is to run directly in the internal data structure.
-This methods seems easier at first, but ties the run time directly on the \ac{AST} which makes maintaining and introducing changes harder.
+Another approach is to run directly on the internal data structure.
+This methods seems easier at first, but ties the run time directly to the \ac{AST} which makes maintaining and introducing changes harder.
 
 \begin{figure}[h]
 	\centering{
@@ -471,15 +471,16 @@ This methods seems easier at first, but ties the run time directly on the \ac{AS
 	\label{fig:interpreter}
 \end{figure}
 
-Figure \ref{fig:interpreter} illustrates a typical code interpreter that is used for \textit{JavaScript} or \textit{Python}.
+Figure \ref{fig:interpreter} illustrates a typical interpreter that is used for \textit{JavaScript} or \textit{Python}.
 A model interpreter can use a similar approach, by transforming a model into a domain specific byte code or traversing the \ac{AST} directly.
 To decouple the meta model from the interpreter, a intermediate data structure can be created by transforming the model.
 That way, a more modular infrastructure is achievable.
-Also, the transformed data structure can be optimized for speed by evaluating it's internal relations and constraints.
+Also, the transformed data structure can be optimized for speed by evaluating it's internal relations and constraints before it's is run.
+This will improve execution speed of repeating code like recursion or iteration.
 The approach of how to run the model is then directly dependent on the structure and therefore the domain.
 Also, the different approaches can each have specific levels of abstractions.
 The \textit{V8 JavaScript} engine runs on a very low level of abstraction, since assembly-like byte code is interpreted.
-The interpreter that is discussed in future sections, \ac{mos}, performs on a higher level, since it is performing user oriented tasks like sending \ac{HTTP} requests or displaying \ac{GUI} elements with data.
+The interpreter that is discussed in future sections, \ac{mos}, performs on a higher level, since it is executing user oriented tasks like sending \ac{HTTP} requests or displaying \ac{GUI} elements with data.
 
 An interpreter is dynamic and can swap or extends the current model.
 In the domain of web pages, JavaScript can be loaded as needed without recompilation.
