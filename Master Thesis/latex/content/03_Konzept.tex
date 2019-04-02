@@ -25,7 +25,7 @@ That's why, only the meta model and the implementation are considered.
 Since this chapter is about the concept of the \ac{mos} interpreter, the discussion on the requirements of the implementation are found in chapter \ref{chap:implementation}.
 
 The following paragraph lists the functional requirements to the meta model.
-Those are aspects that have significantly influenced the design decisions.
+Those are aspects that have significantly influenced design choices.
 
 \begin{enumerate}
 	\item \textbf{Separation into independent sub-models}
@@ -54,7 +54,7 @@ Those are aspects that have significantly influenced the design decisions.
 	An action can perform common tasks like uploading data, setting layer values, or triggering fetches. Action can be fired by clicking on a layer or are triggered by other actions, which take the result of the previous action as context data to use.
 \end{enumerate}
 
-The non-functional requirements are trivial, since they are primarily relevant to the client implementation.
+The following paragraph lists the non-functional requirements.
 
 \begin{enumerate}
 	\item \textbf{Easy to understand}
@@ -75,6 +75,26 @@ The non-functional requirements are trivial, since they are primarily relevant t
 	Adding new functionality has to be added without any old interpreters to fail on new models and a new interpreter to fail on old models.
 \end{enumerate}
 
+All of the above functional and non-functional requirements are developed both with an bottom-up and a top-down approach.
+Since the interpreter contains most of the business logic and implicitly defines the meta model, it is one of the key aspects.
+That is why, the meta model is structured to be parsed and interpreted in a simple and direct way.
+In the same way, the usability of the models are also considered, so that both sides are balanced.
+
+
+\section{Model Syntax}
+
+To meet the majority of the non-functional requirements, \ac{JSON} is used to define the model.
+It allows the client to parse common structures and define optional and default values.
+
+The model is divided into sub-models.
+The first model is called root node and is loaded by the interpreter on the first app start.
+The \ac{URL} to the root node is compiled into the app.
+A node defines some of the meta data, static data, a starting layout reference and events.
+The meta data contains an \ac{URL} that is used by the client to synchronize layouts, templates and database definitions.
+It is requested regularly and provides hashes for the items so only new version need to download.
+Database definitions then also contains an \ac{URL} that are requested if needed to synchronize actual data.
+\ac{HTTP} techniques like ''etag'', ''modified-since'' or delta updates are used to optimize the update process.
+
 
 \subsection{Drawbacks}
 
@@ -83,3 +103,24 @@ boundary conditions
 limits to development of app contents (app is out, but the customer needs more functionality, which is not possible: incomprehensible reasons for limits.)
 
 \subsection{Iterative Development}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
