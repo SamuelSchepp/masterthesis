@@ -31,15 +31,35 @@ Those are aspects that have significantly influenced design choices.
 	\item \textbf{Separation into independent sub-models}
 	
 	An app loads a root node, which then can navigate to a different node, or show it's preview.
+	Every node is theoretically independent and can be used as root node.
+	To enable interaction between nodes, an action that displays a new node can inject additional data into the node.
+	An example is a master-detail-view, which is a common pattern in application design.
+	A master view is a list of all objects.
+	It knows everything and is connected to the database.
+	When the user clicks on one of the objects, the detail view is presented by passing either the database ID or the whole object as parameter.
+	The same approach is possible with nodes, which results in the detail view node not being independent to the master view node.
 	
 	\item \textbf{Fully customizable layouts}
 	
 	A layout can be defined by arranging different kinds of layers by configuring layout constraints. Also, native navigation bar, tab bars and side menus can be set independent to the layout.
+	All of the common layer types are supported like text, image and color.
+	Those layers have layer parameters that make them customizable.
+	Position and size can be defined with constraints, by binding the edges of a layer to the edges of other layers or the superior container.
+	The binding can be modified with additional margins so that dynamic and portable layouts can be defined.
+	The system is inspired by Apple's Auto Layout\footnote{\url{https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/index.html}}.
 	
 	\item \textbf{Reactive behavior}
 	
-	Everything that is depended on something else needs to update on changes. For example: If a layer is depended on an SQL query and the corresponding tables change their contents, the layer needs to update itself with the new data.
+	Everything that is depended on something else needs to update on changes.
+	For example: If a layer is depended on an \ac{SQL} query and the corresponding tables change their contents, the layer needs to update itself with the new data.
 	Another example are layers that have a form data key and thereupon synchronize their contents with the view's form.
+	Layers can also have a setting data key, which enables a layer to synchronize it's value with a field in the database.
+	This makes it possible to use the value in \ac{SQL} queries, apply it to templates or uploading data to a service.
+	
+	An example that enables a React\footnote{Reactive and functional UI framework. \url{https://reactjs.org/}}-like behavior is the \textit{layout layer}.
+	It's parameters are an \ac{SQL} query, a layout name and a template name.
+	The layer runs the query and applies the data to the template, and the template to the layout and displays the layout.
+	If one of the tables that are selected in the query changes, the \textit{layout layer} re-renders itself.
 	
 	\item \textbf{Separation of data, templates and layouts}
 	
@@ -47,7 +67,7 @@ Those are aspects that have significantly influenced design choices.
 	
 	\item \textbf{Database definitions}
 	
-	An SQL database can be designed, that is in sync with a data source.
+	An \ac{SQL} database can be designed, that is in sync with a data source.
 	
 	\item \textbf{Actions}
 	
@@ -91,9 +111,12 @@ The first model is called root node and is loaded by the interpreter on the firs
 The \ac{URL} to the root node is compiled into the app.
 A node defines some of the meta data, static data, a starting layout reference and events.
 The meta data contains an \ac{URL} that is used by the client to synchronize layouts, templates and database definitions.
-It is requested regularly and provides hashes for the items so only new version need to download.
-Database definitions then also contains an \ac{URL} that are requested if needed to synchronize actual data.
-\ac{HTTP} techniques like ''etag'', ''modified-since'' or delta updates are used to optimize the update process.
+Database definitions also contain \acp{URL} that are requested if needed to synchronize actual content data.
+
+The client implementation is able to optimize the data usage by only reloading data that has changed.
+\ac{HTTP} techniques like ''etag''\footnote{Entity Tag, a unique identifier assigned by the web server to specify a resource and it's version.}, ''modified-since''\footnote{A \ac{HTTP} header containing a timestamp.} or delta updates\footnote{Requesting a resource by \textit{/api/file.60.json} will deliver the changes of the last 60 seconds.} are used to optimize the update process.
+The model's job is to interconnect web services and the client.
+Optimizations can be implemented without changing the model, since they are not coded into the model in any way.
 
 
 \subsection{Drawbacks}
