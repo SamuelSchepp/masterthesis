@@ -17,7 +17,7 @@ Since the functional scope is already defined and all of the feature are impleme
 The App can be tested by the customer directly, without the need to compile an custom app.
 Common tasks like downloading data from a web source, forms and user interaction are configured on a high level, so the customer is able to understand aspects of the app.
 
-\subsection{Requirements}
+\subsection{Functional Requirements}
 
 To be able to validate the meta model and an implementation, requirements have to be defined.
 A concrete model also has requirements, which are application specific however.
@@ -26,6 +26,8 @@ Since this chapter is about the concept of the \ac{mos} interpreter, the discuss
 
 The following paragraph lists the functional requirements to the meta model.
 Those are aspects that have significantly influenced design choices.
+All of the listed requirements are high level ones, that reflect the paradigm.
+However, the number of actual concrete requirements would be too high to be presented here.
 
 \begin{enumerate}
 	\item \textbf{Separation into independent sub-models}
@@ -46,7 +48,7 @@ Those are aspects that have significantly influenced design choices.
 	Those layers have layer parameters that make them customizable.
 	Position and size can be defined with constraints, by binding the edges of a layer to the edges of other layers or the superior container.
 	The binding can be modified with additional margins so that dynamic and portable layouts can be defined.
-	The system is inspired by Apple's Auto Layout\footnote{\url{https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/index.html}}.
+	The system is inspired by Apple's Auto Layout\footnote{Auto Layout calculates absolute positions and sizes based on constraints between layers. \url{https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/index.html}}.
 	
 	\item \textbf{Reactive behavior}
 	
@@ -64,15 +66,24 @@ Those are aspects that have significantly influenced design choices.
 	\item \textbf{Separation of data, templates and layouts}
 	
 	A template defines layer parameters by taking a dictionary of data and applies it to itself. The result can then be applied to a layout.
+	A template overrides layer parameters.
+	String literals inside the template can contain mustache\footnote{The string \textit{\{\{data.field\}\}} is replaced with the corresponding value from an object.\url{https://mustache.github.io/}} handles, which are evaluated against the data.
+	This allows reuse components and enables dynamic decision making during run time.
+	A layout-layer can dynamically load a sub-layout and apply a template.
+	Since the name of the template is part of the layout-layer's parameters, it can be evaluated on run time and be modified by a mustache syntax.
 	
 	\item \textbf{Database definitions}
 	
 	An \ac{SQL} database can be designed, that is in sync with a data source.
+	Fetch intervals, queries and structure can be defined.
+	Column based queries for inserting data from a data source enables a structure, that is different from the source.
 	
 	\item \textbf{Actions}
 	
 	An action can perform common tasks like uploading data, setting layer values, or triggering fetches. Action can be fired by clicking on a layer or are triggered by other actions, which take the result of the previous action as context data to use.
 \end{enumerate}
+
+\subsection{Non-Functional Requirements}
 
 The following paragraph lists the non-functional requirements.
 
@@ -95,7 +106,7 @@ The following paragraph lists the non-functional requirements.
 	Adding new functionality has to be added without any old interpreters to fail on new models and a new interpreter to fail on old models.
 \end{enumerate}
 
-All of the above functional and non-functional requirements are developed both with an bottom-up and a top-down approach.
+All of the above functional and non-functional requirements are developed both with a bottom-up and a top-down approach.
 Since the interpreter contains most of the business logic and implicitly defines the meta model, it is one of the key aspects.
 That is why, the meta model is structured to be parsed and interpreted in a simple and direct way.
 In the same way, the usability of the models are also considered, so that both sides are balanced.
@@ -114,7 +125,7 @@ The meta data contains an \ac{URL} that is used by the client to synchronize lay
 Database definitions also contain \acp{URL} that are requested if needed to synchronize actual content data.
 
 The client implementation is able to optimize the data usage by only reloading data that has changed.
-\ac{HTTP} techniques like ''etag''\footnote{Entity Tag, a unique identifier assigned by the web server to specify a resource and it's version.}, ''modified-since''\footnote{A \ac{HTTP} header containing a timestamp.} or delta updates\footnote{Requesting a resource by \textit{/api/file.60.json} will deliver the changes of the last 60 seconds.} are used to optimize the update process.
+\ac{HTTP} techniques like ''etag''\footnote{Entity Tag, a unique identifier assigned by the web server to specify a resource and it's version.}, ''modified-since''\footnote{A \ac{HTTP} header containing a timestamp.} or delta updates\footnote{Requesting a resource by \textit{/api/file.60.json} will deliver the changes of the last 60 minutes.} are used to optimize the update process.
 The model's job is to interconnect web services and the client.
 Optimizations can be implemented without changing the model, since they are not coded into the model in any way.
 

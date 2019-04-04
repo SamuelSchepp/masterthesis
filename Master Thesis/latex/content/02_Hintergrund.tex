@@ -220,14 +220,11 @@ In case of code generators, this code would be part of the templates.
 In theory, it is now possible to develop any app, that fits into the domain, by only defining the model and the individual code.
 Extensions of the model's capabilities might need to be reflected in the platform or domain code.
 
-
-\section {Code Generators}
+\subsection{Meta Programming}
 
 Now that there is a model of an application, a concrete implementation has to be created from the model.
 Code generators can take the model and generate a software system, that is an instance if the model.
 Another approach are model interpreters, which execute the model directly, similar to a virtual machine.
-
-\subsection{Meta Programming}
 
 Code generation enables advantages, that are available to the generated code.
 By using meta programming more concepts can be expressed than the target language allows.
@@ -264,7 +261,7 @@ The higher the abstraction level of the meta model, the more platforms can be su
 The static context analysis is independent to the platform and should not integrate platform specific restrictions.
 A transition to another platform or supporting multiple platforms at once is possible and is one of the core strengths of \ac{MDD}.
 
-\subsection{Generation}
+\subsection{Code Generation}
 \label{sec:generation}
 
 Now that a model exists, code can be generated out of it.
