@@ -50,7 +50,7 @@ However, the number of actual concrete requirements would be too high to be pres
 	The binding can be modified with additional margins so that dynamic and portable layouts can be defined.
 	The system is inspired by Apple's Auto Layout\footnote{Auto Layout calculates absolute positions and sizes based on constraints between layers. \url{https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/index.html}}.
 	
-	\item \textbf{Reactive behavior}
+	\item \textbf{Declarative and reactive behavior}
 	
 	Everything that is depended on something else needs to update on changes.
 	For example: If a layer is depended on an \ac{SQL} query and the corresponding tables change their contents, the layer needs to update itself with the new data.
@@ -90,7 +90,8 @@ The following paragraph lists the non-functional requirements.
 \begin{enumerate}
 	\item \textbf{Easy to understand}
 	
-	Existing models are easy to understand. Names are clear and there is no room for interpretation.
+	Existing models are easy to understand.
+	Names are clear and there is no room for interpretation.
 	
 	\item \textbf{No boilerplate code}
 	
@@ -121,7 +122,7 @@ The model is divided into sub-models.
 The first model is called root node and is loaded by the interpreter on the first app start.
 The \ac{URL} to the root node is compiled into the app.
 A node defines some of the meta data, static data, a starting layout reference and events.
-The meta data contains an \ac{URL} that is used by the client to synchronize layouts, templates and database definitions.
+The meta data contains an \ac{URL}, called \textit{Update URL}, that is used by the client to synchronize layouts, templates and database definitions.
 Database definitions also contain \acp{URL} that are requested if needed to synchronize actual content data.
 
 The client implementation is able to optimize the data usage by only reloading data that has changed.
@@ -132,14 +133,28 @@ Optimizations can be implemented without changing the model, since they are not 
 
 \subsection{Drawbacks}
 
-\ac{JSON} as a model syntax leaves a lot of room for interpretation, since the semantic and syntax are strictly separated. A \ac{DSL} that is parsed by an compiler and has semantic integrated into the compilation or parsing process.
+\ac{JSON} as a model syntax leaves a lot of room for interpretation, since the semantic and syntax are strictly separated. A \ac{DSL} that is parsed by an compiler has semantics integrated into the compilation or parsing process, which allows finding errors much earlier.
 A common example is the parsing of a expression tree, which uses a top down parser, that parses parentheses.
 Depending on how the parser is constructed, it allows incorrect parentheses or rejects them because of a parser error.
+Defining the same expression as a \ac{JSON} object 
 
+This issue can be fixed by using \ac{JSON} Schema\footnote{\url{https://json-schema.org/}}.
+A schema is a \ac{JSON} object which describes the syntax of given \ac{JSON} data.
+It is possible to define required keys, possible values and other rules, that could help the model creator to find error faster.
+Also, a static context analysis could be used to catch even more errors.
+There are many occurrences, where layer, query and other objects are referenced.
+Those could be checked statically or auto-completed in the editor.
+At the moment, these tools are not implemented and typical errors occur regularly.
+The problem is, that those tools take a lot of time to develop, while they do not add any new functionality to the model or the interpreter.
 
-boundary conditions
+The systems limits it's functionality and new features are hard to implement, since they have to be designed to work together with all of the existing features.
+This means, that the reason of why something is not possible to implement at the moment are incomprehensive and the customer cannot understand, why new features are much more expensive.
+An example would be custom user interface animations.
+While it is easy to hard-code some animations to specific elements in a classical app, it is much harder to define a representation for the model.
+That is because animations then have to be valid on any scenario.
+If an animation looks weird, there has to be a decision if the model is badly designed, or there is a error in the client code.
+Also, the level of abstraction has to be defined so all of the future animations can be expressed and the way of defining the animation must be compatible with the different platforms.
 
-limits to development of app contents (app is out, but the customer needs more functionality, which is not possible: incomprehensible reasons for limits.)
 
 \subsection{Iterative Development}
 
