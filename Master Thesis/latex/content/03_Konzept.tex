@@ -159,6 +159,30 @@ Also, the level of abstraction has to be defined so all of the future animations
 \subsection{Iterative Development}
 
 
+The functionality of the model and it's interpreter is constantly evolving.
+Layers and actions can be extended easily and new features can be added really fast.
+The development method that is used in the example of mos is an agile iterative development approach.
+A new feature needs to be implemented into the platforms and a model has to be defined, that demonstrates it's aspects.
+
+Most of the time, new features emerge because an app that is in development needs a feature, that is currently unavailable.
+The development of new functionality is avoided by first trying to implement the app with the existing syntax.
+For example, instead of developing highly specialized layers, the existing layers can be configured to build a new one.
+This approach is used by \ac{UI} frameworks to reuse existing code or by \ac{RISC} processors to reduce the chip's complexity.
+
+The syntax is developed top-down and bottom-up.
+To be able to have a systematic approach to model driven development, the simplicity of the syntax is one of the key non-functional requirements.
+On the other hand, a simple interpreter is also important, so some syntax elements are built to fit the current interpreter implementations.
+That is why, the system is developed by considering all levels and iterative development is used.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=\linewidth]{images/concept/iterativedevelopment.pdf}
+	}
+	\caption{Iterative development.}
+	\label{fig:iterativedevelopment}
+\end{figure}
+
+
 
 
 
