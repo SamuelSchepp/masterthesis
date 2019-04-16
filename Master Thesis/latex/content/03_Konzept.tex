@@ -80,7 +80,9 @@ However, the number of actual concrete requirements would be too high to be pres
 	
 	\item \textbf{Actions}
 	
-	An action can perform common tasks like uploading data, setting layer values, or triggering fetches. Actions can be fired by clicking on a layer or are triggered by other actions, which take the result of the previous action as context data to use.
+	An action can perform common tasks like uploading data, setting layer values, or triggering fetches.
+	Actions can be fired by clicking on a layer or are triggered by other actions, which take the result of the previous action as context data to use.
+	The action's parameters can be customized by using handlebar notation and injecting context specific data into the actions.
 \end{enumerate}
 
 \subsection{Non-Functional Requirements}
@@ -92,19 +94,24 @@ The following paragraph lists the non-functional requirements.
 	
 	Existing models are easy to understand.
 	Names are clear and there is no room for interpretation.
+	A model developer has to be able to understand an unknown app's structure and perform changes.
 	
 	\item \textbf{No boilerplate code}
 	
 	All of the configuration contains highly concentrated information and no boiler plate code has to be defined.
+	Similar configurations can be combined to one reusable resource\footnote{Layouts, Templates and Nodes can be reused.}.
 	
 	\item \textbf{Easy to parse by an interpreter}
 	
 	The model is easy to parse and is encoded in a common format.
 	Validators can check for simple errors.
+	While parsing performance is not the issue, the interpreter's code base needs to be as simple as possible to avoid errors and to be maintainable.
 	
-	\item \textbf{Backward compatibility}
+	\item \textbf{Backward and future compatibility}
 	
 	Adding new functionality has to be added without any old interpreters to fail on new models and a new interpreter to fail on old models.
+	Also, every new feature as to be developed with the future in mind.
+	The feature has to add important value to the models capabilities and has to fit into the design principles of the current feature set.
 \end{enumerate}
 
 All of the above functional and non-functional requirements are developed both with a bottom-up and a top-down approach.
@@ -133,7 +140,8 @@ Optimizations can be implemented without changing the model, since they are not 
 
 \subsection{Drawbacks}
 
-\ac{JSON} as a model syntax leaves a lot of room for interpretation, since the semantic and syntax are strictly separated. A \ac{DSL} that is parsed by an compiler has semantics integrated into the compilation or parsing process, which allows finding errors much earlier.
+\ac{JSON} as a model syntax leaves a lot of room for interpretation, since the semantic and syntax are strictly separated.
+A \ac{DSL} that is parsed by an compiler has semantics integrated into the compilation or parsing process, which allows finding errors much earlier.
 A common example is the parsing of a expression tree, which uses a top down parser, that parses parentheses.
 Depending on how the parser is constructed, it allows incorrect parentheses or rejects them because of a parser error.
 Defining the same expression as a \ac{JSON} object 
