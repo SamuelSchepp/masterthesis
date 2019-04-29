@@ -479,9 +479,10 @@ Also, the different approaches can each have specific levels of abstractions.
 The \textit{V8 JavaScript} engine runs on a very low level of abstraction, since assembly-like byte code is interpreted.
 The interpreter that is discussed in future sections, \ac{mos}, performs on a higher level, since it is executing user oriented tasks like sending \ac{HTTP} requests or displaying \ac{GUI} elements with data.
 
-An interpreter is dynamic and can swap or extends the current model.
-In the domain of web pages, JavaScript can be loaded as needed without recompilation.
+An interpreter is dynamic and can swap or extend the current model.
+In the domain of web pages, JavaScript can be loaded on demand without recompilation.
 In the domain of mobile applications, the model can be changed or replaced without updating the app itself.
+Models only have to be compatible on the text syntax level.
 
 
 

@@ -163,7 +163,7 @@ That is because animations then have to be valid on any scenario.
 If an animation looks weird, there has to be a decision if the model is badly designed, or there is a error in the client code.
 Also, the level of abstraction has to be defined so all of the future animations can be expressed and the way of defining the animation must be compatible with the different platforms.
 
-
+%
 \subsection{Iterative Development}
 
 
@@ -186,18 +186,65 @@ That is why, the system is developed by considering all levels and iterative dev
 	\centering{
 		\includegraphics[width=0.7\linewidth]{images/concept/iterativedevelopment.pdf}
 	}
-	\caption{Iterative development.}
+	\caption{Iterative development}
 	\label{fig:iterativedevelopment}
 \end{figure}
 
+Figure \ref{fig:iterativedevelopment} shows the informal development approach that is used to develop a model.
+The method is highly agile and team oriented, since multiple code bases have to be managed by different kind of people.
+Service-side services, the different platform interpreters and the model itself have to be developed in parallel.
+
+\section{Additional Components}
+
+In addition to the interpreter and a model, there are additional artifacts and software components, that are needed to support a mobile application software platform.
+
+To build an instance of the interpreter app, additional compile time data has to be integrated.
+To automate this process, the compile time configuration is used to create an app from a template.
+Figure \ref{fig:artifactsprocess} shows the three states through which the development artifacts pass, until a usable app is generated.
+The following subsection will describe the components in detail.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=0.8\linewidth]{images/concept/artifacts.pdf}
+	}
+	\caption{Compilation of development artifacts for \ac{mos}}
+	\label{fig:artifactsprocess}
+\end{figure}
+
+\subsection{App Configuration}
+
+Mobile applications for Android and iOS need to compile application specific information into the app.
+This meta data can not be loaded in run time, because the operating system needs them to manage the apps.
+Examples are the build number, version string, interface orientations and the root \ac{URL}.
+This configuration is not fully platform independent, since the different systems require different information.
+In the case of iOS, the development tool Xcode, which is required to build iOS apps will not build an app until the needed meta data is provided.
+
+The \textit{App Config} also contains media like the app icon and the splash screen image.
+Also, the \textit{Pre-Load Bundle} is included, which is a directory and contains images and nodes.
+This directory is used to load data from disk instead of the network.
+
+
+\subsection{App Template}
+
+The \textit{App Template} is a template file structure that is used to create a run-able app.
+On its own, the \textit{App Template} is an incomplete app container that contains handlebars placeholder.
+A grunt task takes the \textit{App Config} and replaces the placeholders.
+This way, an app container is created, which is able to compile and ready to be submitted to the store.
+A continuous integration environment should be able to build all apps, given a list of all app names.
 
 
 
+\section{Model Run Time}
 
-
-
-
-
+The model is interpreted by the interpreter, which lets the model run inside a virtual environment.
+The \ac{mos} run time enables declarative model design and handles the data flow.
+Similar to a virtual machine, the model can access subsystems and interfaces that are normally not available in the target platform.
+For example, a custom event system handles app wide events and actions.
+Also it provides the interface to the custom layers.
+Those are layers in the view hierarchy that have more functionality then the default ones.
+The biggest aspect is the calculation of changes.
+Since relations are defined declarative, changes to the data have to update and re-layout the layer accordingly if needed.
+Also the update of database data and the scheme is a big part of the system.
 
 
 
