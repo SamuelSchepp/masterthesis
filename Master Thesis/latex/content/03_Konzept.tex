@@ -17,7 +17,7 @@ Since the functional scope is already defined and all of the feature are impleme
 The App can be tested by the customer directly, without the need to compile an custom app.
 Common tasks like downloading data from a web source, forms and user interaction are configured on a high level, so the customer is able to understand aspects of the app.
 
-\subsection{Functional Requirements}
+\subsection{Functional Model Requirements}
 
 To be able to validate the meta model and an implementation, requirements have to be defined.
 A concrete model also has requirements, which are application specific however.
@@ -85,7 +85,7 @@ However, the number of actual concrete requirements would be too high to be pres
 	The action's parameters can be customized by using handlebar notation and injecting context specific data into the actions.
 \end{enumerate}
 
-\subsection{Non-Functional Requirements}
+\subsection{Non-Functional Model Requirements}
 
 The following paragraph lists the non-functional requirements.
 
@@ -123,7 +123,8 @@ In the same way, the usability of the models are also considered, so that both s
 \section{Model Syntax}
 
 To meet the majority of the non-functional requirements, \ac{JSON} is used to define the model.
-It allows the client to parse common structures and define optional and default values.
+It allows the client to parse common structures and define optional and default values in an maintainable way.
+Also, since the model uses declarative paradigms, C-like imperative language are not suitable.
 
 The model is divided into sub-models.
 The first model is called root node and is loaded by the interpreter on the first app start.
@@ -132,10 +133,15 @@ A node defines some of the meta data, static data, a starting layout reference a
 The meta data contains an \ac{URL}, called \textit{Update URL}, that is used by the client to synchronize layouts, templates and database definitions.
 Database definitions also contain \acp{URL} that are requested if needed to synchronize actual content data.
 
+Next to node definitions, template, layout and database configuration files are part of the model.
+The requesting the root node from a server will also append the additional files, that are cached by the client.
+
 The client implementation is able to optimize the data usage by only reloading data that has changed.
 \ac{HTTP} techniques like ''etag''\footnote{Entity Tag, a unique identifier assigned by the web server to specify a resource and it's version.}, ''modified-since''\footnote{A \ac{HTTP} header containing a timestamp.} or delta updates\footnote{Requesting a resource by \textit{/api/file.60.json} will deliver the changes of the last 60 minutes.} are used to optimize the update process.
 The model's job is to interconnect web services and the client.
 Optimizations can be implemented without changing the model, since they are not coded into the model in any way.
+
+
 
 
 \subsection{Drawbacks}
@@ -232,11 +238,16 @@ A grunt task takes the \textit{App Config} and replaces the placeholders.
 This way, an app container is created, which is able to compile and ready to be submitted to the store.
 A continuous integration environment should be able to build all apps, given a list of all app names.
 
+\subsection{App Bundle}
 
+The app bundle is a full-fledged application, that is an instance of a specific app model.
+It is the result of compiling the \textit{App Config}, the \textit{App Template} and the \textit{Interpreter Framework}.
+It does not contain the model itself, because it is loaded from the web the first time the user opens the app.
+This way, the model can be changed on the fly, while the app itself is still waiting for review or ready to release.
 
 \section{Model Run Time}
 
-The model is interpreted by the interpreter, which lets the model run inside a virtual environment.
+The model is interpreted by the client, which lets the model run inside a virtual environment.
 The \ac{mos} run time enables declarative model design and handles the data flow.
 Similar to a virtual machine, the model can access subsystems and interfaces that are normally not available in the target platform.
 For example, a custom event system handles app wide events and actions.
@@ -245,6 +256,23 @@ Those are layers in the view hierarchy that have more functionality then the def
 The biggest aspect is the calculation of changes.
 Since relations are defined declarative, changes to the data have to update and re-layout the layer accordingly if needed.
 Also the update of database data and the scheme is a big part of the system.
+
+\section{Functional Interpreter Requirements}
+
+\begin{enumerate}
+	\item \textbf{Reflects changes to the model}
+	
+	After the configuration changes, the interpreter app loads the changes and updates it's behavior. This includes database configurations, layouts and caches.
+	
+	\item \textbf{Offline capable}
+	
+	After the first launch that requires an internet connection, the app should work completely offline.
+\end{enumerate}
+
+\section{Non-Functional Interpreter Requirements}
+
+
+
 
 
 
