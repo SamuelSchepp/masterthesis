@@ -259,6 +259,11 @@ Also the update of database data and the scheme is a big part of the system.
 
 \section{Functional Interpreter Requirements}
 
+The following section will list the functional requirements of the interpreter.
+The functionality of the platform that is described by the model is omitted due to its comprehensiveness.
+Instead other requirements will be listed, that reflect some of the design choices of the platform.
+The behaviors, that are discussed per requirement are not expressed by the model, but included in the interpreter.
+
 \begin{enumerate}
 	\item \textbf{Reflects changes to the model}
 	
@@ -266,10 +271,79 @@ Also the update of database data and the scheme is a big part of the system.
 	
 	\item \textbf{Offline capable}
 	
-	After the first launch that requires an internet connection, the app should work completely offline.
+	All of the content that has been displayed in the app must be cached and available for offline use.
+	This includes nodes, images, layouts and templates.
+	
+	\item \textbf{Cache-first policy}
+	
+	All nodes are loaded from cache.
+	If a node is not available, the node will be downloaded from the network.
+	If the not is available but is expired, the new version will be downloaded.
+	Until the download finishes, the old node will be displayed.
+	
+	\item \textbf{Clear cache and data}
+	
+	The user must be able to clear the cache.
+	This way, some troubleshooting and customer support is possible.
+	It may happen that a faulty node is cached that is not compatible with the other nodes, or is not configured with a correct cache lifetime.
+	To prevent the need of re-install, a clear cache action is available that the user can execute himself.
+	
+	\item \textbf{Poor configurations lead to fall-backs}
+	
+	Dynamic model errors must lead to safe fall-back behaviors.
+	Under no circumstances should the app crash or display incomprehensible error messages.
+	Since there is no static model analysis, the app must be prepared with default values.
 \end{enumerate}
 
+Some of the special behavior of the interpreter is available to the model to be described.
+The caching policies of a node can be configured in detail.
+Also, the cache can be invalidated on the basis of a regular expression.
+Those are a few examples of the model and the interpreter 
+
 \section{Non-Functional Interpreter Requirements}
+
+The following section will list non-functional requirements of the interpreter.
+
+\begin{enumerate}
+	\item \textbf{Low battery usage}
+	
+	Using the app must feel as lightweight as possible.
+	That is why, the battery usage must be kept low.
+	Since all of the modern mobile operating system have battery management tool integrated into the system, users can see which apps use a lot of battery.
+	If the app is listed there, the probability is high that the user will consider deleting it.
+	
+	\item \textbf{Fast app start}
+	
+	The must start as fast as possible.
+	Especially the first start is important, because it's the first impression that a user gets from the app.
+	Because of a strict cache policy, other starts are faster anyway.
+	
+	\item \textbf{High \ac{UI} and animation performance}
+	
+	The \ac{UI} should always be responsive and adequate loading indicators must be used.
+	
+	\item \textbf{Low network usage}
+	
+	The app should not load redundant data or load the same data multiple times.
+	
+	\item \textbf{Small download size}
+	
+	The size of the app at the time the user downloads it from the app store must be as small as possible.
+	
+	\item \textbf{Small app size on disk}
+	
+	The app should not accumulate to much data, while in use.
+	New cache entries must always override old ones.
+	
+	
+\end{enumerate}
+
+
+
+
+
+
+
 
 
 
