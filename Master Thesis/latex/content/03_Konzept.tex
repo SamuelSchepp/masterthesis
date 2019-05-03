@@ -170,7 +170,7 @@ If an animation looks weird, there has to be a decision if the model is badly de
 Also, the level of abstraction has to be defined so all of the future animations can be expressed and the way of defining the animation must be compatible with the different platforms.
 
 %
-\subsection{Iterative Development}
+\subsection{Iterative Development Process}
 
 
 The functionality of the model and it's interpreter is constantly evolving.
@@ -200,7 +200,8 @@ Figure \ref{fig:iterativedevelopment} shows the informal development approach th
 The method is highly agile and team oriented, since multiple code bases have to be managed by different kind of people.
 Service-side services, the different platform interpreters and the model itself have to be developed in parallel.
 
-\section{Additional Components}
+\section{Client Application}
+\subsection{Additional Components}
 
 In addition to the interpreter and a model, there are additional artifacts and software components, that are needed to support a mobile application software platform.
 
@@ -245,7 +246,7 @@ It is the result of compiling the \textit{App Config}, the \textit{App Template}
 It does not contain the model itself, because it is loaded from the web the first time the user opens the app.
 This way, the model can be changed on the fly, while the app itself is still waiting for review or ready to release.
 
-\section{Model Run Time}
+\subsection{Model Run Time}
 
 The model is interpreted by the client, which lets the model run inside a virtual environment.
 The \ac{mos} run time enables declarative model design and handles the data flow.
@@ -257,7 +258,7 @@ The biggest aspect is the calculation of changes.
 Since relations are defined declarative, changes to the data have to update and re-layout the layer accordingly if needed.
 Also the update of database data and the scheme is a big part of the system.
 
-\section{Functional Interpreter Requirements}
+\subsection{Functional Interpreter Requirements}
 
 The following section will list the functional requirements of the interpreter.
 The functionality of the platform that is described by the model is omitted due to its comprehensiveness.
@@ -300,7 +301,7 @@ The caching policies of a node can be configured in detail.
 Also, the cache can be invalidated on the basis of a regular expression.
 Those are a few examples of the model and the interpreter 
 
-\section{Non-Functional Interpreter Requirements}
+\subsection{Non-Functional Interpreter Requirements}
 
 The following section will list non-functional requirements of the interpreter.
 
@@ -321,10 +322,13 @@ The following section will list non-functional requirements of the interpreter.
 	\item \textbf{High \ac{UI} and animation performance}
 	
 	The \ac{UI} should always be responsive and adequate loading indicators must be used.
+	It is accepted, that poorly designed models can lead to slow UI.
+	This is possible because of the high level of detail of the models.
 	
 	\item \textbf{Low network usage}
 	
 	The app should not load redundant data or load the same data multiple times.
+	Client and server-side strategies can be used.
 	
 	\item \textbf{Small download size}
 	
@@ -339,6 +343,36 @@ The following section will list non-functional requirements of the interpreter.
 \end{enumerate}
 
 
+\subsection{Implementation weak points}
+
+The given interpreter client has a number of technical limitations and inconsistencies.
+The following subsection will outline some of the major issues, that are part of the re-engineering process.
+Most of them are non-functional requirements, that are met while the app was in development and the feature set was smaller.
+While the app grew, conditions and the correlations between components became more complex.
+There have been two main problems, that can be subject to a major refactorization.
+
+
+\begin{enumerate}
+	
+	\item \textbf{\ac{UI} elements are re-painted to often.}
+	
+	Every change to a layer results in a re-layout and a full repaint of the parent container.
+	If the layout frame did not change, a re-paint is not needed.
+	Complex layouts like search results in combination with per entry conditions result in a slow \ac{UI} with up to two seconds between rendering frames.
+	
+	\item \textbf{Every operation runs on the main thread.}
+	
+	To prevent race conditions and visual noise, the entire application run only on the main thread.
+	Complex layouting and database-driven \ac{UI} elements block the UI thread.
+	On fast devices, this works well, because there no visual noise.
+	That means that the user doesn't see how the UI is getting built, but instead sees the full \ac{UI} after one display refresh frame.
+	
+	\item \textbf{No full abstraction between platform and virtual machine.}
+	
+	The app uses native interfaces like the view stack to organize it's contents.
+	Instead of using a virtual node stack, the view hierarchy is traversed to find nodes.
+	
+\end{enumerate}
 
 
 
