@@ -344,6 +344,7 @@ The following section will list non-functional requirements of the interpreter.
 
 
 \subsection{Implementation weak points}
+\label{sec:implementationweakpoints}
 
 The given interpreter client has a number of technical limitations and inconsistencies.
 The following subsection will outline some of the major issues, that are part of the re-engineering process.
@@ -358,7 +359,7 @@ There have been two main problems, that can be subject to a major refactorizatio
 	
 	Every change to a layer results in a re-layout and a full repaint of the parent container.
 	If the layout frame did not change, a re-paint is not needed.
-	Complex layouts like search results in combination with per entry conditions result in a slow \ac{UI} with up to two seconds between rendering frames.
+	Complex layouts like search results in combination with per entry conditions result in a slow \ac{UI} with up to two seconds wait time between rendering frames.
 	
 	\item \textbf{Every operation runs on the main thread.}
 	
@@ -367,12 +368,65 @@ There have been two main problems, that can be subject to a major refactorizatio
 	On fast devices, this works well, because there no visual noise.
 	That means that the user doesn't see how the UI is getting built, but instead sees the full \ac{UI} after one display refresh frame.
 	
-	\item \textbf{No full abstraction between platform and virtual machine.}
+	\item \textbf{No abstraction between native platform code and independent \ac{mos} behavior.}
 	
 	The app uses native interfaces like the view stack to organize it's contents.
 	Instead of using a virtual node stack, the view hierarchy is traversed to find nodes.
+	Also, every mos element manages or has a reference to the native result.
 	
 \end{enumerate}
+
+\section{Virtual Machine Approach}
+
+\textsc{Popek} and \textsc{Goldberg} \cite{popek_formal_1974} defined 1974, that a virtual machine is a duplicate of a real computer.
+But as programming languages evolve and virtualization allows more complex systems, a virtual machine does not need to have real correspondence, but can rather implement any runtime system.
+Popular virtual machines, that are not based on real computers are the \ac{JVM} or the V8 JavaScript engine.
+
+As described in section \ref{sec:implementationweakpoints}, the current iOS implementation is hard to maintain and has performance issues, because native code and mos behavior are mixed.
+There are only few specific conditions under which performance optimizations by concurrency are possible.
+
+To improve performance and maintainability of a model driven mobile application, the approach of virtual machines could be used.
+The \ac{VM} is a software system that is implementing the platform specific behavior.
+In the context of \ac{mos} that would be conditions, states, layouting, data and caching.
+It could be integrated as an external framework and is independent of the actual platform and user interface.
+The system would run in a own thread and not on the main thread.
+
+\subsection{Native Components}
+
+Every interface to the native \acp{API} are managed by custom, platform depended components, that can be registered in the \ac{VM}.
+For example, an \ac{SQL} interface is provided that will open connections and run \ac{SQL} statements.
+The \ac{UI} component will be asked to render some layers.
+All the layers are already lay-outed and their respective sub-layers evaluated.
+It should be as easy for the native components to perform their work, since they only translate the system's objects and tasks to native ones.
+The logic between elements will be handled by the virtual machine.
+
+Since the system will run on it's own thread, the \ac{UI} will be fast and responsive and only \ac{UI} related work will block the main thread and with that the \ac{UI}.
+
+\subsection{Shared Code}
+
+It is possible to develop the \ac{VM} system as an external framework.
+If it would be written in a language that can be compiled to native frameworks like KotlinNative\footnote{\url{https://kotlinlang.org/docs/reference/native-overview.html}}, this code could be shared between iOS and Android.
+
+The main goal is, that the virtual machine can run on any mobile operating system, implements and represents the \ac{mos} system and it's design philosophies.
+A native client should provide platform-specific implementations like the \ac{UI} and the device context.
+
+\subsection{Testability}
+
+With the current implementation, only some isolated parts can be unit tested.
+Large parts like layouts, conditions and action cannot be tested, since they all rely on the native \ac{UI} components.
+Automated UI tests are expensive to maintain and are hard to evaluate.
+Using a virtual machine that runs headless\footnote{Headless is a mode of virtual machine hosts, that runs the guest system without a user interface.}, unit tests are possible since any app can be used to test against and simulate user input.
+It is possible to inject virtual app models into the \ac{VM} that can be used to test against.
+This allows for fast test setups and evaluation.
+
+
+
+
+
+
+
+
+
 
 
 
