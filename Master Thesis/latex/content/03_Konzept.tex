@@ -201,6 +201,10 @@ The method is highly agile and team oriented, since multiple code bases have to 
 Service-side services, the different platform interpreters and the model itself have to be developed in parallel.
 
 \section{Client Application}
+
+the next section will outline a possible architecture for the client application.
+Since the main artifact is an iOS framework, from which only the main method has to be called, the bundle's architecture is independent to the framework's functionality.
+
 \subsection{Additional Components}
 
 In addition to the interpreter and a model, there are additional artifacts and software components, that are needed to support a mobile application software platform.
@@ -343,7 +347,7 @@ The following section will list non-functional requirements of the interpreter.
 \end{enumerate}
 
 
-\subsection{Implementation weak points}
+\subsection{Implementation Weak Points}
 \label{sec:implementationweakpoints}
 
 The given interpreter client has a number of technical limitations and inconsistencies.
@@ -376,6 +380,20 @@ There have been two main problems, that can be subject to a major refactorizatio
 	
 \end{enumerate}
 
+\section{Single Thread Approach}
+
+One re-engineering approach is to fully combine native elements with \ac{mos} behavior.
+The main reason for this approach is the simplicity of the code and the low distance to the native components.
+This approach works for a rather small interpreter feature set.
+To compensate bad performance, simple and highly optimized code should be used.
+The code is easy to understand and simple optimizations can be applied.
+
+While the feature set grew, the requirements to the system got much higher.
+New features like the application of changes to layers in a different node result in a high workload on the main thread.
+Introducing concurrency now is only possible on a few marked-out aspects, because the code operates on the \ac{UI} in an unstructured way.
+\ac{UI} operations are only allowed on the main thread, otherwise, the change will be ignored.
+The opposite of this approach is explained in the following section, which tries to separate \ac{mos} and \ac{UI} code.
+
 \section{Virtual Machine Approach}
 
 \textsc{Popek} and \textsc{Goldberg} \cite{popek_formal_1974} defined 1974, that a virtual machine is a duplicate of a real computer.
@@ -402,6 +420,25 @@ The logic between elements will be handled by the virtual machine.
 
 Since the system will run on it's own thread, the \ac{UI} will be fast and responsive and only \ac{UI} related work will block the main thread and with that the \ac{UI}.
 
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=0.7\linewidth]{images/concept/vm.pdf}
+	}
+	\caption{Virtual machine, to separate \ac{mos} from platform code}
+	\label{fig:mosvm}
+\end{figure}
+
+Figure \ref{fig:mosvm} outlines the basic concept of the architecture.
+The main challenge is the interface between the \ac{VM} and the native app instance.
+This interface must be efficient and thin, but also implement all the changes that can occur to the \ac{UI}.
+The implementation of the \ac{VM} logic is easier, since most parts are already implemented, but have to be extracted and refactored to not have circular dependencies.
+Existing performance improvements should be evaluated if it suites the new system.
+One example is the custom ContextChange pattern, that will collection all changes and will merge them to one resulting change that will be delegated to the layers.
+This will be used if multiple actions will be fired.
+If the database is changed several times during this time, there will only be one notifications to depended layers.
+This should be used in the new \ac{VM} system to prevent multiple redundant messages to the host.
+
+
 \subsection{Shared Code}
 
 It is possible to develop the \ac{VM} system as an external framework.
@@ -413,7 +450,10 @@ A native client should provide platform-specific implementations like the \ac{UI
 \subsection{Testability}
 
 With the current implementation, only some isolated parts can be unit tested.
-Large parts like layouts, conditions and action cannot be tested, since they all rely on the native \ac{UI} components.
+Critical parts like layouts, conditions and action cannot be tested, since they all rely on the native \ac{UI} components.
+Also, the code has many circular dependencies, which makes mocking impossible.
+Behavior of \ac{mos} is directly depended on native \ac{UI} elements and vice versa.
+
 Automated UI tests are expensive to maintain and are hard to evaluate.
 Using a virtual machine that runs headless\footnote{Headless is a mode of virtual machine hosts, that runs the guest system without a user interface.}, unit tests are possible since any app can be used to test against and simulate user input.
 It is possible to inject virtual app models into the \ac{VM} that can be used to test against.
