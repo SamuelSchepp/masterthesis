@@ -388,7 +388,16 @@ This approach works for a rather small interpreter feature set.
 To compensate bad performance, simple and highly optimized code should be used.
 The code is easy to understand and simple optimizations can be applied.
 
-While the feature set grew, the requirements to the system got much higher.
+One key element is a centralized change management system, which is inspired by React's diffing of two virtual \acp{DOM}.
+React is a web frontend framework, that uses a virtual \ac{DOM}.
+Changes are applied to the actual \ac{DOM} by generating a new virtual \ac{DOM}, which is based on the new state and calculating the differences.
+Those differences are then applied to the real \ac{DOM}.
+This works, because changes to the real \ac{DOM} are expensive, while working with a virtual \ac{DOM} is fast.
+The change management of \ac{mos} tries to collect all changes that happen within one user interaction.
+The changes are then combined to reflect one resulting change.
+This change is then applied to the virtual layout which is then used to re-layout the native components.
+
+While the feature set grew, the requirements to the system got higher.
 New features like the application of changes to layers in a different node result in a high workload on the main thread.
 Introducing concurrency now is only possible on a few marked-out aspects, because the code operates on the \ac{UI} in an unstructured way.
 \ac{UI} operations are only allowed on the main thread, otherwise, the change will be ignored.
