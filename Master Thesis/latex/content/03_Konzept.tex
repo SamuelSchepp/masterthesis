@@ -380,7 +380,7 @@ There have been two main problems, that can be subject to a major refactorizatio
 	
 \end{enumerate}
 
-\section{Single Thread Approach}
+\section{Native Approach}
 
 One re-engineering approach is to fully combine native elements with \ac{mos} behavior.
 The main reason for this approach is the simplicity of the code and the low distance to the native components.
@@ -388,14 +388,13 @@ This approach works for a rather small interpreter feature set.
 To compensate bad performance, simple and highly optimized code should be used.
 The code is easy to understand and simple optimizations can be applied.
 
-One key element is a centralized change management system, which is inspired by React's diffing of two virtual \acp{DOM}.
-React is a web frontend framework, that uses a virtual \ac{DOM}.
-Changes are applied to the actual \ac{DOM} by generating a new virtual \ac{DOM}, which is based on the new state and calculating the differences.
-Those differences are then applied to the real \ac{DOM}.
-This works, because changes to the real \ac{DOM} are expensive, while working with a virtual \ac{DOM} is fast.
-The change management of \ac{mos} tries to collect all changes that happen within one user interaction.
+The idea is, that native components are extended with mos behavior.
+That means, that everything happens directly on the main thread and on native \ac{UI} elements.
+
+One key element is a centralized change management system, which tries to collect all changes that happen within one user interaction.
 The changes are then combined to reflect one resulting change.
-This change is then applied to the virtual layout which is then used to re-layout the native components.
+The problem is, that applying changes to the native elements can result in new changes.
+If a layer is configured to change it's state based on the child count of another layer, the \ac{UI} has to be rendered multiple times, which is very expensive.
 
 While the feature set grew, the requirements to the system got higher.
 New features like the application of changes to layers in a different node result in a high workload on the main thread.
@@ -447,11 +446,68 @@ This will be used if multiple actions will be fired.
 If the database is changed several times during this time, there will only be one notifications to depended layers.
 This should be used in the new \ac{VM} system to prevent multiple redundant messages to the host.
 
+\subsection{Virtual View Hierarchy}
+
+One of the major benefits is the virtual view hierarchy.
+Inspired by React's virtual \ac{DOM}, the \ac{VM} handles a virtual view hierarchy, which is used to calculate layouts and the layer changes.
+While it is very expensive to layout and render native view components, virtual elements can be lay-outed very fast, because no user interface render system is involved.
+This means that all changes and their resulting changes can be applied on the virtual view hierarchy in multiple iterations without the need to interfere with the main thread.
+Layers that have changed will be marked as dirty and after every change is processed, the actual \ac{UI} is updated to reflect the virtual hierarchy.
+
+To minimize the amount of change application to the view, only on useful occasion
+The application of changes in the native view should only happen on useful occasions, to minimize the main thread utilization.
+The web \ac{UI} framework Angular uses a change detection system, that hooks into the browser specific event system to trigger an update only if changes are even possible.
+
+
+\begin{table}[]
+	\begin{center}
+		\begin{tabular}{l|l|l}
+			Category   & Examples & \ac{mos} equivalent  \\ \hline
+			DOM Event & click & Layer Actions       \\
+			& keyup & App Events    \\
+			& onreadystatechange       \\
+			& ...       \\ \hline
+			Timer Event     & setTimeout & setTimeout Action \\
+			& setInterval \\
+			& ... \\ \hline
+			Network Response   & Ajax & -       \\
+			& WebSockets \\
+			& ... 
+		\end{tabular}
+	\end{center}
+	\caption{Events, that are used for change detection by Angular and their \ac{mos} counterpart.}
+	\label{fig:angularevents}
+\end{table}
+
+Table \ref{fig:angularevents} lists some events that can result in \ac{DOM} changes.
+Angular hooks into those events by using a low level patch mechanism\footnote{Zone.js \url{https://github.com/angular/zone.js/blob/master/STANDARD-APIS.md}} and redirects them to the actual angular application, which can be considered \textit{user code}.
+After the application is done with it's calculations, the \ac{DOM} updated be re-evaluating the \ac{HTML} templates on the basis of the new values.
+
+This idea can be transferred to the \ac{mos} system as shown in Table \ref{fig:angularevents}.
+Network request action in \ac{mos} are synchronous by definition and there are only a few event's, that can be triggered by the user.
+This reduces the complexity and thus the probability of errors.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=1\linewidth]{images/concept/vmchangemanagement.pdf}
+	}
+	\caption{Change management cycle}
+	\label{fig:vmchangemanagement}
+\end{figure}
+
+Figure \ref{fig:vmchangemanagement} outlines the processing of user interaction.
+Notice the loop which operates on the changes queue.
+Bad configuration could lead to an infinite loop.
+The old single threaded approach which operates directly on the native \ac{UI} should have applied the changes to the \ac{UI} on each iteration.
+This means that the application is not responsive for the time the new view is evaluated.
+
+The biggest challenge is to apply the changes to the \ac{UI} in the most efficient way.
+A possible solution could be a unified interface that can update the frame, the layer value and the sublayer list.
 
 \subsection{Shared Code}
 
 It is possible to develop the \ac{VM} system as an external framework.
-If it would be written in a language that can be compiled to native frameworks like KotlinNative\footnote{\url{https://kotlinlang.org/docs/reference/native-overview.html}}, this code could be shared between iOS and Android.
+If it would be written in a language that can be compiled to native frameworks like KotlinNative\footnote{KotlinNative builds native C++ libraries and Objective-C frameworks from Kotlin code. \url{https://kotlinlang.org/docs/reference/native-overview.html}}, this code could be shared between iOS and Android.
 
 The main goal is, that the virtual machine can run on any mobile operating system, implements and represents the \ac{mos} system and it's design philosophies.
 A native client should provide platform-specific implementations like the \ac{UI} and the device context.
