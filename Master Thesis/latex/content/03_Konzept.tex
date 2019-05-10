@@ -1,6 +1,7 @@
 %!TEX root = ../Master_Thesis.tex
 
 \chapter{Concept}
+\label{chap:concept}
 
 This chapter will describe the goals of \ac{mos} and it's iOS implementation.
 The first section will describe the informal requirements to the model.
@@ -205,8 +206,6 @@ Service-side services, the different platform interpreters and the model itself 
 the next section will outline a possible architecture for the client application.
 Since the main artifact is an iOS framework, from which only the main method has to be called, the bundle's architecture is independent to the framework's functionality.
 
-\subsection{Additional Components}
-
 In addition to the interpreter and a model, there are additional artifacts and software components, that are needed to support a mobile application software platform.
 
 To build an instance of the interpreter app, additional compile time data has to be integrated.
@@ -250,9 +249,7 @@ It is the result of compiling the \textit{App Config}, the \textit{App Template}
 It does not contain the model itself, because it is loaded from the web the first time the user opens the app.
 This way, the model can be changed on the fly, while the app itself is still waiting for review or ready to release.
 
-\subsection{Model Run Time}
-
-The model is interpreted by the client, which lets the model run inside a virtual environment.
+The model is interpreted by the Bundle, which lets the model run inside a virtual environment.
 The \ac{mos} run time enables declarative model design and handles the data flow.
 Similar to a virtual machine, the model can access subsystems and interfaces that are normally not available in the target platform.
 For example, a custom event system handles app wide events and actions.
@@ -381,6 +378,7 @@ There have been two main problems, that can be subject to a major refactorizatio
 \end{enumerate}
 
 \section{Native Approach}
+\label{sec:nativeapproach}
 
 One re-engineering approach is to fully combine native elements with \ac{mos} behavior.
 The main reason for this approach is the simplicity of the code and the low distance to the native components.
@@ -498,7 +496,7 @@ This reduces the complexity and thus the probability of errors.
 Figure \ref{fig:vmchangemanagement} outlines the processing of user interaction.
 Notice the loop which operates on the changes queue.
 Bad configuration could lead to an infinite loop.
-The old single threaded approach which operates directly on the native \ac{UI} should have applied the changes to the \ac{UI} on each iteration.
+The old single threaded approach which operates directly on the native \ac{UI} has to apply the changes to the \ac{UI} on each iteration, because only that way, the new resulting changes are created.
 This means that the application is not responsive for the time the new view is evaluated.
 
 The biggest challenge is the application of changes to the \ac{UI} in the most efficient way.

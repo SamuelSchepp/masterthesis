@@ -3,8 +3,103 @@
 \chapter{Implementation}
 \label{chap:implementation}
 
-lorem ipsum
+In this chapter, the approaches that are described in chapter \ref{chap:concept} are demonstrated using code examples and the real reference implementation.
+In the first section, the initial state of the interpreter is explained.
+This is the starting point from which the re-engineering options are applied.
+
+In the following section, the first approach is examined.
+This is the option that is described in section \ref{sec:nativeapproach}.
+The subsequent section will outline a possible virtual machine implementation exemplary.
 
 \section{Initial State}
+\label{sec:initialstate}
 
-\section{Single Thread Implementation}
+The original iOS interpreter is written in Objective-C and uses \textit{AsyncDisplayKit}\footnote{AsyncDisplayKit was renamed to Texture. \url{https://github.com/texturegroup/texture/}} as an asynchronous \ac{UI} framework.
+It allows instantiation and lay-outing of view components on any thread.
+This means, that load intensive tasks can be swapped to background threads.
+
+This makes synchronization of \ac{mos} specific behavior like condition evaluation and state management harder.
+Also, custom view implementation that are used very often are more challenging to build, because they have to be a subclass of \textit{ASDisplayNode}, which represents one simple view component.
+In addition, the framework's future was unknown, since it has not been maintained and was licensed by Facebook.
+It has no native Swift \ac{API}.
+Later, the framework moved to Pinterest, where it has been maintained more regular.
+
+Because of the high dependence to \textit{AsyncDisplayKit} and the difficult maintenance, the next iteration of \ac{mos}, which should use Swift, needs to move away from the \ac{UI} framework.
+The code basis that was used to utilize the framework became obsolete because native views, that are enriched with \ac{mos} behavior, should be used.
+
+\section{Native Approach Implementation}
+
+Instead of \textit{AsyncDisplayKit}, that is described in \ref{sec:initialstate}, a approach should be used, that primarily uses the native \ac{UI} and the main thread.
+The main approaches will be outlined and explained in the following sub sections.
+
+\subsection{Native User Interface}
+
+Every layer operates directly on their native representation.
+That means that if changes need to be applied, the layer manipulates it's \ac{UI} component directly.
+This is necessary because some of the layouting calculations are based on native \ac{UI} \acp{API}.
+
+An example would be the size of text in a label layer.
+A text layer can be configured to update it's size automatically based on the text content.
+Also, a maximum line count could be defined.
+Since the native text \ac{API} only supports the calculation of the text size based on a constrained size, but not based on a line count, another approach must be taken.
+In this case, the text and the calculated text size is applied to the label.
+After that, \textit{sizeToFit()} is called on the layer.
+It's a native method, that shrinks the label based on the maximum line count.
+The resulting size is then used as the layer's frame to layout the remaining layers.
+
+Another example is the size of all sub view of a grid layer.
+Since a native grid layouts views based on a collection layout definition, the resulting size can only be determined by asking the grid on the main thread.
+
+This means, that lay-outing and conditions happen directly on the \ac{UI}.
+It keeps the code client and simple configurations are run fast.
+The following listing outlines a layer and it's behavior.
+
+\begin{lstlisting}[style=swift, caption={Layer class (excerpt)}, label={lst:layerclass}]
+class Layer {
+	let baseLayerParameters: BaseLayerParameters
+	var state: LayerState
+	weak var superlayer: SublayeredLayer?
+	
+	init(baseLayerParameters: BaseLayerParameters)
+	func performActions()
+	func applyConditions(afterContextChanges contextChanges: [ContextChange] = []) -> [ContextChange]
+	func apply(databaseChanges: [DatabaseChange]) -> [ContextChange]
+	func setNeedsLayout()
+	func size(constrainedBy constrainedSize: CGSize) -> CGSize?
+	func activate(state: LayerState) -> LayerStateChangeSeverity?
+	func view() -> UIView
+	func update(view: UIView)
+}
+\end{lstlisting}
+
+Listing \ref{lst:layerclass} outlines an excerpt of the Layer class.
+The function \textit{update(view:)} is the bottleneck with the most significant impact.
+It's responsible for relayouting it's native components.
+
+
+\subsection{Concurrency}
+
+Since changes are happening directly on the \ac{UI} elements
+
+
+\section{Virtual Machine Implementation}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
