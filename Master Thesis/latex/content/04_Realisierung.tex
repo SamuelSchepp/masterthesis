@@ -112,8 +112,9 @@ It is also possible to abstract the framework even further to allow it to run on
 But while macOS and iOS share a lot of useful frameworks like CoreGraphics, Swift for Ubuntu only comes with the most basic types.
 The best solution is a \ac{SPM} framework, that builds also on Ubuntu.
 This way, it is ensured that there is no \ac{UI} or platform code hidden in the framework.
-After a short evaluation, all current dependencies that would be part of the \ac{VM} framework are \ac{SPM} compatible.
 Most non-\ac{SPM} frameworks are the ones that use platform frameworks like \ac{UI} and are only part of the \ac{UI} framework anyway.
+After a short evaluation, most current dependencies that would be part of the \ac{VM} framework are \ac{SPM} compatible.
+However, some of them are unable to build on Ubuntu, because they export an Objective-C \ac{API}, which is not available under Ubuntu.
 
 As shown in figure \ref{fig:vmelements1}, the \ac{UI} framework uses the \ac{VM} frameworks and is it's delegate.
 The \ac{VM} asks to display layers and to push new views.
@@ -143,6 +144,7 @@ The \ac{UI} is now responsible for initializing the needed \ac{UI} elements.
 This means, that for every Layer, there is a corresponding LayerView, that is provided by the \ac{UI} framework.
 
 \subsection{Change Management}
+\label{sec:changemanagement}
 
 The most important key element of this alternative approach is the concept of Dirt and Flushing.
 Dirt represents changes that happen to a layer a will need to be applied to the native view.
@@ -244,7 +246,7 @@ public class TextLayer: Layer {
 \end{lstlisting}
 
 Listing \ref{lst:dirtnflush} shows an excerpt of a demo implementation.
-The layers each have a set of their own relevant changes.
+The layers each have a set of their own relevant changes (= dirt).
 Notice that a developer must not forget to add the dirt to the set in case something changed.
 The functions \textit{updateFrame} on the Layer and \textit{updateValue} on the TextLayer make sure to add the dirt.
 
@@ -272,16 +274,180 @@ Also, changes are applied in the correct order, and always after one another.
 	\centering{
 		\includegraphics[width=0.8\linewidth]{images/implementation/vmconcurrency.pdf}
 	}
-	\caption{Synchronization of \ac{VM} and \ac{UI}.}
+	\caption{Synchronization of \ac{VM} and \ac{UI}}
 	\label{fig:vmconcurrency}
 \end{figure}
 
 \subsection{Proof of Concept}
 
+A proof of concept implementation has been developed, that represents all the ideas that are described above.
+It consists of an \textit{AppHost}, which is a common iOS app bundle, but instead of launching an app, it calls the main method of \textit{mosUI}, which represents the actual app.
+The \textit{AppHost} is separated from the app executable, because it will be used to inject the custom app configuration like app name, icon and runtime privileges.
+\textit{mosUI} is independent to the particular app instance and so it is lifted into an own framework bundle.
+It uses \textit{mosVM}, which is the abstract implementation of mos behavior.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=0.5\linewidth]{images/implementation/priojectstructure.png}
+	}
+	\caption{Project structure of a proof of concept implementation}
+	\label{fig:priojectstructure}
+\end{figure}
+
+Figure \ref{fig:priojectstructure} outlines the project structure of the proof of concept implementation.
+Notice that \textit{mosVM} contains a Package.swift file, which indicates that it is a platform independent swift package, that can be build for any Apple platform. 
+
+\subsubsection{Implemented Features}
+
+The virtual machine is designed to support 2 layers.
+A TextLayer which has a value and a ColorLayer, which has no properties.
+Both Layer are inherited from a base Layer, that can be configured with a name, a layout frame, a form-data key and a list of actions.
+
+A form is implemented, which are used by the layers to synchronize their values based on the form-data key.
+This means, that the layers share their value with layers that have the same form-data key.
+This logic is implemented in the virtual machine.
+
+Each layer can have a list of actions, that are fired if the user taps on the layer.
+Currently there are two actions implemented.
+The GrowAction let's a layer's frame grow to the right.
+The ToggleTextAction will toggle the value of a layer between ''lorem ipsum'' and ''hallo welt''.
+
+As described earlier in section \ref{sec:changemanagement}, the dirt and flush mechanisms are implemented.
+The public \ac{API} of the layers make sure, that if the user taps on the representing view, the notified layer will call the virtual machine to perform the actions.
+After that, all layers are asked to flush their changes which will then be applied to the view.
+
+A centralized app instance object, which will always be passed to layers and actions holds all of the relevant components of a virtual machine instance.
+In this implementation, the instance object has the form object, the dispatch queue and the current layer list, that are currently displayed.
+A dispatch queue is an abstraction of a thread, which is used to run all the machine logic.
+
+
+\subsubsection{Example Configuration}
+
+To demonstrate the approach, a demo app is configured, by letting the virtual machine create layers on it's own, which are then displayed.
+Three layers are configured.
+A color layer with a size of 100 by 100 pixels, a TextLayer that displays the text ''Click me multiple times'' and another TextLayer that shows the text ''... or me''.
+Both text layers are configured to have the same form data key, so both layers should display the same value.
+In mos it is undefined, which layer ''wins'', but in this implementation, the first one sets the form value and the second has to adopt.
+The first TextLayer is configured with three ToggleText actions and one GrowAction.
+The GrowAction is configured with a the layer name of the ColorLayer.
+The GrowAction is implemented to find the layer who's frame will be extended by a layer name.
+The ToggleText action is configured three time to simulate multiple changes.
+The result should be the same as if the action would only be fired one time.
+
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=\linewidth]{images/implementation/demoapp.png}
+	}
+	\caption{Demonstration of form data and frame change.}
+	\label{fig:demoapp}
+\end{figure}
+
+Figure \ref{fig:demoapp} shows, how the app behaves, after a user touches the first label, which is marked with a pink circle.
+The three ToggleText action are executed, which results in the first layer to changes it's value.
+It will notify the form, that his value changed so the second layer will apply the value too, because it has the same form data key.
+Then the Grow action is executed, which results in the ColorLayer to increase it's layout frame.
+All this was executed inside the virtual machine on a virtual view stack.
+Now that a user tap is done, the changes need to get flushed.
+While the actions were executed, the value flag was inserted into the two TextLayer's dirt set.
+Also, the ColorLayer's dirt set includes the frame flag.
+Flushing the dirt now means, that there are only three changes that need to be applied, even though 7 changes happened:
+
+\begin{enumerate}
+	\item TextLayer 1 changed text from "Click me multiple times" to "lorem ipsum", because of the Action.
+	\item TextLayer 2 changed text from "Click me multiple times" to "lorem ipsum", because of the shared form-data key.
+	\item TextLayer 1 changed text from "lorem ipsum" to "hallo welt", because of the Action.
+	\item TextLayer 2 changed text from "lorem ipsum" to "hallo welt", because of the shared form-data key.
+	\item TextLayer 1 changed text from "hallo welt" to "lorem ipsum", because of the Action.
+	\item TextLayer 2 changed text from "hallo welt" to "lorem ipsum", because of the shared form-data key.
+	\item ColorLayer changed it's frame, because of the Action.
+\end{enumerate}
+
+The configuration shows, that the internal layer representations are calculating their values and frames, while the main thread stays interactive.
+To better visualize this behavior, every action will perform some artificial work to utilize the main thread for about one second.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=\linewidth]{images/implementation/vmperformance.png}
+	}
+	\caption{Thread utilization after user tapped the label two times}
+	\label{fig:vmperformance}
+\end{figure}
+
+The graph of figure \ref{fig:vmperformance} shows thread utilization over time.
+The second thread is part of the iOS thread pool and can be assigned to multiple dispatch queue.
+The wide peak occurs, because there is artificial work executed on every action to simulate a fully configured app.
+While the actions are executed, the main thread is free and user interaction like scrolling the container view is still possible.
+After the virtual machine is done evaluating the resulting view hierarchy, the changes are send to the host, who applies them to the native views.
+Applying values to the native view is also extended with artificial workload to simulate an extensive app.
+Notice, that the \ac{VM} thread waits for the \ac{UI} to finish.
+
+
+
+
 
 \subsection{Core Rules}
 
+To prevent coding errors or inconsistencies, there are some rules that are arising out of it.
 
+
+\begin{enumerate}
+	\item \textbf{One user interaction must result in only one flush.}
+	
+	Since this rule represents the key elements of the re-engineering approach, it is the most important one.
+	There are a few exceptions in which there is \ac{UI} functionality called right before a flush.
+	En example is a pushNode action, which would push a new view of layers to the stack.
+	After the layers are displayed, the remaining dirt is flushed.
+	A pop of a view would result in first removing the view from the stack and then flushing changes.
+	The changes of layers that don't exist anymore will not be flushed, because the flushing is done recursively and the layer's are not part of the tree anymore.
+	
+	\item \textbf{No \ac{UI} code is allowed inside the virtual machine module.}
+	
+	The virtual machine code should be able to compile on any Apple platform.
+	The gold standard would be a platform independence, that allows the virtual machine code to build on Ubuntu.
+	As a result, importing UIKit, CoreGraphics, CoreLocation, UserNotifications, EventKit, AVFoundation, MapKit and other modules are is not allowed.
+	Only Foundation and other cross platform modules should be used.
+	
+	\item \textbf{The callee of a public interface must make sure to continue on the correct dispatch queue}
+	
+	This helps the code to be more understandable, since random queue changes are harder to track.
+	With this rule, a public interface can be used without the need to check the queue requirements.
+	Queues should only be switched while crossing framework borders.
+	
+	\item \textbf{Changes to internal layers that are relevant to the \ac{UI} must result in the appropriate dirt flag to be set.}
+	
+	It is important for the internal logic implementation to strictly set the according flags on changes.
+	The lay-outer must set the frame flag, but only if the layout frame actually changed.
+	Sub-layered layers must set their sublayer flag, if they decide to reload their layer on a database change.
+	Those are some examples of code positions, that need to be disciplined.
+	
+	\item \textbf{\ac{VM} \acp{API} must be called using fire and forget.}
+	
+	To ensure a responsive \ac{UI}, the \ac{VM} must make sure to switch on the \ac{VM} dispatch queue asynchronous.
+	Since every callee must make sure to switch to the correct queue, the \ac{VM} is responsible to perform asynchronous.
+	
+	\item \textbf{\ac{UI} \acp{API} must be called synchronous, so the \ac{VM} waits for the \ac{UI} to finish.}
+	
+	The \ac{UI} make sure to respond synchronous, to make sure that it is safe to read the interface fields to update the \ac{UI}.
+	If the \ac{UI} is asked to update some layers and some asynchronous task inside the \ac{VM} is triggered that will write those properties, a thread collision is possible.
+	A solution is to let the \ac{VM} wait until the \ac{UI} is done updating the layer.
+	
+	\item \textbf{The public interface of the \ac{VM} must be as thin as possible.}
+	
+	To prevent programming errors and inconsistencies, every public interface must be evaluated if it complies with the \ac{API} contract, like the rule that results of interaction are applied by a flush.
+	The \ac{VM} must perform as much work as possible and delivers pre-rendered data to the \ac{UI}.
+	Pre-rendered data is data that has already been evaluated and is ready to be displayed.
+	
+	\item \textbf{Platform interfaces are provided by the \ac{UI} framework, but are run on the \ac{VM}'s dispatch queue.}
+	
+	For the \ac{VM} to be fully testable, every interface to platform specific functionality like the file system, database, user defaults, screen size, location, network and push notifications are provided by delegates, that are registered in the \ac{VM}.
+	This way, the \ac{VM} module can be fully black-box tested by unit tests.
+	It is also possible to port the application to any platform.
+	To prevent \ac{UI} thread utilization, the interfaces are provided by the \ac{UI} framework, but run on either the \ac{VM} queue or a custom background queue.
+	This way, tasks like querying the database does not block the main thread.
+	
+	
+\end{enumerate}
 
 
 
