@@ -288,7 +288,7 @@ It uses \textit{mosVM}, which is the abstract implementation of mos behavior.
 
 \begin{figure}[h]
 	\centering{
-		\includegraphics[width=0.5\linewidth]{images/implementation/priojectstructure.png}
+		\includegraphics[width=0.6\linewidth]{images/implementation/priojectstructure.png}
 	}
 	\caption{Project structure of a proof of concept implementation}
 	\label{fig:priojectstructure}
@@ -389,6 +389,7 @@ Notice, that the \ac{VM} thread waits for the \ac{UI} to finish.
 \subsection{Core Rules}
 
 To prevent coding errors or inconsistencies, there are some rules that are arising out of it.
+Especially new features or changes must follow these rules, so the performance and maintainability gains are not lost.
 
 
 \begin{enumerate}
@@ -445,6 +446,7 @@ To prevent coding errors or inconsistencies, there are some rules that are arisi
 	It is also possible to port the application to any platform.
 	To prevent \ac{UI} thread utilization, the interfaces are provided by the \ac{UI} framework, but run on either the \ac{VM} queue or a custom background queue.
 	This way, tasks like querying the database does not block the main thread.
+	
 	
 	
 \end{enumerate}

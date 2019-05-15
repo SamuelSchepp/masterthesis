@@ -1,0 +1,15 @@
+
+<schema name="gcd-perf-event" topology="XRT50_C22_TypeID">
+    <column engineeringType="XRSampleTimestampTypeID" engineeringName="Sample time" mnemonic="timestamp" topologyField="XRTraceRelativeTimestampFieldID"></column>
+    <column engineeringType="XRThreadTypeID" engineeringName="Thread" mnemonic="thread" topologyField="XRCategory1FieldID"></column>
+    <column engineeringType="XRPrototypeValueTypeID" engineeringName="Trace Code" mnemonic="code"></column>
+    <column engineeringType="XREventConceptTypeID" engineeringName="Severity" mnemonic="severity"></column>
+    <column engineeringType="XRPrototypeStringTypeID" engineeringName="Dispatch Perf Event" mnemonic="dispatch-perf-event"></column>
+    <column engineeringType="XRVirtualMemoryAddressTypeID" engineeringName="Dispatch Queue" mnemonic="dispatch-queue"></column>
+    <column engineeringType="XRVirtualMemoryAddressTypeID" engineeringName="Dispatch Source" mnemonic="dispatch-source"></column>
+    <column engineeringType="XRVirtualMemoryAddressTypeID" engineeringName="Old Target Queue" mnemonic="old-target-queue"></column>
+    <column engineeringType="XRVirtualMemoryAddressTypeID" engineeringName="New Target Queue" mnemonic="new-target-queue"></column>
+    <column engineeringType="XRTextSymbolTypeID" engineeringName="Label" mnemonic="label"></column>
+    <column engineeringType="XRBacktraceTypeID" engineeringName="Backtrace" mnemonic="backtrace"></column>
+    <column engineeringType="XRCPUCoreTypeID" engineeringName="CPU" mnemonic="running-cpu"></column>
+</schema>

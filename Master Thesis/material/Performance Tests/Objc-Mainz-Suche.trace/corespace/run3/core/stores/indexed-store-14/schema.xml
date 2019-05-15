@@ -1,0 +1,8 @@
+
+<schema name="global-poi-layout" topology="XRT50_C22_TypeID">
+    <column engineeringType="XRRecordedEventTimestampTypeID" engineeringName="Time" mnemonic="time" topologyField="XRTraceRelativeTimestampFieldID"></column>
+    <column engineeringType="XRRegionOfInterestKindTypeID" engineeringName="Kind" mnemonic="kind" topologyField="XRCategory1FieldID"></column>
+    <column engineeringType="XRSignpostNameTypeID" engineeringName="Name" mnemonic="name"></column>
+    <column engineeringType="XREventConceptTypeID" engineeringName="Concept" mnemonic="concept"></column>
+    <column engineeringType="XRNarrativeEntryTypeID" engineeringName="Detail" mnemonic="detail"></column>
+</schema>

@@ -1,0 +1,20 @@
+
+<schema name="region-of-interest" topology="XRTD50_CC22_R_TypeID">
+    <column engineeringType="XRStartTimeTypeID" engineeringName="Start" mnemonic="start" topologyField="XRTraceRelativeTimestampFieldID"></column>
+    <column engineeringType="XRDurationTypeID" engineeringName="Duration" mnemonic="duration" topologyField="XRDurationFieldID"></column>
+    <column engineeringType="XRRegionOfInterestClassTypeID" engineeringName="Class" mnemonic="class" topologyField="XRCategory1FieldID"></column>
+    <column engineeringType="XRSignpostNameTypeID" engineeringName="Name" mnemonic="name" topologyField="XRCategory2FieldID"></column>
+    <column engineeringType="XRRegionOfInterestKindTypeID" engineeringName="Kind" mnemonic="kind"></column>
+    <column engineeringType="XRRegionOfInterestScopeTypeID" engineeringName="Scope" mnemonic="scope"></column>
+    <column engineeringType="XREventConceptTypeID" engineeringName="Concept" mnemonic="concept"></column>
+    <column engineeringType="XROSLogSubsystemTypeID" engineeringName="Logging Subsystem" mnemonic="subsystem"></column>
+    <column engineeringType="XROSLogMetadataTypeID" engineeringName="Start Message" mnemonic="start-message"></column>
+    <column engineeringType="XROSLogMetadataTypeID" engineeringName="End Message" mnemonic="end-message"></column>
+    <column engineeringType="XRProcessTypeID" engineeringName="Process" mnemonic="process"></column>
+    <column engineeringType="XRThreadTypeID" engineeringName="Thread" mnemonic="thread"></column>
+    <column engineeringType="XRThreadTypeID" engineeringName="Start Thread" mnemonic="start-thread"></column>
+    <column engineeringType="XRThreadTypeID" engineeringName="End Thread" mnemonic="end-thread"></column>
+    <column engineeringType="XRCPUCoreTypeID" engineeringName="Core" mnemonic="core"></column>
+    <column engineeringType="XRBacktraceTypeID" engineeringName="Start Stack" mnemonic="start-backtrace"></column>
+    <column engineeringType="XRBacktraceTypeID" engineeringName="End Stack" mnemonic="end-backtrace"></column>
+</schema>

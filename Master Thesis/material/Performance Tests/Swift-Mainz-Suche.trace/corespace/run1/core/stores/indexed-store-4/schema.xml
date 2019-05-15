@@ -1,0 +1,12 @@
+
+<schema name="os-log" topology="XRT50_C22_TypeID">
+    <column engineeringType="XRRecordedEventTimestampTypeID" engineeringName="Timestamp" mnemonic="time" topologyField="XRTraceRelativeTimestampFieldID"></column>
+    <column engineeringType="XRThreadTypeID" engineeringName="Thread" mnemonic="thread" topologyField="XRCategory1FieldID"></column>
+    <column engineeringType="XRProcessTypeID" engineeringName="Process" mnemonic="process"></column>
+    <column engineeringType="XROSLogEventTypeID" engineeringName="Message Type" mnemonic="message-type"></column>
+    <column engineeringType="XROSLogFormatStringTypeID" engineeringName="Format String" mnemonic="format-string"></column>
+    <column engineeringType="XRBacktraceTypeID" engineeringName="Backtrace" mnemonic="backtrace"></column>
+    <column engineeringType="XROSLogSubsystemTypeID" engineeringName="Logging Subsystem" mnemonic="subsystem"></column>
+    <column engineeringType="XROSLogCategoryTypeID" engineeringName="Logging Category" mnemonic="category"></column>
+    <column engineeringType="XROSLogMetadataTypeID" engineeringName="Message" mnemonic="message"></column>
+</schema>

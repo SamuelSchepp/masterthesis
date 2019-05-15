@@ -1,0 +1,14 @@
+
+<schema name="kdebug-signpost" topology="XRT50_C22_TypeID">
+    <column engineeringType="XRRecordedEventTimestampTypeID" engineeringName="Time" mnemonic="time" topologyField="XRTraceRelativeTimestampFieldID"></column>
+    <column engineeringType="XRThreadTypeID" engineeringName="Thread" mnemonic="thread" topologyField="XRCategory1FieldID"></column>
+    <column engineeringType="XRProcessTypeID" engineeringName="Process" mnemonic="process"></column>
+    <column engineeringType="XRSignpostNameTypeID" engineeringName="Name" mnemonic="name"></column>
+    <column engineeringType="XRKDebugSignpostVariantTypeID" engineeringName="Type" mnemonic="type"></column>
+    <column engineeringType="XRKDebugArgumentTypeID" engineeringName="Argument 1" mnemonic="arg1"></column>
+    <column engineeringType="XRKDebugArgumentTypeID" engineeringName="Argument 2" mnemonic="arg2"></column>
+    <column engineeringType="XRKDebugArgumentTypeID" engineeringName="Argument 3" mnemonic="arg3"></column>
+    <column engineeringType="XRKDebugArgumentTypeID" engineeringName="Argument 4" mnemonic="arg4"></column>
+    <column engineeringType="XRKDebugArgumentTypeID" engineeringName="Argument 5" mnemonic="arg5"></column>
+    <column engineeringType="XRBacktraceTypeID" engineeringName="Backtrace" mnemonic="backtrace"></column>
+</schema>

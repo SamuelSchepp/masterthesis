@@ -1,0 +1,10 @@
+
+<schema name="roi-metadata" topology="XRT50_C22_TypeID">
+    <column engineeringType="XRRecordedEventTimestampTypeID" engineeringName="Timestamp" mnemonic="time" topologyField="XRTraceRelativeTimestampFieldID"></column>
+    <column engineeringType="XROSLogFormatStringTypeID" engineeringName="Format String" mnemonic="format-string" topologyField="XRCategory1FieldID"></column>
+    <column engineeringType="XRPrototypeStringTypeID" engineeringName="Name" mnemonic="name"></column>
+    <column engineeringType="XRThreadTypeID" engineeringName="Thread" mnemonic="thread"></column>
+    <column engineeringType="XROSLogSubsystemTypeID" engineeringName="Logging Subsystem" mnemonic="subsystem"></column>
+    <column engineeringType="XRSignpostNameTypeID" engineeringName="Region Name" mnemonic="region-name"></column>
+    <column engineeringType="XRAnyTypeID" engineeringName="Value" mnemonic="value"></column>
+</schema>

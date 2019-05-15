@@ -1,0 +1,10 @@
+
+<schema name="global-roi-layout" topology="XRTD50_CC22_R_TypeID">
+    <column engineeringType="XRStartTimeTypeID" engineeringName="Start" mnemonic="start" topologyField="XRTraceRelativeTimestampFieldID"></column>
+    <column engineeringType="XRDurationTypeID" engineeringName="Duration" mnemonic="duration" topologyField="XRDurationFieldID"></column>
+    <column engineeringType="XRSignpostNameTypeID" engineeringName="Name" mnemonic="name" topologyField="XRCategory1FieldID"></column>
+    <column engineeringType="XRLayoutIDTypeID" engineeringName="Layout Group" mnemonic="layout" topologyField="XRCategory2FieldID"></column>
+    <column engineeringType="XRRegionOfInterestKindTypeID" engineeringName="Kind" mnemonic="kind"></column>
+    <column engineeringType="XREventConceptTypeID" engineeringName="Concept" mnemonic="concept"></column>
+    <column engineeringType="XROSLogMetadataTypeID" engineeringName="Detail" mnemonic="detail"></column>
+</schema>

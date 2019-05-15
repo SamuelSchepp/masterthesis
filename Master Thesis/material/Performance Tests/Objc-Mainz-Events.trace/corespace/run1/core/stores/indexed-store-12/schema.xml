@@ -1,0 +1,6 @@
+
+<schema name="thread-name" topology="XRT50_C22_TypeID">
+    <column engineeringType="XRSampleTimestampTypeID" engineeringName="Start Time" mnemonic="time" topologyField="XRTraceRelativeTimestampFieldID"></column>
+    <column engineeringType="XRThreadTypeID" engineeringName="Thread" mnemonic="thread" topologyField="XRCategory1FieldID"></column>
+    <column engineeringType="XRThreadNameTypeID" engineeringName="Thread Name" mnemonic="name"></column>
+</schema>

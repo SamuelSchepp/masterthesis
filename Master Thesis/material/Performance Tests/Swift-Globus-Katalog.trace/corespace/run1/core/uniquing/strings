@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<string></string>
+	<string>Unknown</string>
+	<string>User</string>
+	<string>Supervisor</string>
+	<string>Running</string>
+	<string>Runnable</string>
+	<string>Blocked</string>
+	<string>Preempted</string>
+	<string>Uninterruptible</string>
+	<string>Suspended</string>
+	<string>Idle</string>
+	<string>Terminating</string>
+	<string>Terminated</string>
+	<string>Interval</string>
+	<string>TODO</string>
+	<string>_dispatch_workloop_worker_thread</string>
+	<string>Code 1</string>
+	<string>Start</string>
+	<string>End</string>
+	<string>9</string>
+	<string>kdebug_signpost</string>
+	<string>arg1</string>
+	<string>Code 1 Start: (%llu %llu %llu %llu)</string>
+	<string>arg2</string>
+	<string>arg3</string>
+	<string>arg4</string>
+	<string>KDebug Signpost</string>
+	<string>Signpost</string>
+	<string> Start: (</string>
+	<string> </string>
+	<string>), End: (</string>
+	<string>)</string>
+	<string>Start: (</string>
+	<string>End: (</string>
+	<string>Code 1 End: (%llu %llu %llu %llu)</string>
+	<string>Main Thread</string>
+	<string>-[UIEventFetcher threadMain]</string>
+	<string>_dispatch_worker_thread2</string>
+	<string>+[GAI threadMain:]</string>
+</array>
+</plist>

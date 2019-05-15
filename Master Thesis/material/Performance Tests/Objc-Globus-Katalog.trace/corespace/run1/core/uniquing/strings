@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<string></string>
+	<string>Unknown</string>
+	<string>User</string>
+	<string>Supervisor</string>
+	<string>Running</string>
+	<string>Runnable</string>
+	<string>Blocked</string>
+	<string>Preempted</string>
+	<string>Uninterruptible</string>
+	<string>Suspended</string>
+	<string>Idle</string>
+	<string>Terminating</string>
+	<string>Terminated</string>
+	<string>Interval</string>
+	<string>TODO</string>
+	<string>9</string>
+	<string>_dispatch_kevent_worker_thread</string>
+	<string>_dispatch_workloop_worker_thread</string>
+	<string>Main Thread</string>
+	<string>-[UIEventFetcher threadMain]</string>
+	<string>_dispatch_worker_thread2</string>
+	<string>RunWebThread</string>
+</array>
+</plist>
