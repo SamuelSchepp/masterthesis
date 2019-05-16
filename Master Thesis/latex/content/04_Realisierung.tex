@@ -255,6 +255,12 @@ So if the \ac{VM} system decides that it is time to flush, the layers \textit{fl
 The TextLayer makes sure to flush it's own and it's superclass's changes.
 The challenge is, to not forget to add dirt to the set and to represent the change correctly, so no change gets lost.
 
+The same mechanism can be used to handle internal changes as well.
+To make sure, that layers who update based on changed database tables do not update multiple time unnecessarily, an internal dirt flag for every database table can be used.
+This way, an interaction first triggers the internal evaluation mechanism, then the internal dirt flush and the external dirt flush after that.
+Examples for layers that depend on a database query are the InsertLayer, GalleryLayer, SmartListLayer and the LayoutLayer.
+
+
 \subsection{Concurrency}
 
 Since the \ac{VM} and the \ac{UI} are separate systems on separate threads, they have to be synchronized.
@@ -333,7 +339,44 @@ The GrowAction is configured with a the layer name of the ColorLayer.
 The GrowAction is implemented to find the layer who's frame will be extended by a layer name.
 The ToggleText action is configured three time to simulate multiple changes.
 The result should be the same as if the action would only be fired one time.
+The hard-coded configuration is depicted in listing \ref{lst:democonfig}.
 
+\begin{lstlisting}[style=swift, caption={Demo configuration}, label={lst:democonfig}]
+let colorLayer = ColorLayer(
+	instance: self.instance,
+	layerParameters: LayerParameters(
+		name: "color1",
+		formDataKey: nil,
+		frame: CGRect(x: 10, y: 10, width: 100, height: 100),
+		actions: [ToggleTextAction()]
+	),
+	colorLayerParameters: ColorLayerParameters()
+)
+let textLayer1 = TextLayer(
+	instance: self.instance,
+	layerParameters: LayerParameters(
+		name: "text1",
+		formDataKey: "value",
+		frame: CGRect(x: 10, y: 120, width: 100, height: 100),
+		actions: [ToggleTextAction(), ToggleTextAction(), ToggleTextAction(), GrowAction(layer: "color1")]
+	),
+	textLayerParameters: TextLayerParameters(
+		value: "Click me multiple times"
+	)
+)
+let textLayer2 = TextLayer(
+	instance: self.instance,
+	layerParameters: LayerParameters(
+		name: "text2",
+		formDataKey: "value",
+		frame: CGRect(x: 10, y: 240, width: 100, height: 100),
+		actions: [ToggleTextAction(), ToggleTextAction(), ToggleTextAction()]
+	),
+	textLayerParameters: TextLayerParameters(
+		value: "... or me"
+	)
+)
+\end{lstlisting}
 
 \begin{figure}[h]
 	\centering{
@@ -352,6 +395,7 @@ Now that a user tap is done, the changes need to get flushed.
 While the actions were executed, the value flag was inserted into the two TextLayer's dirt set.
 Also, the ColorLayer's dirt set includes the frame flag.
 Flushing the dirt now means, that there are only three changes that need to be applied, even though 7 changes happened:
+
 
 \begin{enumerate}
 	\item TextLayer 1 changed text from "Click me multiple times" to "lorem ipsum", because of the Action.
@@ -450,6 +494,28 @@ Especially new features or changes must follow these rules, so the performance a
 	
 	
 \end{enumerate}
+
+\subsection{Implementation Rules}
+
+To make code maintainable and abstract the different logic levels, like configuration parsing, dynamic logic and interaction, some implementation rules must be set.
+The current implementation disregards all of the rules to some extend.
+
+\begin{enumerate}
+	
+\item \textbf{Every components of the \ac{JSON} model must be represented by a fully typed and read-only data structure.}
+
+To prevent uncoordinated side-effects and a safe interface to the model, the text based model must be represented by a read-only data structure.
+This guarantees a strict separation of parsing logic, dynamic behavior and side effects.
+If a field of the model is considered mutable, a additional field is added in one of the dynamic logic classes, but not in the representation structure.
+This ensures that the time of applying the model to the mutable data is strictly defined and the original configuration is still in tact.
+
+\item \textbf{Every interface between virtual machine and \ac{UI} must be defined by a protocol\footnote{A protocol in Swift is similar to an interface in Java. It also allows the definition of public properties.}.}
+
+Any implicit class \ac{API} lacks comprehensibility, if it is spread across the class definition.
+To keep the interface clear, it should be defined as a custom protocol, so the intention and usage are explicit.
+
+\end{enumerate}
+
 
 
 
