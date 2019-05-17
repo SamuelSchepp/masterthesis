@@ -76,20 +76,30 @@ class Layer {
 
 Listing \ref{lst:layerclass} outlines an excerpt of the Layer class.
 The function \textit{update(view:)} is the bottleneck with the most significant impact.
-It's responsible for relayouting it's native components.
+It's responsible for re-layouting it's native components.
 
 
 \subsection{Concurrency}
 
 Since changes are happening directly on the \ac{UI} elements, the main work needs to be done on the main thread.
-This also means, that if a layer needs to relayout, the superlayer needs to relayout all of it's sublayers.
+This also means, that if a layer needs to re-layout, the superlayer needs to relayout all of it's sublayers.
 That is because of layout constraints, that are tied to the content might can change every layers frame.
 Another high workload is the update of sublayers based on a database query.
 This feature is called \textit{InsertLayer} and it uses a layout definition and a database query, to dynamically create sublayers.
 Since layers can only be instantiated in the main thread, and changes have always be applied to the native view elements, the main thread is blocked for the time.
 It is possible to extract certain tasks to a background thread, but this would not follow any pattern and would lead to poorly comprehensible code.
 
+\subsection{Testability}
 
+Only a minor part of the implementation is testable, because most logic code is directly intertwined with \ac{UI} code.
+Also, code depends on a lot of global references of app components like the current view or the database controller.
+This makes dependency injection impossible.
+Code that has been develop recently has been made testable by using injection patterns, which help to write white box tests.
+An example are the tree conditions of a layer state.
+If the condition tree is evaluated to be true, a defined state is applied.
+The condition tree is a recursive declaration of conditions, that can be combined this standard bool operators.
+The leafs of the tree reference various app context values like user settings or form data.
+Those values can be injected to make the evaluation of the tree testable.
 
 
 
@@ -269,7 +279,17 @@ A possible collision are the public fields of the layers.
 Those are used by the \ac{UI} to initialize and change it's views.
 If new changes occur right after a flush, while the \ac{UI} is still applying changes, the public fields could be written and read at the same time.
 
-The core idea to handle this is that the \ac{UI} calls the \ac{VM}'s \acp{API} using \textit{fire and forget}\footnote{A call to the other system that returns immediately.}.
+A possible solution for this is a additional state object, that is only written to right before the flush.
+This makes it possible to use observables, so no custom delegates or listener mechanism has to be developed.
+To implement this, \textit{ReactiveSwift}\footnote{\url{https://github.com/ReactiveCocoa/ReactiveSwift}} and it's observable property feature can be used.
+So instead of having a property and it's change handler in addition to the layers actual internal property, there are only the internal and the public one.
+A flush means, that for every dirt flag, the corresponding observable property's value is overwritten with the internal one.
+A major advantages are the operators, that enable structured observation and mapping of values.
+It also allows filtering of equal values via \textit{skipRepeats}, to improve \ac{UI} performance even more.
+The \textit{skipRepeats} operator cannot replace the dirt flag system, but extend it.
+The dirt system can relieve pressure on the \textit{skipRepeats} operator, because checking for equality on the sub-layer list for example might take very long, so it is better to mark the sub-layers as dirty if re-calculated so it can be overwritten only if actually changed.
+
+The core idea to handle changes is that the \ac{UI} calls the \ac{VM}'s \acp{API} using \textit{fire and forget}\footnote{A call to the other system that returns immediately.}.
 But the \ac{VM} uses synchronization to wait until the main thread is done flushing.
 This way, the \ac{VM} is always blocked while the \ac{UI} is working.
 
@@ -427,8 +447,91 @@ Applying values to the native view is also extended with artificial workload to 
 Notice, that the \ac{VM} thread waits for the \ac{UI} to finish.
 
 
+\subsection{Testability}
 
+This approach allows black box testing, which is not possible with the current implementation.
+A black box test of the \ac{VM} can launch an virtual app instance, tap layers and insert values into a text field or any other user interaction.
+All this happens by using the public \ac{VM} interface, that would otherwise be used by the actual \ac{UI} implementation.
+Those tests are platform independent and can run very fast on a Mac or inside a iOS host application.
+It is now possible to hard-code views, which then can be tested by simulating user input.
+This includes all of the special mos logic.
 
+White box unit tests are also possible, since there are no public fields, but instead a app instance is passed to the sub components.
+Also, platform components like network or file system have to register to the \ac{VM} by design.
+This makes injecting test implementations of those components straight forward.
+It is now possible to simulate an app and it's user input fully on any host system.
+
+An example black box test of the demo app is outlined in listing \ref{lst:unittestblackbox}.
+The test simulates one tap on the first text layer.
+Notice, that the \ac{VM} implementation differs slightly from the previous code snippets, because \textit{ReactiveSwift} was used.
+The core structure is still intact and the approach is implemented accordingly.
+
+The test expects the color layer to increase it's width by 30 points, because of the \textit{Grow} action.
+Also, it is expected that the two text layers will both have the value ''lorem ipsum'', because of the \textit{ToggleText} action and the shared form data key.
+
+The lines 2 to 26 setup the demo app.
+\textit{XCTestExpectation} is a semaphore, that can be fulfilled.
+The test execution can be halted until an expectation is fulfilled by using \textit{wait(for:timeout:)}.
+This way, the test host can wait for the \ac{VM} to push it's first view.
+The simulation of the tap is executed in line 29.
+It is a call, that would normally be done by the native layer view of the \ac{UI} implementation.
+Since layers are abstracted, anyone can tap a layer, even a test host.
+After the tap, the test hosts waits for the color layer to change it's frame.
+The test host uses the same interface, that would be used to update the native views frame.
+But instead, the host uses it to wait for the value to change, so the value can be checked.
+Finally, starting from line 34, the test host checks the color layer's frame and the values of the text layers.
+
+\begin{lstlisting}[style=swift, caption={Black box test of the test app configuration}, label={lst:unittestblackbox}]
+func testApp() {
+	// Prepare waiting for first view to be pushed
+	let firstViewExpectation = XCTestExpectation()
+	let vmProxy = VirtualMachineDelegateProxy(firstViewExpectation: firstViewExpectation)
+	
+	// Start the VM
+	let virtualMachine = VirtualMachine(delegate: vmProxy)
+	virtualMachine.boot(appConfig: AppConfig())
+	
+	// Wait for first view to be pushed
+	wait(for: [firstViewExpectation], timeout: 30)
+	
+	// Check layer count of first view
+	XCTAssertEqual(vmProxy.firstView?.layerInterfaces.count, 3)
+	
+	// Check frame of the color layer
+	XCTAssertEqual(
+		(vmProxy.firstView?.layerInterfaces[0] as? ColorLayerInterface)?.frameProperty.value,
+		Rect(x: 10, y: 10, width: 100, height: 100)
+	)
+	
+	// Prepare waiting for frame change of the color layer
+	let waitForFrameChange = XCTestExpectation()
+	vmProxy.firstView?.layerInterfaces[0].frameProperty.signal.observeValues { _ in
+		waitForFrameChange.fulfill()
+	}
+	
+	// Trigger a tap on the text layer
+	vmProxy.firstView?.layerInterfaces[1].didTap()
+	
+	// Wait for frame of the color layer to change
+	wait(for: [waitForFrameChange], timeout: 30)
+	
+	// Check for color layer's frame to be 30 points wider
+	XCTAssertEqual(
+		vmProxy.firstView?.layerInterfaces[0].frameProperty.value,
+		Rect(x: 10, y: 10, width: 130, height: 100)
+	)
+	
+	// Check for the values of the text layers
+	XCTAssertEqual(
+		(vmProxy.firstView?.layerInterfaces[1] as? TextLayerInterface)?.valueProperty.value,
+		"lorem ipsum"
+	)
+	XCTAssertEqual(
+		(vmProxy.firstView?.layerInterfaces[2] as? TextLayerInterface)?.valueProperty.value,
+		"lorem ipsum"
+	)
+}
+\end{lstlisting}
 
 \subsection{Core Rules}
 
@@ -491,11 +594,18 @@ Especially new features or changes must follow these rules, so the performance a
 	To prevent \ac{UI} thread utilization, the interfaces are provided by the \ac{UI} framework, but run on either the \ac{VM} queue or a custom background queue.
 	This way, tasks like querying the database does not block the main thread.
 	
+	\item \textbf{No singletons or static objects.}
+	
+	To keep the code testable, no singletons or public static objects should be used.
+	Instead, a app instance object, that represents one app instance should be passed to every sub-component.
+	This makes it possible to run any amount of virtual apps in parallel, to enable fast testing.
+	Also, it allows for dependency injection, to perform white box unit tests.
+	
 	
 	
 \end{enumerate}
 
-\subsection{Implementation Rules}
+\subsection{Maintainability}
 
 To make code maintainable and abstract the different logic levels, like configuration parsing, dynamic logic and interaction, some implementation rules must be set.
 The current implementation disregards all of the rules to some extend.
@@ -513,6 +623,12 @@ This ensures that the time of applying the model to the mutable data is strictly
 
 Any implicit class \ac{API} lacks comprehensibility, if it is spread across the class definition.
 To keep the interface clear, it should be defined as a custom protocol, so the intention and usage are explicit.
+
+\item \textbf{Class dependencies must be defined by a protocol.}
+
+If a class depends on another class's functionality, a protocol should be defined, that an handle the classes requirements.
+This is important for test purposes, since a white box unit test must be able to simulate external behavior.
+The test host can pass a custom object, that implements the protocol, but simulates special behavior and values, to test the border cases of the class.
 
 \end{enumerate}
 
