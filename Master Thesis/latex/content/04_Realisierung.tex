@@ -7,9 +7,12 @@ In this chapter, the approaches that are described in chapter \ref{chap:concept}
 In the first section, the initial state of the interpreter is explained.
 This is the starting point from which the re-engineering options are applied.
 
-In the following section, the first approach is examined.
-This is the option that is described in section \ref{sec:nativeapproach}.
-The subsequent section will outline a possible virtual machine implementation exemplary.
+In the next section, the first approach is examined.
+This is the option that is described in section \ref{sec:nativeapproach} and has been actively developed.
+
+The last section will outline a possible virtual machine implementation exemplary, that was described in section \ref{sec:virtualmachineapproach}.
+Since the virtual machine approach has not been implemented yet, a simple demonstrator has been design, that implements the key ideas.
+
 
 \section{Initial State}
 \label{sec:initialstate}
@@ -153,6 +156,32 @@ This includes layouting and evaluating \textit{GalleryLayers}, \textit{GridLayer
 The \ac{UI} is now responsible for initializing the needed \ac{UI} elements.
 This means, that for every Layer, there is a corresponding LayerView, that is provided by the \ac{UI} framework.
 
+This separation of layer and view has additional positive side effects.
+One example is the GalleryLayer, which displays it's sublayers as carousel with horizontal scrolling.
+It can be configured to enable infinite scrolling, which means that the gallery does not end at the last layer, but continues scrolling to the first layer.
+Since the scroll animation is continuous, the only solution has been to duplicate the sublayers internally and place them at the end of the gallery.
+If the user now scrolls across the boundaries, the gallery offset is moved back by its original layer count.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=\linewidth]{images/implementation/gallerylayercopy.pdf}
+	}
+	\caption{Simulation of infinite scrolling by resetting the window at the boundaries.}
+	\label{fig:gallerylayercopy}
+\end{figure}
+
+Figure \ref{fig:gallerylayercopy} demonstrates this behavior.
+The initial state is that the UI windows is positioned at the first copy of the first layer \textit{\#0 (copy 1)}.
+If the user now scrolls past the end and is already seeing the second copies (position 1), the window is instantly moved back by exactly the width of the original layers (position 2).
+This way, the user cannot tell if the offset was changed and it feels like the gallery is able to scroll infinitely.
+
+It is possible to achieve this with only one copy, but the iOS scroll view component will decelerate the scroll animation to fast if is realizes, that there are now more views to come.
+To have more buffer and therefore a soft user interface, two copies have to be made, which results in the layers existing three times.
+
+The problem now is, that because of the duplication of layers, it is undefined which layer responds to actions that reference the layer by its name.
+The virtual machine approach solves this problem, because the duplication of the layers will be done by the view.
+This way, there is no layer duplication and the changes of the separate layers will be flushed to all of the native observers.
+
 \subsection{Change Management}
 \label{sec:changemanagement}
 
@@ -176,12 +205,12 @@ Similar to the dirt management of Angular and Zone.js\footnote{See section \ref{
 	\begin{center}
 		\begin{tabular}{l|l}
 			Interaction                       & Examples                                                                                                                                                                                                                                                                            \\ \hline
-			Layer Actions               & \begin{tabular}[c]{@{}l@{}}Tap\\ ChatLayer send\\ BarcodeLayer onSuccess, onError\\ SmartList Item Actions \& Tap\\ MapList Item Actions\\ Autocompleter Cancel Actions\\ TextBoxLayer Return Actions\\ WebLayer navigation to af:// URL\\ MapLayer Annotation Actions\\GalleryLayer Page Index Change\end{tabular} \\ \hline
+			Layer Actions               & \begin{tabular}[c]{@{}l@{}}Tap\\ ChatLayer send\\ BarcodeLayer onSuccess, onError\\ SmartList Item Actions \& Tap\\ MapList Item Actions\\ Autocompleter Cancel Actions\\ TextBoxLayer Return Actions\\ WebLayer navigation to af:// URL\\ MapLayer Annotation Actions\\PickerLayer picked\\GalleryLayer Page Index Change\end{tabular} \\ \hline
 			App Events                  & \begin{tabular}[c]{@{}l@{}}didStart\\ didBecomeActive\\ didEnterBackground\end{tabular}                                                                                                                                                                                             \\ \hline
 			Update Manager Changes      & Database Update                                                                                                                                                                                                                                                                     \\ \hline
 			Timer Actions               & setTimeout                                                                                                                                                                                                                                                                          \\ \hline
 			Background Location Actions & startLocationTrackingAction (background: true)                                                                                                                                                                                                                                      \\ \hline
-			Push Notification Actions   & -                                                                                                                                                                                                                                                                                   \\ \hline
+			Push Notification Actions   & Payload action                                                                                                                                                                                                                                                                                   \\ \hline
 			Beacon Actions              & \begin{tabular}[c]{@{}l@{}}enterBeacon\\ exitBeacon\end{tabular}                                                                                                                                                                                                                    \\ \hline
 			NFC Actions                 & onTagActions                                                                                                                                                                                                                                                                       
 		\end{tabular}
@@ -612,7 +641,7 @@ The current implementation disregards all of the rules to some extend.
 
 \begin{enumerate}
 	
-\item \textbf{Every components of the \ac{JSON} model must be represented by a fully typed and read-only data structure.}
+\item \textbf{Every component of the \ac{JSON} model must be represented by a fully typed and read-only data structure.}
 
 To prevent uncoordinated side-effects and a safe interface to the model, the text based model must be represented by a read-only data structure.
 This guarantees a strict separation of parsing logic, dynamic behavior and side effects.
