@@ -8,6 +8,7 @@ The first section will describe the informal requirements to the model.
 Also, the model's evolution and progression is discussed, which is relevant to the main idea behind the model interpreter.
 
 \section{Implementation Goals}
+\label{sec:implementationgloas}
 
 The main problem of mobile app development is the iteration process, which consists of collecting requirements, creating conceptual prototypes and implementing on the two main platforms.
 Since requirements are informal, incomprehensive or change during the development, multiple iterations have to be done to converge to the final product.
@@ -68,7 +69,7 @@ However, the number of actual concrete requirements would be too high to be pres
 	
 	A template defines layer parameters by taking a dictionary of data and applies it to itself. The result can then be applied to a layout.
 	A template overrides layer parameters.
-	String literals inside the template can contain mustache\footnote{The string \textit{\{\{data.field\}\}} is replaced with the corresponding value from an object.\url{https://mustache.github.io/}} handles, which are evaluated against the data.
+	String literals inside the template can contain mustache\footnote{The string \textit{\{\{data.field\}\}} is replaced with the corresponding value from an object. \url{https://mustache.github.io/}} handles, which are evaluated against the data.
 	This allows reuse components and enables dynamic decision making during run time.
 	A layout-layer can dynamically load a sub-layout and apply a template.
 	Since the name of the template is part of the layout-layer's parameters, it can be evaluated on run time and be modified by a mustache syntax.

@@ -104,6 +104,7 @@ Since the mos-Framework tries to abstract mobile application platforms into a co
 To classify and evaluate the model approach for this domain, the following section will discuss models and their properties.
 
 \subsection{General Model Theory}
+\label{generalmodeltheory}
 
 A general model is described by Herbert Stachowiak\footnote{\cite{stachowiak_allgemeine_1973} 131}.
 He defines three properties, that apply to all models.
@@ -174,6 +175,7 @@ This procedure results in a model becoming part of the source of a program, and 
 A good model syntax can lead to the model being the documentation itself.
 
 \subsection{Modeling a Software System}
+\label{sec:modelingasoftwaresystem}
 
 An existing implementation can be analyzed, to create a model from it.
 If no model infrastructure exists, this is the way to approach the transformation.
@@ -352,7 +354,7 @@ Listing \ref{lst:licensetemplate} reveals some major advantages:
 Since \ac{XSLT} was created for web applications, \ac{PHP} offers native support and an \ac{XSLT} processor.
 To generate the HTML file, the script in listing \ref{lst:phpxsltgenerate} can be ran.
 
-\begin{lstlisting}[caption={generate.php -  Generation script}, language=php, label=lst:phpxsltgenerate]
+\begin{lstlisting}[caption={generate.php -  Generation script}, style=php, label=lst:phpxsltgenerate]
 <?php
 // Input
 $xml = new DOMDocument;
@@ -410,13 +412,13 @@ It is also possible to generate code for different target languages, which use t
 For example, it is possible to generate Kotlin instead of Java code, since Java is a subset of Kotlin.
 Also, the .NET runtime makes it possible to generate Visual Basic, C\# and C++ code from one \ac{AST}.
 
-\begin{lstlisting}[caption={Using an \ac{API} to generate Java code, written in Swift}, language=java, label=lst:javagenerator]
+\begin{lstlisting}[caption={Using an \ac{API} to generate Java code, written in Swift}, style=swift, label=lst:javagenerator]
 let studentClass = ClassDeclaration(named: "Student");
 studentClass.baseType = personClass
 studentClass.typeAttributes = .public
 \end{lstlisting}
 
-\begin{lstlisting}[caption={Java code result of lising \ref{lst:javagenerator}}, language=java, label=lst:generatredjava]
+\begin{lstlisting}[caption={Java code result of lising \ref{lst:javagenerator}}, style=myjava, label=lst:generatredjava]
 public class Student extends Person {
 }
 \end{lstlisting}
