@@ -21,13 +21,29 @@ Besides of apps, there are also other projects and solutions, like consulting an
 \subsection{Markets}
 
 Fabrik19 does not deliver apps directly to customers, but is partner of retail corporations and city marketing agencies.
-The current flagship is the Gießen App, which was developed in cooperation with DISTAMA GmbH.
+The current flagship is the Gießen App (figure \ref{giessenapp}), which was developed in cooperation with DISTAMA GmbH.
 The app was downloaded 34,000 times and has 20 distinct and active users per day.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=\linewidth]{images/background/giessenapp.jpg}
+	}
+	\caption{Gießen App, Marketing showcase image. Source: Giessen Entdecken \url{http://giessen-entdecken.de/die-app/}}
+	\label{giessenapp}
+\end{figure}
 
 Besides mobile apps, digital signage is another important market.
 The companion to the Gießen App is a stele that contains a large touchscreen and runs an app that is optimized for big touchscreens.
 It is located on the main pedestrian shopping street in Gießen and provides respective information on the stores and points of interests\footnote{\url{https://distama.de/bid-seltersweg/}}.
 Other stele systems are also active in Globus hardware stores and Globus grocery stores.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=\linewidth]{images/background/stele.png}
+	}
+	\caption{City marketing stele for shapping streets. Source: Fabrik19 Portfolio \url{https://fabrik19.de/project/interaktive-stele-giessener-seltersweg/?lang=en}}
+	\label{giessenstele}
+\end{figure}
 
 \subsection{City Marketing}
 
@@ -38,7 +54,27 @@ The goal was to combine technology knowledge with marketing, to be able to provi
 City marketing agencies are not always able to support an app, because they lack experience and domain knowledge.
 Distama is the mediator between the developer, the customer and the user.
 
+\subsection{Problem}
 
+To be able to deploy dynamic apps and change it's contents live, a model-driven interpreter architecture is being used.
+The contents and behavior are described by modeling the app as an abstract configuration.
+In addition, the client application is developed to reload it's contents and configurations if changed.
+This way, an application that has been deployed one time will always be up to date.
+This is needed for mobile applications but more importantly for digital signage installations.
+That is way, this organization chose a model-driven development approach for it's mobile applications.
+
+This can be applied to similar situations, where the requirement is to produce many application with similar structure, or where behavior and implementation has to be separated, because of complexity.
+One example is the generation of C-code for embedded systems using Simulink\footnote{\url{https://www.mathworks.com/products/simulink.html}}.
+It allows designing and modeling algorithms and structures by setting up a graphical block diagram.
+It is possible to structure algorithms in systems and subsystems, which behave as a block themselves.
+It is then possible to run simulations on those models, which is not as simple on the native code.
+Platform specific C-code can then be generated.
+
+Another example are video games or augmented reality applications, where there is a strict separation of content and rendering.
+Content developer are able to artistically create the worlds, while engine experts are available to maintain the rendering and hardware specific optimizations.
+
+Those two examples show, that model-driven development is used in several domains and it is a possible solution to manage complexity.
+Additional benefits like the ability to switch to another model without changing the app are the core ideas why the Fabrik19 organization chose this approach.
 
 \section{Model Interpreter System}
 
@@ -48,13 +84,21 @@ A web client is also actively in development, which aims to replace the .Net ver
 
 A configuration are multiple JSON files, that represent the app meta information, its layout and its behavior.
 The files are called node.
-There is one root node, whose url is baked into the app while compiling.
+There is one root node, whose \ac{URL} is baked into the app while compiling.
 This root node defines the first screen of the app.
 All the other screens can be defined in other nodes.
 When displaying another node, the new node is loaded from cache or network and its new view is pushed on the view stack, which is done by the interpreter.
 On the particular platforms, this action will look different and will use the platforms native animations.
 Web apps like Ionic have their own push animations which makes them feel foreign.
 The previous node can pass data, like the ID of the item that should be displayed.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=\linewidth]{images/background/nodeeditor.png}
+	}
+	\caption{The web based node editor is used to develop and edit the models. The Lauterbach App landing page is displayed.}
+	\label{nodeditor}
+\end{figure}
 
 The goal is, to be able to create a new app in one day, by meeting with the customer and configuring the app together.
 The syntax of the configuration is designed to abstract all of an apps standard behavior.
@@ -148,7 +192,21 @@ That is possible, because the model has by definition all of the necessary infor
 
 A derived original fulfills all of the models properties, otherwise the original is not a correct derivation.
 
-\section{Model Driven Development}
+\section{Model-Driven Architecture}
+
+\cite{miller_mda_2003} 2.2.11
+
+The Computation Independent Model
+
+Platform Independent Model 
+
+Platform Specific Model
+
+\cite{jeary_embedding_2011} 3
+
+Wraps into Code and Requirements engineering.
+
+\section{Model-Driven Development}
 
 Models can be used in a software development process (\ac{MDSD}) or as part of a software architecture (\ac{MDA}).
 Software is also a model, which represents real life objects and procedures.
@@ -184,7 +242,7 @@ If no model infrastructure exists, this is the way to approach the transformatio
 	\centering{
 		\includegraphics[width=0.8\linewidth]{images/background/mdsd1.pdf}
 	}
-	\caption{Analyzing an existing implementation}
+	\caption{Analyzing an existing implementation (according to \cite{stahl_model-driven_2006} 15).}
 	\label{fig:mdsd1}
 \end{figure}
 
@@ -209,7 +267,7 @@ This allows for a more simpler tools, because the application can be generated c
 	\centering{
 		\includegraphics[width=0.8\linewidth]{images/background/mdsd2.pdf}
 	}
-	\caption{Separation of code into source code and steady code}
+	\caption{Separation of code into source code and steady code (according to \cite{stahl_model-driven_2006} 15).}
 	\label{fig:mdsd2}
 \end{figure}
 
@@ -285,111 +343,165 @@ A template mixes the concrete target code presets with a markup notation, that i
 The handlebar notation is one of the simplest form of template based code generation.
 A well formed model, which is considered the input is applied to a template, which results into a resulting output.
 
-The following example tries to generate a HTML file with an overview of all used licenses of a mobile application, by using \ac{XSLT}.
-The model, which is created by a human user, contains only necessary information.
-Listing \ref{lst:licencesmodel} shows an example, that consists of three dependencies, two of which use an MIT and the other an Apache license.
+The following example generates \ac{HTML} code by using a \ac{XSLT}-based templates and \ac{XML} models.
+As described in listing \ref{lst:xsltmodel}, the model represents a list of text lines.
 
-\begin{lstlisting}[caption={licences.xml - The model that is representing a licences web page}, language=html, label=lst:licencesmodel]
-<licences>
-	<carthage>
-		<name>Alamofire</name>
-		<url>https://github.com/Alamofire/Alamofire</url>
-		<id>MIT</id>
-		<copyright>Copyright (c) 2014-2018 Alamofire Software Foundation (http://alamofire.org/)</copyright>
-	</carthage>
-	<carthage>
-		<name>Changeset</name>
-		<url>https://github.com/osteslag/Changeset</url>
-		<id>MIT</id>
-		<copyright>Copyright (c) 2015-18 Joachim Bondo</copyright>
-	</carthage>
-	<carthage>
-		<name>Couchbase Lite</name>
-		<url>https://github.com/couchbase/couchbase-lite-ios</url>
-		<id>Apache</id>
-		<copyright>Version 2.0, January 2004 http://www.apache.org/licenses/</copyright>
-	</carthage>
-</licences>
+\begin{lstlisting}[caption={data.xml - The model that is data.}, language=html, label=lst:xsltmodel]
+<list>
+  <entry>A</entry>
+  <entry>B</entry>
+</list>
 \end{lstlisting}
 
-Now, a template and processor needs to create a \ac{HTML} file, that displays the dependencies and a copy of their respective license.
+The template is displayed in listing \ref{lst:xslttemplate}.
+It defines, how the data is transformed into \ac{HTML}.
+The template is correct \ac{XHTML} by itself.
+This way, a structured and well-defined transformation can be modeled.
 
-\begin{lstlisting}[caption={template.xslt - An XML file, that is later tranformed to XHTML}, language=html, label=lst:licensetemplate]
+\begin{lstlisting}[caption={template.xslt - The templates that transforms data into HTML.}, language=html, label=lst:xslttemplate]
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:template match="/licences">
-		<hr />
-		<h1>iOS</h1>
-		<hr />
-		<xsl:apply-templates select="carthage"/>
+	<xsl:template match="/list">
+		<ul>
+			<xsl:apply-templates select="entry"/>
+		</ul>
 	</xsl:template>
-	<xsl:template match="carthage">
-		<h3><xsl:value-of select="name" /></h3>
-		<a>
-		<xsl:attribute name="href"><xsl:value-of select="url" /></xsl:attribute>
-		<xsl:value-of select="url" />
-		</a>
-		<h4><xsl:value-of select="id" /> License</h4>
-		<p><xsl:value-of select="copyright" /></p>
-		<xsl:if test="id = 'MIT'">
-			<p>Permission is hereby granted ...</p>
-		</xsl:if>
-		<xsl:if test="id = 'Apache'">
-			<p>TERMS AND CONDITIONS ...</p>
-		</xsl:if>
-		<hr />
+	<xsl:template match="entry">
+		<li>
+			<xsl:value-of select="." />
+		</li>
 	</xsl:template>
 </xsl:stylesheet>
 \end{lstlisting}
 
-Listing \ref{lst:licensetemplate} reveals some major advantages:
+A \ac{PHP} script can now trigger the \ac{XSLT} processor and generate an output file.
+This output file is shown in listing \ref{lst:xsltoutput}.
+
+\begin{lstlisting}[caption={XSLT ouput.}, language=html, label=lst:xsltoutput]
+<ul>
+	<li>A</li>
+	<li>B</li>
+</ul>
+\end{lstlisting}
+
+The mos interpreter uses \ac{XSLT} to generate the mandatory license \ac{HTML} page, which is based on a configuration file.
+Instead of the full license text, every third party license reference only contains the license type identifier (e.g. MIT).
+This way, the source file is easy to maintain and extend.
+
+This concrete usage example of \ac{XSLT} yields several benefits:
 
 \begin{enumerate}
 	\item Changing the style and layout of the HTML file requires only a few changes. Adding or changing the \ac{CSS} classes of elements only requires to change the one occurrence in the template.
-	\item The \ac{URL} of an entry was displayed as the text content of an $a$ element, but also occurs in the $href$ attribute. Changing the \ac{URL} later, can cause inconsistencies, if one of the two occurrences are omitted.
+	\item The \ac{URL} of an entry was displayed as the text content of an $a$ element, but also occurs in the $href$ attribute. Changing the \ac{URL} later, can cause inconsistencies, if one of the two occurrences are forgotten.
 	\item Instead of copying the license text to each entry, only the identifier (e.g. $MIT$) has to be defined.
 	The template appends the correct text automatically.
 	\item Defining a template and a model of this size actually made the handling more easy and future changes can be made much faster, while keeping the file consistent.
 \end{enumerate}
 
-Since \ac{XSLT} was created for web applications, \ac{PHP} offers native support and an \ac{XSLT} processor.
-To generate the HTML file, the script in listing \ref{lst:phpxsltgenerate} can be ran.
-
-\begin{lstlisting}[caption={generate.php -  Generation script}, style=php, label=lst:phpxsltgenerate]
-<?php
-// Input
-$xml = new DOMDocument;
-$xml->load('licences.xml');
-
-// Template
-$xsl = new DOMDocument;
-$xsl->load('template.xslt');
-
-// Transformer
-$proc = new XSLTProcessor;
-$proc->importStyleSheet($xsl);
-$output = $proc->transformToXML($xml);
-
-// Write to file
-$file = fopen("./LICENCES.html", "w") or die("Unable to open file!");
-fwrite($file, $output);
-fclose($file);
-?>
-\end{lstlisting}
-
-Figure \ref{fig:licences_html} displays the resulting \ac{HTML} file.
-This file can now be bundled in to the app and enriched with CSS and be displayed in the apps license menu.
-The generation of the file can also be automated, by including the generation in the application's continues deployment pipeline.
-The model, the template and the generation script would be committed into version control.
-Another approach would bundle the template and the script into an external tool, which will be developed and maintained separately.
-In that case, only the model would be part of the version control and thus the application's source.
-
-\begin{figure}[h]
-	\centering{
-		\includegraphics[width=\linewidth]{images/background/licences_html.png}
-	}
-	\caption{The generated HTML file viewed in a web browser}
-	\label{fig:licences_html}
-\end{figure}
+%The following example tries to generate a HTML file with an overview of all used licenses of a mobile application, by using \ac{XSLT}.
+%The model, which is created by a human user, contains only necessary information.
+%Listing \ref{lst:licencesmodel} shows an example, that consists of three dependencies, two of which use an MIT and the other an Apache license.
+%
+%\begin{lstlisting}[caption={licences.xml - The model that is representing a licences web page}, language=html, label=lst:licencesmodel]
+%<licences>
+%	<carthage>
+%		<name>Alamofire</name>
+%		<url>https://github.com/Alamofire/Alamofire</url>
+%		<id>MIT</id>
+%		<copyright>Copyright (c) 2014-2018 Alamofire Software Foundation (http://alamofire.org/)</copyright>
+%	</carthage>
+%	<carthage>
+%		<name>Changeset</name>
+%		<url>https://github.com/osteslag/Changeset</url>
+%		<id>MIT</id>
+%		<copyright>Copyright (c) 2015-18 Joachim Bondo</copyright>
+%	</carthage>
+%	<carthage>
+%		<name>Couchbase Lite</name>
+%		<url>https://github.com/couchbase/couchbase-lite-ios</url>
+%		<id>Apache</id>
+%		<copyright>Version 2.0, January 2004 http://www.apache.org/licenses/</copyright>
+%	</carthage>
+%</licences>
+%\end{lstlisting}
+%
+%Now, a template and processor needs to create a \ac{HTML} file, that displays the dependencies and a copy of their respective license.
+%
+%\begin{lstlisting}[caption={template.xslt - An XML file, that is later tranformed to XHTML}, language=html, label=lst:licensetemplate]
+%<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+%	<xsl:template match="/licences">
+%		<hr />
+%		<h1>iOS</h1>
+%		<hr />
+%		<xsl:apply-templates select="carthage"/>
+%	</xsl:template>
+%	<xsl:template match="carthage">
+%		<h3><xsl:value-of select="name" /></h3>
+%		<a>
+%		<xsl:attribute name="href"><xsl:value-of select="url" /></xsl:attribute>
+%		<xsl:value-of select="url" />
+%		</a>
+%		<h4><xsl:value-of select="id" /> License</h4>
+%		<p><xsl:value-of select="copyright" /></p>
+%		<xsl:if test="id = 'MIT'">
+%			<p>Permission is hereby granted ...</p>
+%		</xsl:if>
+%		<xsl:if test="id = 'Apache'">
+%			<p>TERMS AND CONDITIONS ...</p>
+%		</xsl:if>
+%		<hr />
+%	</xsl:template>
+%</xsl:stylesheet>
+%\end{lstlisting}
+%
+%Listing \ref{lst:licensetemplate} reveals some major advantages:
+%
+%\begin{enumerate}
+%	\item Changing the style and layout of the HTML file requires only a few changes. Adding or changing the \ac{CSS} classes of elements only requires to change the one occurrence in the template.
+%	\item The \ac{URL} of an entry was displayed as the text content of an $a$ element, but also occurs in the $href$ attribute. Changing the \ac{URL} later, can cause inconsistencies, if one of the two occurrences are omitted.
+%	\item Instead of copying the license text to each entry, only the identifier (e.g. $MIT$) has to be defined.
+%	The template appends the correct text automatically.
+%	\item Defining a template and a model of this size actually made the handling more easy and future changes can be made much faster, while keeping the file consistent.
+%\end{enumerate}
+%
+%Since \ac{XSLT} was created for web applications, \ac{PHP} offers native support and an \ac{XSLT} processor.
+%To generate the HTML file, the script in listing \ref{lst:phpxsltgenerate} can be ran.
+%
+%\begin{lstlisting}[caption={generate.php -  Generation script}, style=php, label=lst:phpxsltgenerate]
+%<?php
+%// Input
+%$xml = new DOMDocument;
+%$xml->load('licences.xml');
+%
+%// Template
+%$xsl = new DOMDocument;
+%$xsl->load('template.xslt');
+%
+%// Transformer
+%$proc = new XSLTProcessor;
+%$proc->importStyleSheet($xsl);
+%$output = $proc->transformToXML($xml);
+%
+%// Write to file
+%$file = fopen("./LICENCES.html", "w") or die("Unable to open file!");
+%fwrite($file, $output);
+%fclose($file);
+%?>
+%\end{lstlisting}
+%
+%Figure \ref{fig:licences_html} displays the resulting \ac{HTML} file.
+%This file can now be bundled in to the app and enriched with CSS and be displayed in the apps license menu.
+%The generation of the file can also be automated, by including the generation in the application's continues deployment pipeline.
+%The model, the template and the generation script would be committed into version control.
+%Another approach would bundle the template and the script into an external tool, which will be developed and maintained separately.
+%In that case, only the model would be part of the version control and thus the application's source.
+%
+%\begin{figure}[h]
+%	\centering{
+%		\includegraphics[width=\linewidth]{images/background/licences_html.png}
+%	}
+%	\caption{The generated HTML file viewed in a web browser}
+%	\label{fig:licences_html}
+%\end{figure}
 
 In larger projects, the template can become very complex.
 Using intermediate models as described in section \ref{sec:generation} that are generated from the source model, can reduce the complexity, branching and nesting, because the intermediate model has either the same or a correspondingly pleasant structure.
