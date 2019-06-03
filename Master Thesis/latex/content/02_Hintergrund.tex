@@ -113,6 +113,70 @@ Besides of displaying data, the client is highly intractable and can perform var
 
 This data can be used in describing the layout by defining layer conditions, which makes the app behave accordingly.
 
+\subsection{Example Configuration}
+
+The base elements of every app are nodes, which represent one view.
+A node is configured with comprehensive caching and style definitions.
+Structure, data and view are separated to make large apps more maintainable.
+That's why there are separate layout and template models, which are referenced in the node.
+The node that is displayed in listing \ref{lst:nodeexample} is part of the Lauterbach city marketing app.
+The example was reduced by flattening the \ac{JSON} hierarchy and omitting the majority of keys.
+The actual node has 80 lines of \ac{JSON} code.
+Many parameters can be configured to be dependent on device class and display orientation.
+
+\begin{lstlisting}[caption={A simplified example node configuration.}, style=myjava, label=lst:nodeexample]
+{
+	"baseUrl": "https://prod.domain.de/mos/lauterbach/",
+	"updateInterval": 180,
+	"enablePush": true,
+	"pushUrl": "https://lauterbach.pro.domain.de/",
+	"splashMinSeconds": 2,
+	"layoutName": "c_home",
+	"template": "home",
+	"url": "https://prod.domain.de/mos/lauterbach/home/",
+	"layoutHash": "2ff3572e829cc9c55f617738c146ec17",
+	"expires": "Mon, 03 Jun 2019 12:25:40 GMT"
+}
+\end{lstlisting}
+
+Listing \ref{lst:layoutexample} shows a simplified version of the layout \textit{c\_home}.
+It consists of one color layer and one grid layer.
+A color layer has a solid color and is used as a background.
+The grid layer arranges it's sublayers on a grid, while every layer contains information on column span and other layout constraints.
+The key \textit{children} of the grid layer in again contain an array of layers.
+
+\begin{lstlisting}[caption={A simplified layout configuration.}, style=myjava, label=lst:layoutexample]
+{
+	"name": "c_home",
+	"layers": [
+		{
+			"name": "bg",
+			"type": "color",
+			"value": "#ffffff",
+			"constraints": [ ... ]
+		},
+		{
+			"name": "grid",
+			"type": "grid",
+			"columns": "12",
+			"constraints": [ ... ],
+			"children": [ ... ]
+		}
+	]
+}
+\end{lstlisting}
+
+The \ac{URL} of the root node is now used by a client application.
+The result is shown in figure \ref{fig:lauterbachapp}.
+The color layer \textit{bg} is responsible for the white background, while the grid layer contains the whole view, which makes it scroll-able because.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=0.5\linewidth]{images/background/lauterbachapp.png}
+	}
+	\caption{Lauterbach app.}
+	\label{fig:lauterbachapp}
+\end{figure}
 
 \subsection{Use Cases}
 
@@ -127,7 +191,7 @@ Any change to the configuration is reflected as soon as the app checks for confi
 The update mechanism are also highly customizable, so that the optimal update intervals and strategies can be used for different apps.
 
 A city marketing app might need a medium update interval, so that promotions and special content are available when needed.
-A event app should have a very short update interval, so that the events program changes or announcements are delivered as fast as possible.
+An event app should have a very short update interval, so that the events program changes or announcements are delivered as fast as possible.
 
 
 \subsection{Interoperability}
