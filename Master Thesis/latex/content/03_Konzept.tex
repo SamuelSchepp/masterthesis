@@ -30,6 +30,7 @@ The following paragraph lists the functional requirements to the meta model.
 Those are aspects that have significantly influenced design choices.
 All of the listed requirements are high level ones, that reflect the paradigm.
 However, the number of actual concrete requirements would be too high to be presented here.
+There is a lot of implicit behavior, that is defined outside the model.
 
 \begin{enumerate}
 	\item \textbf{Separation into independent sub-models}
@@ -203,6 +204,7 @@ The method is highly agile and team oriented, since multiple code bases have to 
 Service-side services, the different platform interpreters and the model itself have to be developed in parallel.
 
 \section{Client Application}
+\label{sec:clientapplication}
 
 the next section will outline a possible architecture for the client application.
 Since the main artifact is an iOS framework, from which only the main method has to be called, the bundle's architecture is independent to the framework's functionality.

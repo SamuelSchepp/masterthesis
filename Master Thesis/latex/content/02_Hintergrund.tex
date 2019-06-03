@@ -10,7 +10,7 @@ It is in active development and powers over 50 apps that all are available in th
 The app categories range from retail to event to city marketing apps\footnote{\url{https://fabrik19.de/technologie/}}.
 
 
-\section{Company}
+\section{Fabrik 19}
 \label{sec:company}
 
 The creator of the system is Fabrik 19 GmbH.
@@ -142,6 +142,51 @@ The apps have the capability to be integrated in a Wordpress instance, a chat se
 By default any network communication is secured with an app specific client certificate.
 Other authentication methods have to be configured.
 
+\subsection{Existing infrastructure}
+
+Multiple mobile application for several customers are in production.
+Those are powered by a comprehensive infrastructure, that delivers app configurations, build systems and dynamic data endpoints.
+
+In addition to the following components, a continuous delivery system is in development, that allows automation of uploads to the app store.
+At the moment, an app can be build automatically, but the upload is performed manually by opening the generated Xcode project and use the built-in AppStore upload feature.
+
+\begin{enumerate}
+	\item \textbf{Git config}
+	
+	App meta data like app name, root configuration \ac{URL}, capabilities and access request declarations are configured separately.
+	At the moment, the meta data configuration are grunt task configurations that will replace placeholder values of an app template Xcode project.
+	
+	\item \textbf{Client app}
+	
+	The client app is the actual interpreter that is uses the configuration backend to load and display the app.
+	The app is build by combining different components like the abstract native mos framework and the app bundle.
+	The app bundle is created by a Jenkins build and represents an actual app instance.
+	The component are described in more detail in section \ref{sec:clientapplication}.
+	
+	\item \textbf{Jenkins build}
+	
+	Every employee can generate an app using a parameterized Jenkins build job.
+	This job will use the git config to generate a fully configured Xcode project and an exported app (ipa).
+	
+	\item \textbf{Configuration and data backends}
+	
+	The apps load their actual app configurations from a configuration backend.
+	This will load a model, that has already been transformed by injecting context specific user data.
+	This makes it easier to outsource complex logic work from the client to the server.
+	
+	\item \textbf{Node editor}
+	
+	The node editor is a web based configuration editor that is used to define the  model, that will later be used by the configuration backends.
+	
+	\item \textbf{B2B access server}
+	
+	Apps can be provided to customers for testing, before they are uploaded to the App Store.
+	This is done by a web portal that offers customers to download their apps directly on their phones.
+	This is done by Apple's Enterprise program, which allows side loading apps on any iPhone that has installed the respective certificate.
+\end{enumerate}
+
+
+
 \section{Models}
 
 Since the mos-Framework tries to abstract mobile application platforms into a common language, the configuration could be considered to be an abstract model of a mobile application.
@@ -150,17 +195,17 @@ To classify and evaluate the model approach for this domain, the following secti
 \subsection{General Model Theory}
 \label{generalmodeltheory}
 
-A general model is described by Herbert Stachowiak\footnote{\cite{stachowiak_allgemeine_1973} 131}.
+A general model is described by Herbert Stachowiak\footnote{\cite{stachowiak_allgemeine_1973} 131} in 1973.
 He defines three properties, that apply to all models.
 
-\textbf{Abbildungsmerkmal} (Representation): A model is a representation of an original, that is either a natural or artificial thing, that can have properties and behavior.
+\textbf{Representation characteristic}: A model is a representation of an original, that is either a natural or artificial thing, that can have properties and behavior.
 The original can be a model it's self.
 
-\textbf{Verkürzungsmerkmal} (Reduction): The second property is the ability to reduce properties and behavior of the original to a set, that is relevant for the model handlers.
+\textbf{Reduction characteristic}: The second property is the ability to reduce properties and behavior of the original to a set, that is relevant for the model handlers.
 The original might be a complex system and only a subsystem or specific properties and their interaction are relevant.
 For this, the model can reduce the complexity, to be more simple to understand and to minimize the error rate.
 
-\textbf{Pragmatisches Merkmal} (Pragmatism): Models can not be clearly assigned to their originals.
+\textbf{Pragmatic characteristic}: Models can not be clearly assigned to their originals.
 That means, that original and model are not equal, but can be interchanged.
 There are three cases defined by Stachowiak, in which the model can be used as an replacement.
 Models are not only models of something, but they are also models for someone, a person or an artificial model user.
@@ -199,7 +244,10 @@ Both are suitable for their respective use cases.
 If it is advantageous, that objects and their relationships can be arranged on a two dimensional surface, a graphical can be used.
 If the model syntax is similar to a programming language, graphic editors might obstruct the workflow.
 A text-based representation is commonly used in software development, so it is easy to integrate models into an existing infrastructure, because for example, it is easy to manage versioning using a \ac{VCS}.
-Also, tools for developing \acp{DSL} or generating code mostly operate on a text based model representation.
+Also, tools for developing \acp{DSL} or code generators mostly operate on text based model representations, therefore source code.
+
+Graphical models can be easier to understand at first, while the complexity may increase with growing model size.
+Examples for graphical models are \ac{UML} diagrams or visual programming languages like Scratch\footnote{Educational visual programming language for children. \url{https://scratch.mit.edu/}}.
 
 \section{Model-Driven Architecture}
 
