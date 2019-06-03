@@ -527,6 +527,23 @@ Using a virtual machine that runs headless\footnote{Headless is a mode of virtua
 It is possible to inject virtual app models into the \ac{VM} that can be used to test against.
 This allows for fast test setups and evaluation.
 
+\subsection{Generalizability}
+
+Abstracting different and separable aspects of software has always been the key focus of every software architecture or design pattern.
+The extent of which code is abstracted is the characteristic that changes through out the various approaches.
+This idea of an abstract virtual machine has a high level of code segregation, because the communication of the two levels is defined by several interfaces and protocols.
+In some way, the virtual machine is a model of an mobile app itself.
+It represents an app and it's current state and there are operations possible that are not possible in a native app, like instantiating and accessing \ac{UI} element on non-\ac{UI} threads.
+The \ac{UI} component now is responsible for translating the virtual machine to the \ac{UI}.
+The virtual machine makes this process as easy as possible, because all values are already evaluated and the \ac{UI} thread only has to initialize elements and apply the values.
+
+An approach like the virtual machine approach can be used in other domains, if business logic is complex and can be managed by an abstract system.
+In all cases, the \ac{UI} has minimal work and only creates work that is directly related to the visible interface elements.
+There are many examples like robotics controls, web apps and database systems.
+Database system use fully separated processes that only communicate via file system sockets or \ac{HTTP}.
+A complex web app can also benefit of a virtual machine approach, because JavaScript that is not accessing the \ac{DOM} can be very fast using modern technology like web-assembly.
+\ac{DOM} manipulations can then be executed only if necessary.
+React uses a virtual \ac{DOM} for exactly this purpose.
 
 
 
