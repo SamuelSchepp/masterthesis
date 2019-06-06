@@ -774,8 +774,27 @@ The following section will describe the roles of model-driven development teams 
 
 \begin{enumerate}
 	\item \textbf{Domain Analyst}
+	
+	The domain analysis evaluates the similarities and differences within a domain.
+	The goal is to compile a list of requirements, that is equal for every product.
+	These requirement will later be unified by the code generate or model interpreter.
+	This analysis can take up to multiple days and requires iterative workshops with various team members like product managers and domain architects\footnote{\cite{stahl_model-driven_2006} 380}.
+	
+	\item \textbf{Language Designer}
+	
+	As a link between the domain expert and the domain architect, the language designer defines the \ac{DSL} and implements reference models.
+	The results of the domain analysis directly incorporates into the \ac{DSL}'s design.
+	
+	\item \textbf{Domain Architect}
+	
+	The \ac{DSL} now has to be implemented and the domain infrastructure has to be developed.
+	This includes language tools, model transformers, code generators and model interpreters.
+	
 \end{enumerate}
 
+Each of those roles can be split up into sub roles, that will be responsible for more granular tasks.
+Depending on team size, roles can be taken by more than one person and one person can take multiple roles.
+In addition, classic roles like product managers, test engineers and customers are also present in a model-driven development approach.
 
 
 
