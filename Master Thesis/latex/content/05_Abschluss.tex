@@ -77,9 +77,21 @@ But it turned out that it can be also used directly for interactive digital sign
 Android and iOS devices are perfectly capable of mapping those identifiers to native values.
 A computer running desktop systems like Windows cannot directly provide those values, but instead can simulate a mobile device environment by always using \textit{landscape} and \textit{tab10} for example.
 
-\subsection{Abstraction}
+\subsection{MDA Abstraction}
 
-MDA, abstraction class
+The abstraction is a key element of model-driven development and is directly relevant to the model syntax.
+The \ac{MDA} standard define abstraction level as described in section \ref{modeldrivenarchitecture}.
+Most aspects of the model syntax that is used in mos are computation independent.
+An example are the layout constraints that define rules of layouting sibling layers to each other.
+Since there are multiple algorithms that can evaluate the rules to concrete frames, this aspect is considered computation independent.
+Another example is the declarative synchronization of layer data using form data keys.
+Layers with the same form data key share their data.
+Since this can be implemented by any platform in any way, this aspect is also computation independent.
+
+There are other aspects that have to be discussed.
+An app can load data into databases that can be configured using the model.
+This configuration can be interpreted by any relational database system, since only commonly used column types can be used.
+This can be considered computation independent, because the internal structure and processing of the configuration is not defined.
 
 \section{Architecture Analysis}
 
