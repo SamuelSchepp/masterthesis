@@ -43,6 +43,7 @@ There is a lot of implicit behavior, that is defined outside the model.
 	It knows everything and is connected to the database.
 	When the user clicks on one of the objects, the detail view is presented by passing either the database ID or the whole object as parameter.
 	The same approach is possible with nodes, which results in the detail view node not being independent to the master view node.
+	The requirement is met, if there separate text files for every aspect of the application.
 	
 	\item \textbf{Fully customizable layouts}
 	
@@ -52,6 +53,8 @@ There is a lot of implicit behavior, that is defined outside the model.
 	Position and size can be defined with constraints, by binding the edges of a layer to the edges of other layers or the superior container.
 	The binding can be modified with additional margins so that dynamic and portable layouts can be defined.
 	The system is inspired by Apple's Auto Layout\footnote{Auto Layout calculates absolute positions and sizes based on constraints between layers. \url{https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/AutolayoutPG/index.html}}.
+	The requirement is met, if there is a layout system, that has almost the same amount of flexibility as common layout libraries like Java Swing or React Native.
+	Absolute and relative layout flows have to be possible.
 	
 	\item \textbf{Declarative and reactive behavior}
 	
@@ -66,6 +69,10 @@ There is a lot of implicit behavior, that is defined outside the model.
 	The layer runs the query and applies the data to the template, and the template to the layout and displays the layout.
 	If one of the tables that are selected in the query changes, the \textit{layout layer} re-renders itself.
 	
+	This requirement is fulfilled, if the state is always observed and there a no illegal application states, that do not fit the configuration.
+	That means that is a layer is configured to get it's value from one source, this fact cannot be violated by setting a custom value.
+	Instead, the source's value must be changed.
+	
 	\item \textbf{Separation of data, templates and layouts}
 	
 	A template defines layer parameters by taking a dictionary of data and applies it to itself. The result can then be applied to a layout.
@@ -74,18 +81,24 @@ There is a lot of implicit behavior, that is defined outside the model.
 	This allows reuse components and enables dynamic decision making during run time.
 	A layout-layer can dynamically load a sub-layout and apply a template.
 	Since the name of the template is part of the layout-layer's parameters, it can be evaluated on run time and be modified by a mustache syntax.
+	The requirement is met, if there are multiple files for the various aspects and the files can be substituted by equivalent alternatives.
 	
 	\item \textbf{Database definitions}
 	
 	An \ac{SQL} database can be designed, that is in sync with a data source.
 	Fetch intervals, queries and structure can be defined.
 	Column based queries for inserting data from a data source enables a structure, that is different from the source.
+	This requirement is met, if the model syntax allows the definition of databases and sources, that will later be used to update the application's user data.
 	
 	\item \textbf{Actions}
 	
 	An action can perform common tasks like uploading data, setting layer values, or triggering fetches.
 	Actions can be fired by clicking on a layer or are triggered by other actions, which take the result of the previous action as context data to use.
 	The action's parameters can be customized by using handlebar notation and injecting context specific data into the actions.
+	An action always uses the data of it's trigger.
+	If a \textit{request} action\footnote{A request action performs a HTTP request and calls either a success event or a failure event. Those events can then be configured to run actions.} is configured to run a success action, the success action's parameters can access the result of the network request.
+	
+	The requirement is met, if there are configurable and predefined actions, that can be referenced on predefined hooks.
 \end{enumerate}
 
 \subsection{Non-Functional Model Requirements}
@@ -98,23 +111,31 @@ The following paragraph lists the non-functional requirements.
 	Existing models are easy to understand.
 	Names are clear and there is no room for interpretation.
 	A model developer has to be able to understand an unknown app's structure and perform changes.
+	This requirement is met, if it is easy to find the app's entry point, to navigate the different sub views and to associate the various additional files like layouts and templates with their respective nodes.
+	Also, parameter names have to be coherent, so that people who are already familiar with the model can understand the parameter.
 	
 	\item \textbf{No boilerplate code}
 	
 	All of the configuration contains highly concentrated information and no boiler plate code has to be defined.
 	Similar configurations can be combined to one reusable resource\footnote{Layouts, Templates and Nodes can be reused.}.
+	The requirement is met, if there is no aspect of the model that is configured the same in every app that has or will be developed using this infrastructure. 
 	
 	\item \textbf{Easy to parse by an interpreter}
 	
 	The model is easy to parse and is encoded in a common format.
 	Validators can check for simple errors.
 	While parsing performance is not the issue, the interpreter's code base needs to be as simple as possible to avoid errors and to be maintainable.
+	The requirement is met, if the model can be parsed into data structures, that can later be easily used to build up the object tree.
+	The model syntax already represents the rough structure of the implementation.
 	
 	\item \textbf{Backward and future compatibility}
 	
 	Adding new functionality has to be added without any old interpreters to fail on new models and a new interpreter to fail on old models.
 	Also, every new feature as to be developed with the future in mind.
 	The feature has to add important value to the models capabilities and has to fit into the design principles of the current feature set.
+	This requirement is met, if additional elements can be added to the already existing ones.
+	This includes, layers, actions, events and node parameters.
+	It is not necessary to implement full and arbitrary compatibility, because that increase the complexity exponentially.
 \end{enumerate}
 
 All of the above functional and non-functional requirements are developed both with a bottom-up and a top-down approach.
@@ -273,11 +294,16 @@ The behaviors, that are discussed per requirement are not expressed by the model
 	\item \textbf{Reflects changes to the model}
 	
 	After the configuration changes, the interpreter app loads the changes and updates it's behavior. This includes database configurations, layouts and caches.
+	This requirement is fulfilled, if there is no need to manually download new configuration data.
+	Instead, configured polling policies and hash comparison approaches make sure, that the configuration is updated in a appropriate interval.
 	
 	\item \textbf{Offline capable}
 	
 	All of the content that has been displayed in the app must be cached and available for offline use.
 	This includes nodes, images, layouts and templates.
+	This requirement is met, if everything that was downloaded stays available until new data was loaded.
+	This means that most of the read-only workflows still work in the actual app, if configured correctly.
+	It is not required for the app to work on first launch without internet access.
 	
 	\item \textbf{Cache-first policy}
 	
@@ -285,6 +311,9 @@ The behaviors, that are discussed per requirement are not expressed by the model
 	If a node is not available, the node will be downloaded from the network.
 	If the not is available but is expired, the new version will be downloaded.
 	Until the download finishes, the old node will be displayed.
+	This also applies to layouts, templates, images, database configurations and database content.
+	Expired data will be used until the latest data is loaded.
+	The requirement is met, if all downloaded data can be reused, until new data is available.
 	
 	\item \textbf{Clear cache and data}
 	
@@ -292,12 +321,16 @@ The behaviors, that are discussed per requirement are not expressed by the model
 	This way, some troubleshooting and customer support is possible.
 	It may happen that a faulty node is cached that is not compatible with the other nodes, or is not configured with a correct cache lifetime.
 	To prevent the need of re-install, a clear cache action is available that the user can execute himself.
+	This requirement is met, if the app user is able to reset the app, without downloading it again form the platforms application store.
+	Also, the reset option must be available outside of the app, because this action must be available even if the app does not start correctly.
 	
 	\item \textbf{Poor configurations lead to fall-backs}
 	
 	Dynamic model errors must lead to safe fall-back behaviors.
 	Under no circumstances should the app crash or display incomprehensible error messages.
 	Since there is no static model analysis, the app must be prepared with default values.
+	The requirement is met, if the app does not crash at any circumstances and poor configuration does not lead to incomprehensible error messages, that could confuse the user.
+	In case of doubt, nothing should happen.
 \end{enumerate}
 
 Some of the special behavior of the interpreter is available to the model to be described.
@@ -316,32 +349,40 @@ The following section will list non-functional requirements of the interpreter.
 	That is why, the battery usage must be kept low.
 	Since all of the modern mobile operating system have battery management tool integrated into the system, users can see which apps use a lot of battery.
 	If the app is listed there, the probability is high that the user will consider deleting it.
+	Bad configurations can have a significant impact on battery usage.
+	The requirement is met, if the app's battery usage is not noticeably high.
+	The requirement is not met, if there is a reasonable good app configuration, which has high battery usage and it is possible to implement the same functionality in a classic native app without the battery impact.
 	
 	\item \textbf{Fast app start}
 	
 	The must start as fast as possible.
 	Especially the first start is important, because it's the first impression that a user gets from the app.
 	Because of a strict cache policy, other starts are faster anyway.
+	The requirement is met if two seconds after the user tapped the app icon, the app is either fully launched or a progress indicator is displayed that shows, that the app is currently downloading necessary data.
 	
 	\item \textbf{High \ac{UI} and animation performance}
 	
 	The \ac{UI} should always be responsive and adequate loading indicators must be used.
 	It is accepted, that poorly designed models can lead to slow UI.
 	This is possible because of the high level of detail of the models.
+	The requirement is met is met, if a reasonable configuration allows 60 \ac{fps} \ac{UI} animations.
 	
 	\item \textbf{Low network usage}
 	
 	The app should not load redundant data or load the same data multiple times.
 	Client and server-side strategies can be used.
+	This requirement is met, if similar to the battery usage, the network usage is not significantly higher than comparable native apps.
 	
 	\item \textbf{Small download size}
 	
 	The size of the app at the time the user downloads it from the app store must be as small as possible.
+	The requirement is met, if the app size is not significantly higher than the size of similar native apps.
 	
 	\item \textbf{Small app size on disk}
 	
 	The app should not accumulate to much data, while in use.
 	New cache entries must always override old ones.
+	The requirement is met, if the app size on the disk is not significantly higher than the size of similar native apps.
 	
 	
 \end{enumerate}
