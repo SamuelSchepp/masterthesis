@@ -168,7 +168,7 @@ The key \textit{children} of the grid layer in again contain an array of layers.
 
 The \ac{URL} of the root node is now used by a client application.
 The result is shown in figure \ref{fig:lauterbachapp}.
-The color layer \textit{bg} is responsible for the white background, while the grid layer contains the whole view, which makes it scroll-able because.
+The color layer \textit{bg} is responsible for the white background, while the grid layer contains sub-layers which represent the whole view.
 
 \begin{figure}[h]
 	\centering{
@@ -198,7 +198,7 @@ An event app should have a very short update interval, so that the events progra
 
 The app can be filled with data via common REST services, that deliver JSON data.
 The app uses HTTP mechanisms and a custom delta system to only load new data.
-The mos backend system also has a data proxy, which can load any data and provide it in a simpler, preprocessed format, so it is simple for the apps to download.
+The mos backend system also has a data proxy, which can load any data and provide it in a simpler, pre-processed format, so it is simple for the apps to download.
 This way, it is possible to use any data source and still be able to change the templates and layouts without updates.
 
 The apps have the capability to be integrated in a Wordpress instance, a chat service like Mattermost or an secured \ac{API} that uses authentication methods like client certificates, authorization headers or JSON web tokens.
