@@ -9,7 +9,7 @@ The meta model and its instances can be examined for general validity and incons
 
 In the next section, the implementations of the interpreter are evaluated.
 This will be the focus, since the interpreter is the main subject in this thesis.
-The requirements as described in section \ref{sec:implementationgloas} will be weight by individual comparison.
+The requirements as described in section \ref{sec:implementationgloas} will be weighted by individual comparison.
 The old and new implementations will then be rated based on their compliance with the requirements.
 
 The evaluation is needed to be able to compare the two implementations and ultimately decide, if the new implementation is a step forward.
@@ -93,9 +93,50 @@ An app can load data into databases that can be configured using the model.
 This configuration can be interpreted by any relational database system, since only commonly used column types can be used.
 This can be considered computation independent, because the internal structure and processing of the configuration is not defined.
 
+\subsection{Requirements}
+
+The meta model requirements of section \ref{functionalmodelrequirements} will now be weighted.
+This is done using pairwise comparison.
+Figure \ref{fig:pairwisecomparisonmetamodell} shows the intermediate score values, while table \ref{table:pairwisecomparisonmetamodelresult} lists the results.
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{l|l}
+			Requirement                               & Score \\ \hline
+			F6 Actions                                   & 9     \\
+			F5 Database definitions                      & 5     \\
+			F2 Fully customizable layouts                & 5     \\
+			F1 Separation into independent sub-models    & 3     \\
+			F3 Declarative and reactive behavior         & 1     \\
+			F4 Separation of data, templates and layouts & 1     \\
+			NF2 No boilerplate code                       & -3    \\
+			NF4 Backward and future compatibility         & -5    \\
+			NF1 Easy to understand                        & -7    \\
+			NF3 Easy to parse by an interpreter           & -9   
+		\end{tabular}
+	\end{center}
+	\caption{Result of pairwise comparison of the meta model's requirements.}
+	\label{table:pairwisecomparisonmetamodelresult}
+\end{table}
+
+Every requirement was compared to each of the other ones and a score of -1 and 1 are assigned.
+There are ten requirements, so the maximum score is 9, while the minimum score is -9.
+The scoring shows, that F6 Actions is the most important requirement.
+It is notable, that actions have not been the first thing, that the model had to offer.
+The meta model started with F1 Separation into independent sub-models.
+But today, the actions are one of the most important features, while there are workarounds for the other requirements.
+The other obvious result is, that the non-functional requirements make up the entire bottom half of the requirement table.
+This is, because non-functional requirements on a meta model only affect application and infrastructure developers.
+
+The current meta model, that is used in the various production apps is fully implementing all of the acceptance criteria.
+Those are described in section \ref{functionalmodelrequirements} and the following.
+
 \section{Architecture Analysis}
 
 The analysis of a software architecture is described in \cite{klein_evaluating_2001}.
+It is one aspect of a software development project and is done, before the first design planning of the software's architecture is created.
+The architecture of a software references multiple point of views and abstraction level.
+The architectural consideration can refer to the procedure of the distributed applications or to the code paradigm used.
 
 \subsection{Native Approach}
 
@@ -108,13 +149,6 @@ The analysis of a software architecture is described in \cite{klein_evaluating_2
 \subsection{Virtual Machine Approach}
 
 
-\begin{figure}[h]
-	\centering{
-		\includegraphics[width=\linewidth]{images/evaluation/testmatrix.png}
-	}
-	\caption{Performance test}
-	\label{fig:testmatrix}
-\end{figure}
 
 
 
