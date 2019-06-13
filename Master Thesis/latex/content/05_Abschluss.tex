@@ -134,11 +134,46 @@ Those are described in section \ref{functionalmodelrequirements} and the followi
 \section{Architecture Analysis}
 
 The analysis of a software architecture is described in \cite{klein_evaluating_2001}.
-It is one aspect of a software development project and is done, before the first design planning of the software's architecture is created.
+It is one aspect of a software development project and is done before the first design planning of the software's architecture is created.
 The architecture of a software references multiple point of views and abstraction level.
-The architectural consideration can refer to the procedure of the distributed applications or to the code paradigm used.
+The architectural consideration can refer to the procedure of distributed applications or to the used code paradigm.
+A software architecture and it's analysis is "a bet, a wager on the success of a system" (\cite{klein_evaluating_2001} 19).
+This means, that a analysis might steer the software development process in a possibly reasonable direction, but the actual outcome relating to the requirements is undefined.
+In addition, the authors suggest, that an unsuitable architecture can cause a complete project failure.
+Also, the software architecture is directly related to the project structure and the team allocation.
+
+An architecture analysis starts with the definition of quality goals, which are non-functional requirements on the system.
+Those are not only end-user-oriented, but also include development and maintenance quality goals.
+Those goals have to be defined precisely since statements like "The system must be stable." do not have any explanatory power.
+The statement must refer a concrete scenario in which the system can handle errors and is able to stay available.
+The following list describes some examples.
+
+\begin{enumerate}
+	\item The system must stay available after 10.000 simultaneous login requests, where 10\% are unsuccessful logins.
+	\item The system must be available ten minutes after a power outage.
+	\item The system must have a maintenance mode, in which major components can be swapped, while the user sees a maintenance view.
+\end{enumerate}
+
+These goals now imply some consequences.
+A monolithic architecture might allow a simple and fast development process and fulfills the second goal, but it is not possible to change components while there is still a maintenance view for the end user.
+Also, depending on the complexity of a login request, the monolithic approach might be unable to handle those login requests.
+A distributed system might be more complex, especially the second goal can be challenging.
+But now it should be possible to handle many requests and implement a maintenance mode, where sub systems can be shutdown and swapped, while the main handler shows the maintenance view.
+
+A suitable architecture meets it's quality goals and is actually buildable.
+This is why the largest part of an architecture evaluation is the specification and prioritizing of quality goals.
+The goals are always referencing specific scenarios or functional requirements.
+For this analysis, the non-functional requirements of section \ref{nonfunctionalinterpreterrequirements} will be considered.
 
 \subsection{Native Approach}
+
+The "native" approach is the currently used production architecture, that is powering most of the mobile applications for iOS.
+It is comparable to a monolithic approach, since everything is happening on the main thread, and mos specific functionality is directly mapped to native \ac{UI} elements and frameworks.
+One example is the evaluation of layout constraints.
+If a text layer has a variable height, it should fit it's height to the size of the current text content.
+This is calculated using a native iOS Framework, which must operate on the main thread.
+Also, layouting the layers multiple times, because of resulting changes of conditions, is directly performed on the native \ac{UI} elements.
+This makes the main thread very busy, so the responsiveness and animation quality is not always guaranteed.
 
 \subsection{Virtual Machine Approach}
 
