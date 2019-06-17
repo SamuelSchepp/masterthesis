@@ -102,7 +102,7 @@ Figure \ref{fig:pairwisecomparisonmetamodell} shows the intermediate score value
 \begin{table}[h]
 	\begin{center}
 		\begin{tabular}{l|l}
-			Requirement                               & Score \\ \hline
+			Requirement                               & Weight (Score) \\ \hline
 			F6 Actions                                   & 9     \\
 			F5 Database definitions                      & 5     \\
 			F2 Fully customizable layouts                & 5     \\
@@ -162,27 +162,150 @@ But now it should be possible to handle many requests and implement a maintenanc
 
 A suitable architecture meets it's quality goals and is actually buildable.
 This is why the largest part of an architecture evaluation is the specification and prioritizing of quality goals.
-The goals are always referencing specific scenarios or functional requirements.
-For this analysis, the non-functional requirements of section \ref{nonfunctionalinterpreterrequirements} will be considered.
+The goals are always referencing specific scenarios or requirements.
+
+\section{Requirement Analysis}
+
+The following sections will evaluate the interpreter and the requirement implementation.
+The requirements of the interpreter are weighted by their importance.
+A detailed documentation is shown in figure \ref{fig:pairwisecomparisoninterpreter} and each of the requirements are described in section \ref{functionalinterpreterrequirements}.
+Every requirement is scored by using a pairwise comparison.
+The requirement that is more important gets a sore of 1 while the other one is scored -1.
+The results are shown in the following table.
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{r|l|l}
+			& Requirement                               & Weight \\ \hline
+			NF1 & Low battery usage                                   & 6     \\
+			F5 & Poor configurations lead to fall-backs                     & 6     \\
+			F1 & Reflects changes to the model                & 6     \\
+			NF2 & Fast app start    & 4     \\
+			NF3 & High UI and animation performance         & 4    \\
+			NF5 & Small download size    & 2     \\
+			F2 & Offline capable                      & -2    \\
+			F3 & Cache-first policy        & -6    \\
+			NF4 & Low network usage             & -6    \\
+			NF6 & Small app size on disk       & -6   \\
+			F4 & Clear cache and data       & -8   
+		\end{tabular}
+	\end{center}
+	\caption{Result of pairwise comparison of the interpreter's requirements.}
+	\label{table:pairwisecomparisoninterpreterresult}
+\end{table}
+
+There are 11 requirements, so a maximum score of 10 or a minimum of -10 is possible.
+The fact that the scores are not extreme and the values are more spread out show, that the requirement's weights or more similar to each other than the ones of the meta model.
+It is not as obvious of how to sort them.
 
 \subsection{Native Approach}
 
-The "native" approach is the currently used production architecture, that is powering most of the mobile applications for iOS.
+The "native" approach is the currently used production architecture, that is powering most of the company's mobile applications for iOS.
 It is comparable to a monolithic approach, since everything is happening on the main thread, and mos specific functionality is directly mapped to native \ac{UI} elements and frameworks.
 One example is the evaluation of layout constraints.
 If a text layer has a variable height, it should fit it's height to the size of the current text content.
 This is calculated using a native iOS Framework, which must operate on the main thread.
 Also, layouting the layers multiple times, because of resulting changes of conditions, is directly performed on the native \ac{UI} elements.
 This makes the main thread very busy, so the responsiveness and animation quality is not always guaranteed.
-The other goals are all easily fulfilled, using the native approach architecture, because they are common mobile application requirements, that already are implemented in the native frameworks.
+The other goals are all easily fulfilled, using the native approach architecture, because they are common mobile application requirements, that are already implemented in the native frameworks.
+
+The next section will describe how well the native approach interpreter is implementing the requirements.
+A scale of 1 to 4 is used:
+
+\begin{enumerate}
+	\item \textbf{1} This requirements is not implemented
+	\item \textbf{2} This requirement is implemented poorly
+	\item \textbf{3} This requirement is partially implemented
+	\item \textbf{4} This requirement is fully implemented
+\end{enumerate}
+
+Table \ref{table:implementationscorenativeapproach} will score the requirement based on the implementation.
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{r|l|l}
+			& Requirement                               & Quality \\ \hline
+			F1 & Reflects changes to the model                & 4     \\
+			NF4 & Low network usage             & 4    \\
+			NF2 & Fast app start    & 4     \\
+			NF1 & Low battery usage                                   & 3     \\
+			F5 & Poor configurations lead to fall-backs                     & 3     \\
+			NF5 & Small download size    & 3     \\
+			F2 & Offline capable                      & 3    \\
+			F3 & Cache-first policy        & 3    \\
+			NF6 & Small app size on disk       & 3   \\
+			F4 & Clear cache and data       & 3      \\
+			NF3 & High UI and animation performance         & 2 
+		\end{tabular}
+	\end{center}
+	\caption{Implementation score of each requirement of the native approach interpreter.}
+	\label{table:implementationscorenativeapproach}
+\end{table}
+
+The requirement weights of table \ref{table:pairwisecomparisoninterpreterresult} will now be normalized. 
+Since weights of -10 to 10 are possible, there are 21 values, which are scaled from 0 to 20.
+Those will then be multiplied with the implementation score and then accumulated.
+Since there are 11 requirements which could be implemented with a score of 4 and a median weight of 10, the \textbf{maximum possible score is 440}.
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{r|l|l|l|l}
+			& Requirement       & Weight & Quality & Score \\ \hline
+			F1 & Reflects changes to the model    & 16 & 4 & 64    \\
+			NF2 & Fast app start    & 14 & 4 & 56   \\
+			NF1 & Low battery usage            &16  & 3  & 48   \\
+			F5 & Poor configurations lead to fall-backs      & 16 & 3 & 48    \\
+			NF5 & Small download size    & 12 & 3 & 36    \\
+			NF3 & High UI and animation performance      & 14    & 2  & 28 \\
+			F2 & Offline capable       & 8 & 3 & 24   \\
+			NF4 & Low network usage      & 4    & 4  & 16 \\
+			F3 & Cache-first policy       & 4  & 3 & 12  \\
+			NF6 & Small app size on disk      & 4  & 3 & 12  \\
+			F4 & Clear cache and data       & 2 & 3   & 6   
+			\\ \hline
+			 &    & &    &   \textbf{350}
+		\end{tabular}
+	\end{center}
+	\caption{Implementation score of each requirement of the native approach interpreter.}
+	\label{table:implementationscorenativeapproachresults}
+\end{table}
+
+Table \ref{table:implementationscorenativeapproachresults} shows, that the end score of the native approach interpreter is 350 of 440.
+The table also shows, that the requirement NF3 (High UI and animation performance) is of above-average importance (14 out of 20), but the implementation quality is only scored at 2 out of 4.
+This represents the main issue with the native approach interpreter implementation.
 
 \subsection{Virtual Machine Approach}
 
-\section{Requirement Analysis}
+Since there is no full implementation of a virtual machine approach, only assumptions can be made.
+Since the proof-of-concept implementation implies a buildable architecture, the following table (\ref{table:implementationscorevirtualmachineapproachresults}) assumes, that there is a correct and full implementation of the virtual machine approach.
 
-\subsection{Native Approach}
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{r|l|l|l|l}
+			& Requirement       & Weight & Imaginary Quality & Score \\ \hline
+			F1 & Reflects changes to the model    & 16 & 4 & 64    \\
+			NF2 & Fast app start    & 14 & 4 & 56   \\
+			NF3 & High UI and animation performance      & 14    & 4  & 56 \\
+			NF1 & Low battery usage            &16  & 3  & 48   \\
+			F5 & Poor configurations lead to fall-backs      & 16 & 3 & 48    \\
+			NF5 & Small download size    & 12 & 3 & 36    \\
+			F2 & Offline capable       & 8 & 3 & 24   \\
+			NF4 & Low network usage      & 4    & 4  & 16 \\
+			F3 & Cache-first policy       & 4  & 3 & 12  \\
+			NF6 & Small app size on disk      & 4  & 3 & 12  \\
+			F4 & Clear cache and data       & 2 & 3   & 6   
+			\\ \hline
+			&    & &    &   \textbf{378}
+		\end{tabular}
+	\end{center}
+	\caption{Implementation score of an imaginary virtual machine implementation.}
+	\label{table:implementationscorevirtualmachineapproachresults}
+\end{table}
 
-\subsection{Virtual Machine Approach}
+It can be assumed that the other requirements are not affected.
+This way, the score increases from 350 to 378 (out of 440).
+This is an increase from 79.55\% to 85.91 \% which is an improvement of 6.36 \%.
+
 
 
 
