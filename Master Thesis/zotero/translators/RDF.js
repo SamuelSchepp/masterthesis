@@ -1,19 +1,19 @@
 {
 	"translatorID": "5e3ad958-ac79-463d-812b-a86a9235c28f",
+	"translatorType": 1,
 	"label": "RDF",
 	"creator": "Simon Kornblith",
 	"target": "rdf",
 	"minVersion": "2.1.9",
-	"maxVersion": "",
+	"maxVersion": null,
 	"priority": 100,
+	"inRepository": true,
+	"browserSupport": "gcsibv",
 	"configOptions": {
 		"async": true,
 		"dataMode": "rdf/xml"
 	},
-	"inRepository": true,
-	"translatorType": 1,
-	"browserSupport": "gcsibv",
-	"lastUpdated": "2018-10-07 16:32:26"
+	"lastUpdated": "2019-06-15 13:25:00"
 }
 
 /*
@@ -143,7 +143,7 @@ function handleCreators(newItem, creators, creatorType) {
 			if (c.firstName || c.lastName) return c;
 
 			c = getFirstResults(obj, [n.so+"name"], true);
-			if (c) return ZU.cleanAuthor(c, creatorType);
+			if (c) return ZU.cleanAuthor(c, creatorType, c.includes(','));
 		}
 	}
 
