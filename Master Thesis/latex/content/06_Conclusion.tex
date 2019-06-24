@@ -2,13 +2,67 @@
 
 \chapter{Conclusion}
 
+This chapter will wrap up the discussion on the interpreter and it's various implementation approaches.
+A summary will be given, that will outline the key aspects of all of the previous chapter.
+After that, the evaluation result will be discussed and the research questions of section \ref{sec:goals} will be answered.
+The current state of art will then be described using other examples.
+This thesis will then end with a list of next steps resulting from the work and references to related papers and work.
+
 \section{Summary}
 
+
+Fabrik19 is a company, that develops marketing and e-commerce applications for digital signage and mobile apps.
+To be able to update the contents, layouts and behaviors of the applications, a model interpreter infrastructure has been developed, so there is no need to update the local application bundles on the physical signage devices or the mobile applications.
+
+The model defines layout, behavior and data.
+The configuration allows the definition of complex layouts and interaction.
+This makes it very powerful and functional, while still being very flexible.
+If the configuration changes, the applications download the changes and updates it's behavior accordingly.
+
+Because of low starting requirements, the interpreter's performance is noticeable slower than a native application's performance, that implements the functionality directly and natively.
+This is because a software architecture has been implemented, that directly maps the models capabilities to native \ac{UI} elements.
+Since changes to the \ac{UI} are happening multiple times with only one user interaction, the \ac{UI} thread is very busy.
+An interaction example is a database change, that could trigger layout updates.
+If the interaction produces multiple interactions, all the changes are applied to the \ac{UI}, blocking the main thread.
+
+An alternative approach of implementing the interpreter is the virtual machine approach, which simulates the app's runtime with basic data structures.
+This system is independent to any native \ac{UI} implementation and the main thread.
+This means, that any change can be evaluated and the virtual \ac{UI} hierarchy can be created on custom background threads.
+After the evaluation is finished and every calculation is done, the changes are applied to the actual native \ac{UI}.
+The application of changes is fast, because only the resulting changes are being applied.
+This means there is no duplicated work.
+The idea is inspired by the virtual DOM of React Native and the event zoning of Angular.
+
+
+
+
 \section{Discussion}
+
+
 
 \section{State of the Art}
 
 \section{Next Steps}
+
+This section will discuss further development approaches and the development steps that should now be taken by the team.
+This includes alternative architectures and concrete implementation approaches.
+
+\subsection{Continuous Implementation}
+
+The next step is the actual implementation of the interpreter.
+It could be considered a full rewrite, but the more intelligent solution is a continuous evolution, which transfers the application into the target architecture.
+The approach that was described fully separates the virtual runtime and the user interface.
+This radical step can be applied to the interpreter by separating all the aspects step by step.
+
+In the beginning, the UI behavior can be extracted from the various layer implementations, by sub-classing native view elements and implement view specific behavior.
+This way, the dirt flushing mechanism can be implemented step by step.
+The next major problems are the view controller, which are the windows that present the node layouts.
+Those also need to be separated, so the window management is working with the virtual windows, which directly use the native elements.
+After that, the dirt flush mechanism is fully implemented so that every change only results in a dirt flag, which will then be applied to the view after the interactions are finished.
+
+Each step can be considered a sprint between which the application is executable.
+Every change is a step in the right direction, because a good abstraction supports maintainability and extensibility.
+After every changes, the team can evaluated if the next step is even possible or if the architecture is not suitable at all.
 
 \subsection{Hybrid Approaches}
 
