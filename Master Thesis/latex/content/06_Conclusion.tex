@@ -18,6 +18,7 @@ The model defines layout, behavior and data.
 The configuration allows the definition of complex layouts and interaction.
 This makes it very powerful and functional, while still being very flexible.
 If the configuration changes, the applications download the changes and updates it's behavior accordingly.
+The model fits into the definition of the general and specialized model theories, that are defined by Stachowiak \cite{stachowiak_allgemeine_1973} and Seidewitz \cite{seidewitz_what_2003}.
 
 Because of low starting requirements, the interpreter's performance is noticeable slower than a native application's performance, that implements the functionality directly and natively.
 This is because a software architecture has been implemented, that directly maps the models capabilities to native \ac{UI} elements.
@@ -33,12 +34,34 @@ The application of changes is fast, because only the resulting changes are being
 This means there is no duplicated work.
 The idea is inspired by the virtual DOM of React Native and the event zoning of Angular.
 
-
-
+A use value analysis illustrates, that a re-engineering would increase the overall implementation quality by 6.36\%.
+This shows that a re-engineering would improve the client application only by a small margin, because the overall requirement implementation quality is high.
 
 \section{Discussion}
 
+The research questions that have been stated in \ref{sec:goals} relate to the concept, implementation and evaluation chapters of this thesis.
+This section will summarize the main results, which can be used to answer these questions.
 
+There are many functional requirements that are placed on the interpreter.
+This is why, only the most relevant requirements, which encapsulate many sub-requirements are outlined.
+So the first question can be answered by reading the sections \ref{functionalmodelrequirements} and \ref{functionalinterpreterrequirements}.
+
+Two implementation approaches are described of which one is in production use at the moment.
+The second approach tries to fix the issues that have come to light while the system evolved.
+The answer to the second question is the native approach and the virtual machine approach that have been described in detail in \ref{sec:nativeapproach} and \ref{sec:virtualmachineapproach}.
+
+The interpreter can be evaluated using an architecture analysis, which is done by the entire development team and a use-value analysis which scores the implementation quality, based on various requirement weights.
+This answers the third question.
+A more detailed architecture analysis is described in \cite{klein_evaluating_2001}.
+
+The use-value analysis indicates, that the current interpreter implementation already has a satisfying quality.
+This is also true for the legacy implementation, which lacks a few features but is implementing it's requirements, too.
+This suggests a correlation between the evaluation's result and the informal feeling and usability of the apps, that has been mentioned by the development team and users.
+
+The generalizability is limited by the fact that the interpreter is only evaluated against it's requirements.
+That is why, the result is only comparable to software systems that have been evaluated using the same requirements with the same weights.
+This is the case for alternative implementations.
+If the requirements are valid for every platform\footnote{iOS, Android}, also the different platform interpreter evaluations can be compared to each other.
 
 \section{State of the Art}
 
@@ -47,7 +70,7 @@ The idea is inspired by the virtual DOM of React Native and the event zoning of 
 This section will discuss further development approaches and the development steps that should now be taken by the team.
 This includes alternative architectures and concrete implementation approaches.
 
-\subsection{Continuous Implementation}
+\subsection{Continuous Re-Engineering}
 
 The next step is the actual implementation of the interpreter.
 It could be considered a full rewrite, but the more intelligent solution is a continuous evolution, which transfers the application into the target architecture.
@@ -60,8 +83,8 @@ The next major problems are the view controller, which are the windows that pres
 Those also need to be separated, so the window management is working with the virtual windows, which directly use the native elements.
 After that, the dirt flush mechanism is fully implemented so that every change only results in a dirt flag, which will then be applied to the view after the interactions are finished.
 
-Each step can be considered a sprint between which the application is executable.
-Every change is a step in the right direction, because a good abstraction supports maintainability and extensibility.
+Each step can be considered to be a sprint in which the application is executable after each iteration.
+Every change is a step in the target direction, because a good abstraction supports maintainability and extensibility.
 After every changes, the team can evaluated if the next step is even possible or if the architecture is not suitable at all.
 
 \subsection{Hybrid Approaches}
