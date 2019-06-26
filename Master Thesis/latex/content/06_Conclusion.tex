@@ -55,15 +55,56 @@ This answers the third question.
 A more detailed architecture analysis is described in \cite{klein_evaluating_2001}.
 
 The use-value analysis indicates, that the current interpreter implementation already has a satisfying quality.
-This is also true for the legacy implementation, which lacks a few features but is implementing it's requirements, too.
+This is also true for the legacy implementation, which lacks a few features but is implementing it's respective requirements.
 This suggests a correlation between the evaluation's result and the informal feeling and usability of the apps, that has been mentioned by the development team and users.
 
 The generalizability is limited by the fact that the interpreter is only evaluated against it's requirements.
 That is why, the result is only comparable to software systems that have been evaluated using the same requirements with the same weights.
 This is the case for alternative implementations.
-If the requirements are valid for every platform\footnote{iOS, Android}, also the different platform interpreter evaluations can be compared to each other.
+If the requirements are valid for every platform\footnote{iOS, Android}, the different platform interpreter evaluations can be compared to each other.
 
 \section{State of the Art}
+
+There are alternatives to the mos software system.
+React Native is a JavaScript interpreter, which runs JavaScript code using WebKit's JavaScriptCore.
+The UI declaration is translated into native elements and user interaction results into a re-evaluation of the virtual view hierarchy, which is then applied to the native view.
+This way, user interaction, animations are fast and native functionality is available in the JavaScript context.
+The user code is bundled into a single file, which can be swapped at any time.
+Expo is a React Native infrastructure and framework system, which allows the replacement of the JavaScript bundle file, while the app is started for the next time.
+The \ac{UI} is defined by \ac{JSX}, which allows embedding XML like code as expressions into JavaScript.
+This makes it possible to directly write \ac{HTML} or \ac{UI} code, while still being able to inject JavaScript data.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=\linewidth]{images/conclusion/reactnative.png}
+	}
+	\caption{React native \ac{JSX} for displaying some text. Source: \url{https://facebook.github.io/react-native/docs/tutorial}}
+	\label{fig:reactnative}
+\end{figure}
+
+The evaluated approach that is discussed in this thesis is implemented by React Native.
+While the proposed architecture is only called virtual machine, because of it's strict separation from the main thread, the React Native implementation actually uses the JavaScript runtime environment for it's main calculation and virtual \ac{DOM} evaluation.
+This is why, React Native represents the most advanced version of the virtual machine approach.
+The capabilities of the React Native runtime are to high and the requirements of mos would not be met.
+The model, which is the JavaScript code, is to complex, because it is not declarative, but imperative.
+
+Another similar software system is \ac{TVML} by Apple.
+Using a markup language that is similar to \ac{HTML}, apps for Apple TV can be designed that shows video content and library views.
+Apple TV is a set-top box for televisions that is comparable to Amazon Fire TV.
+\ac{TVML} contains predefined layouts and data interfaces to present video libraries.
+Since video library apps are very similar, \ac{TVML} can be used to build a fully functional app, which fully supports the remote's gestures and system functionality.
+For advanced logic, TVMLKit JS can be used, which is a full JavaScript environment with \ac{TVML} specific classes and objects.
+The client application is responsible for loading and displaying the markup definitions, which is handled by classic, native code.
+This means the loading and caching policies can be fine-tuned to match the requirements.
+\ac{TVML} is comparable to the mos software system, because the model can be rendered server-side and it is declarative in it's core.
+
+\begin{figure}[h]
+	\centering{
+		\includegraphics[width=\linewidth]{images/conclusion/tvml.png}
+	}
+	\caption{Server-side rendered \ac{TVML} displayed in the client application. Source: \url{https://developer.apple.com/documentation/tvml/catalogtemplate}}
+	\label{fig:tvml}
+\end{figure}
 
 \section{Next Steps}
 
