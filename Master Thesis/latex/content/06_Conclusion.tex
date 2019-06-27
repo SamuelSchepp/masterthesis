@@ -108,7 +108,7 @@ This means the loading and caching policies can be fine-tuned to match the requi
 
 \section{Next Steps}
 
-This section will discuss further development approaches and the development steps that should now be taken by the team.
+This section will discuss further development approaches and the steps that should now be taken by the team.
 This includes alternative architectures and concrete implementation approaches.
 
 \subsection{Continuous Re-Engineering}
@@ -130,9 +130,51 @@ After every changes, the team can evaluated if the next step is even possible or
 
 \subsection{Hybrid Approaches}
 
+A hybrid interpreter is a architecture approach, that allows native and custom code to run with an interpreted model side-by-side.
+This can be achieved by embedding an interpreter to offload some aspects of an app.
+A example are parts of the mobile applications of Facebook and Instagram, where some features and far-flung are extracted into based progressive web apps\footnote{Source: \url{https://instagram-engineering.com/react-native-at-instagram-dd828a9a90c7}}.
+Those run inside the app and basically behave like other native parts of the app.
+These can be recognized by longer loading times and a delayed view setup.
+The same benefits and disadvantage apply to the part of the application that now is handled by the respective interpreter.
+Code only has to be written one time for any platform, the model can be loaded from network, to make it possible to change important aspects live.
+Promotion and news are often times models or configuration data that can be interpreted on the platform without the need to design custom views and wait for the user to update.
+This approach is suitable for apps that only substitute small aspects.
+
+A alternative is a plugin system, that is integrated into the meta model and the interpreter.
+This way, the model can access native functionality that must be compiled into the app and is then part of the interpreter.
+The meta model could be extended to support the call of static native methods.
+The interpreter can be compiled to directly understand the method name and map them directly to the call.
+It is also possible to directly call a static method using reflection by only using the name.
+This way, that plugin library can be linked dynamically.
+The plugins can access the the plugin interface of the interpreter.
+Depending on requirements, this interface can be very open, so the interpreter can be arbitrarily extended.
+This approach can be used, if the native parts are small exceptions.
+Examples are native components in React Native or native modules in ionic.
+
+A hybrid interpreter can also mean, that parts of the interpreter are generated.
+For mos, this is partially true, because the app container is generated using an additional model.
+The generated produces a native app project structure that can be used by Xcode to run and publish the app.
+The app then uses the interpreter framework to display the actual app contents.
+This means, that if the whole app is considered to be the interpreter, it is a hybrid interpreter.
+If only the sub-framework is considered to be an interpreter, it's not considered hybrid.
+
 \subsection{Runtime Models}
 
 \subsection{Abstraction}
 
 
 \section{Related Work}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
