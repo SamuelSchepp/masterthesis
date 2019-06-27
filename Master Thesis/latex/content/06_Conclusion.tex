@@ -162,6 +162,30 @@ If only the sub-framework is considered to be an interpreter, it's not considere
 
 \subsection{Abstraction}
 
+It is possible to achieve even more platform independence, by implementing the virtual machine component in a common language.
+Since the idea behind the virtual machine approach is, that no platform dependent code is used, this framework could be implemented in various platforms or languages.
+Table \ref{table:platformindependentabstraction} shows some examples.
+
+\begin{table}[h]
+	\begin{center}
+		\begin{tabular}{l|l|l}
+			Platform       & Language   & Runtime                    \\ \hline
+			Native Library & C++        & Native library                 \\
+			JavaScriptCore & TypeScript & JavaScript runtime environment \\
+			Xamarin        & C\#        & Native library                 \\
+			Kotlin Native  & Kotlin     & Native library                
+		\end{tabular}
+	\end{center}
+	\caption{Platform independent virtual machines.}
+	\label{table:platformindependentabstraction}
+\end{table}
+
+Since the virtual machine implementation needs to be a highly optimized and fast system, that runs on multiple threads, the JavaScript runtime environment is not suitable.
+Xamarin and Kotlin Native introduce another layer of dependency and potential bugs.
+Also, part of the overall requirements of mos is to avoid as many dependencies as possible.
+The best option is C++, which can be compiled to the respective platforms and can be used directly and natively without crossing abstraction barriers.
+The interface must be designed very carefully so that both platforms can work with the implementation.
+
 
 \section{Related Work}
 
