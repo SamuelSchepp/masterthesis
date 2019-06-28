@@ -183,8 +183,26 @@ Table \ref{table:platformindependentabstraction} shows some examples.
 Since the virtual machine implementation needs to be a highly optimized and fast system, that runs on multiple threads, the JavaScript runtime environment is not suitable.
 Xamarin and Kotlin Native introduce another layer of dependency and potential bugs.
 Also, part of the overall requirements of mos is to avoid as many dependencies as possible.
-The best option is C++, which can be compiled to the respective platforms and can be used directly and natively without crossing abstraction barriers.
+
+The most compatible and future-proof option is C++, which can be compiled to the respective platforms and can be used directly and natively without crossing abstraction barriers.
 The interface must be designed very carefully so that both platforms can work with the implementation.
+C++ makes the development hard, because it is a unsafe language that must be bridged to C and then to Swift, which makes it hard for changes to be implemented.
+Also, modern programming paradigms like functional or reactive programming, multi-threading, networking and JSON are not fully supported by the standard library.
+
+Another suitable platform is Kotlin Native, which makes it possible to actually use classes and functions as if there where implemented natively.
+Kotlin is a modern functional programming language with a comprehensive tooling support for documentation and unit testing.
+It is a very safe language, because it supports optionals, coroutines, automatic operator synthesis\footnote{In Kotlin, data classes are collections of fields where many operators like equals, copy and toString are automatically generated.} and other modern programming paradigms.
+As of June 2019, Kotlin Native multi-platform libraries are still an experimental feature.
+
+One aspect of the mos interpreter has been abstracted into a Kotlin Native framework.
+A routing algorithm for the map layer has been developed as a framework so that iOS and Android can share it's code.
+While iOS uses the exported framework file, the Android project includes the framework's source files and compiles them directly to Android-native machine code.
+
+The JavaScript Core approach makes it hard to exchange data and implement callback mechanisms.
+While it is easy for the iOS application to set function pointers and exchange JSON data, the impact on the overall complexity must be evaluated by re-writing the demonstrator in JavaScript.
+Since JavaScript does not allow multi-threading, this alternative should not be considered.
+
+The ultimate goal is a common virtual machine implementation where the clients would act as user interface and platform-specific feature providers.
 
 
 \section{Related Work}
