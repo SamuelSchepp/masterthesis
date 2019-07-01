@@ -1,0 +1,1143 @@
+314
+
+IEEE TRANSACTIONS ON SOFTWARE ENGINEERING, VOL. 21, NO. 4, APRIL 1995
+
+Abstractions for Software Architecture and Tools to Support Them
+Mary Shaw, Fellow, IEEE, Robert DeLine, Daniel V. Klein, Theodore L. Ross, David M. Young, Member, IEEE, and Gregory Zelesnik
+
+Abstract-Architectures for software use rich abstractions and idioms to describe system components, the nature of interactions among the components, and the patterns that guide the composition of components into systems. These abstractions are higher level than the elementsusually supported by programming languages and tools. They capture packaging and interaction issues as well as computational functionality. Well-established (if informal) patterns guide architectural design of systems. We sketch a model for defining architectures and present an implementation of the basic level of that model. Our purpose is to support the abstractions used in practice by software designers. The implementation provides a testbed for experiments with a variety of system construction mechanisms. It distinguishes among different types of components and different ways these componentscan interact. It supports abstract interactions such as data flow and scheduling on the same footing as simple procedure call. It can express and check appropriate compatibility restrictions and configuration constraints. It accepts existing code as components,incurring no runtime overhead after initialization.It allows easy incorporation of specifications and associated analysis tools developed elsewhere. The implementation provides a base for extending the notation and validating the model.
+Index Terms- Software architecture, architecture description language, software system organization, architectural abstraction, software engineering.
+I. INTRODUCTION
+SOFTWARE ENGINEERS often describe the “architectures” of their systems. These descriptions address highlevel aspects of the systems such as the overall organization, the decomposition into components, the assignment of functionality to components, and the way the components interact. These architectural descriptions often use box-andline diagrams and phrases such as “pipe-and-filter system” and “client-server model.”
+Manuscript received February 1994; revised October 1994. Recommended by D. Peny and D. Garlan. This work was supported by the Camegie Mellon University. School of Computer Science and Software Engineering Institute (which is sponsored by the U.S. Department of Defense), by a grant from Siemens Corporate Research, and by the Wright Laboratory, Aeronautical Systems Center, Air Force Materiel Command, USAF, and the Advanced Research Projects Agency (ARPA) under Grant F33615-93-1-1330,
+M. Shaw is with the Computer Science Department, Camegie Mellon University, Pittsburgh, PA 15213 USA. She is also with the Software Engineering Institute.
+R. DeLine and G. Zelesnik are with the Computer Science Department, Camegie Mellon University, Pittsburgh, PA 15213 USA.
+D. V. Klein is with LoneWolf Systems, Pittsburgh, PA USA. T. L. Ross is with Digital Equipment Corporation, Littleton, MA USA. D. M. Young is with Madeira Software, Inc., Beverly, MA USA. IEEE Log Number 94 I 1315.
+
+While architectural descriptions use high-level abstractions, the corresponding implementations are written in conventional programming languages. However, composing a system from subsystems is a substantially different activity from programming the underlying algorithms and data structures. Hardware designers confront the same situation; they recognize a number of distinct design levels, each with its own design issues, models, notations, componentry, and analysis techniques [ 5 ] . In the same way, different levels of software design require different kinds of components, different ways of composing components, different design issues, and different kinds of reasoning. The vocabulary gap between requirements and programming is substantial. Filling the gap requires better models and notations for the intermediate step. This is the goal of the emerging field of software architecture.
+The architecture of a sofnvare system defines that system in terms of components and of interactions among those components. In addition to specifying the structure and topology of the system, the architecture shows the intended correspondence between the system requirements and elements of the constructed system. It can additionally address systemlevel properties such as capacity, throughput, consistency, and component compatibility. Architectural models clarify structural and semantic differences among components and interactions. Architectural definitions can be composed to define larger systems. Elements are defined independently so they can be re-used in different contexts. The architecture establishes specifications for individual elements to be written in a conventional programming language. A number of commonly-used patterns, or idioms, are in widespread informal use; these architectural styles can be captured as general templates for families of related systems. This holds particular promise for domain-specific systems [121, [23], [27].
+Our primary considerations here are supporting architectural abstractions, localizing and codifying the ways components interact, and distinguishing among the various packagings of components that require different forms of interaction. Our focus is largely pragmatic. Our first concern has been to identify, classify, and support a variety of components and their connections. We will refine the notation and develop a formal base over time.
+A sound basis for software architecture promises benefits for both development and maintenance. Design should benefit from improved abstractions, notations, and analysis. Architectural definitions should help provide good specifications for programming activities. Since the architectural definition also
+
+0098-5589/95$04.00 0 1995 IEEE
+
+SHAW er al.: ABSTRACTIONS AND TOOLS FOR SOFTWARE ARCHITECTURE
+
+315
+
+serires as the specification for system build, the specifications module declares it provides a resource, it actually does; that
+
+and code will be less likely to diverge. Maintenance shou!d if a module uses a resource, it has access to that resource;
+
+benefit in two ways. First, about half of maintenance effort and so on. Since DeRemer and Kron’s MIL, MIL’s have been
+
+is dedicated to understanding the system in preparation for developed for specific languages, like Mesa 1241 and Ada [8],
+
+making changes; explicit definition of the architecture should and have provided a base from which to support software
+
+reduce this cost. Second, system architectures degrade over construction [37], version control [9], system families [38], and
+
+time; carrying the architectural definition into maintenance dynamic configuration [21]. Enough examples are available to
+
+should reduce this tendency toward degradation.
+
+develop models of the design space [26], [29].
+
+Additional development benefits should accrue through bet- These early module interconnection languages require con-
+
+ter information to guide software reuse. Reuse is currently siderable prior agreement between the developers of different
+
+impeded by differencesin componentpackaging. For example, modules.For example, they assume that simplename matching
+
+a given functionality might be packaged as a procedure, a can be used to infer inter-module interaction, that all modules
+
+communicatingprocess, an object, or a filter; it might interact are written in the same language, that all modules are available
+
+with other components by calls, message-passing, method during system construction, and that module interfaces de-
+
+invocation, or shared data. These differences in packaging scribe the other modules with which they interact. Newer work
+
+are recognized only informally and are not supported by has begun to soften these restrictions. In the Darwin language,
+
+programming languages and tools; neither formal nor informal modules can be dynamically instantiated and bound at runtime
+
+guidance shows when and how to use them. As a result, it is [22]. Polygen [7] augments a module interconnectionlanguage
+
+often unclear whether components with compatible function- with an inference engine that deduces from a user-defined
+
+ality will actually be able to interact properly. Documenting set of rules how (or whether) a system can be integrated
+
+a system’s structure and properties in a rigorous way has from a set of modules. These modules can be implemented in
+
+obvious advantages for maintenance. Much of the time spent multiple programming languages, and the machinery needed
+
+on maintenance goes to understanding the existing code; to connect them can be richer than the usual *procedure
+
+this effort should be reduced substantially if the original linkage, for example, a software bus [30]. This kind of system
+
+design structure is captured clearly and explicitly. In addition, requires expanding the notion of a MIL to include specifics
+
+retaining the designer’s intentions about system organization about a module’s implementation, such as its programming
+
+should help maintainers preserve the system’s design integrity. language, its hardware/operating system platform, and the
+
+A growing community of researchers is focusing on soft- communication media needed to access it; the resulting richer
+
+ware architecture. There has been long-standing interest in notation has been termed a module interconnection formalism
+
+particular classes of architectures such as objects (focused by (MIF). To build truly composable systems we must allow
+
+the OOPSLA conference), pipelines (focused by the USENIX flexible, high-level connections between existing systems in
+
+conference), and client-server systems (a subject of intense ways not foreseen by their original developers. Essentially
+
+attention in the commercialdata processing arena). Early atten- independently, developers of “open” software products have
+
+tion to the variety of idiomatic patterns of system organization designed interchange representationssuch as PICT (line draw-
+
+and the possibility of organizing this knowledge systematically ings), RTF (formatted text), SYLK (spreadsheet layouts), and
+
+[6], [12], [27], [34] have led to enough activity to sustain MIF (formatted text) to allow distinct products to interact by
+
+workshops on architectural design [4], software design with data interchange. Although these were originally static, newer
+
+strong participation from architecture [20], patterns for de- developments such as CORBA, OLE, and OpenDoc (all for
+
+sign [28], and interface definition languages [39]. Software objects) support dynamic sharing.
+
+architecture emerged as a key theme at a recent workshop on Systems often exhibit an overall style that follows a well-
+
+directions in software engineering [141. A major effort to gain recognized, though informal, idiomatic pattem. Garlan and
+
+design power for specific kinds of problems addresses domain- Shaw survey half a dozen of these patterns and illustrate their
+
+specific software architectures (DSSA’s) in several specific use in case studies [12]. They identify pipes and filters, data
+
+domains [151, [23]. Formalizations are beginning to emerge abstractionsor objects, implicit invocation,hierarchicallayers,
+
+[2], [3]. As a natural consequence, languages for describing repositories, and interpreters as a useful (though incomplete)
+
+architectures are emerging [lo], [31].
+
+set of well-known patterns, or styles, of system organization.
+
+The need for a notation to describe how subsystems written These styles differ both in the kinds of components they
+
+in typical programming languages connect to form larger use and in the way those components interact with each
+
+systems is not a new concern. In 1975,DeRemer and Kron [111 other. As advocates of various of these architectures explain,
+
+argued that creating program modules and connecting them adherence to the rules of the style enhances both software
+
+together to form larger structures were distinct design efforts; development and subsequent maintenance.’ The rules of the
+
+they created the first module interconnection language (MIL) style usually restrict how to package components-eg., as
+
+to support the connection effort. In an MIL notation, modules procedures, objects, or filters. As a result, components may
+
+import and export resources, which are named elements such not be usable in all styles; code may not be reusable because
+
+as type definitions, constants, variables, and functions. Com- its interface makes incompatible assumptions. In Unix, for
+
+pilers for MIL’s ensure system integrity with intermodule type checking: they check that if one module uses a resource that another provides, the types of the resources match; that if a
+
+’ However, the advocates often neglect to mention that different architec-
+tures are appropriate in different situations. Choosing the most appropriate
+architecture for a given problem (or domain) remains an open problem.
+
+.i1 6
+
+II-.EE TRANSACTIOYS ON SOFTWARE ENGINEERING, VOL. 21, NO. 4, APRIL 1995
+
+Fig. I . Pipe-and-filter example: The KWIC indexer.
+
+example, the functionality of "sort" is available both in the form of a filter and in the form of a procedure.
+The remainder of this paper is organized as follows. Section I1 introduces our model of software architecture and its notation; Section 111describes UniCon, an initial language for implementing the model; Section IV highlights its implementation; Section V describes our experience with UniCon.
+We will use three examples throughout the paper. Although architecture diagrams often do not make visual distinctions among the interactions they depict, here we use different markings for different types of connections. The first example, shown in Fig. 1, is a Unix-style pipe-and-filter system built from both filters and files, with the wrinkle that the pipeline merges two streams-a configuration that is difficult or impossible to describe in most shells. The system implements a KWIC (keyword in context) indexer; we have used a very similar task as a class exercise in a software architecture class [13]. The challenge of this example is to make complex topologies as easy to describe as simple ones.
+The second example, shown in Fig. 2, combines a pipeand-filter architecture with a conventional procedural implementation of one of the filters. The challenge of this example is to compose architectural descriptions and to establish the correspondence between the abstraction of a pipeline and its implementation as calls on system procedures.
+The third example, shown in Fig. 3, involves coordinating real-time tasks. A simple periodic real-time system has a number of tasks that must run on specified schedules. More challenging scheduling problems arise when tasks interact. We use an example with two schedulable tasks that interact through remote procedure calls. Based on a system timer, the client must periodically perform computations which involve calling upon services provided by the server; correctness requires that these events take place at specific times. The challenge of this example is to incorporate an external analysis tool that determines the legality 01' the configuration (especially to make guarantees about schedulability) and to convert the code for the tasks into schedulable processes that run on a real-time operating system.
+11. MODELAND NOTATION
+This section describes an informal model for an iirchitectural description language. The language is intended to aid designers in first defining software architectures using abstractions they find useful and then making a smooth transition to code. Our long-term objective is to fully elaborate this model and to support it with notation and tools. Currently, we are morc strongly motivated by practical utility of the model than
+
+Module ImplemenLs a Filter
+Procedure CaI1 mdSharcdData
+T' Qlb[h
+Fig. 2. Heterogeneous implementation of a pipeline using both pipes and procedures. The upper diagram is the high-level view of the system, a simple pipeline. The lower diagram shows the implementation of the right-most component in the upper diagram.
+r
+Real-Time Scheduler
+\
+Remote Procedure Call Schedulable Process Fig. 3 . Real-time client-server system with two schedulable tasks sharing a computing regource. The tasks also interact via remote procedure call.
+by formal foundations. At present, the model provides a framework for understanding our initial implementation, which is described in Section 111.
+The model addresses several issues in novel ways. It supports abstraction idioms commonly used by designers--for example, explicitly distinguishing different types of elements and providing type-specific analysis support. It specifies packaging properties as well as functional propertics of components-for example, distinguishing clearly between functionality delivered in the form of
+
+BEST COPY AVAILABLE
+
+SHAW er al.: ABSTRACTIONS AND TOOLS FOR SOITWARE ARCHITECTURE
+
+317
+
+a filter from functionality delivered in the form of a procedure. It provides an explicit, localized home, called a connector, for information about the rules for component interactions, such as protocols, interchange representations, and specifications of data formats for communication. It defines an abstraction function to map from code or lower level constructs to higher level constructs. This is similar to Hoare’s technique for abstract data types [161. It is open with respect to externally developed construction and analysis tools. It supports collection and delivery of relevant informationto a tool and return of results from the tool.
+Software system composition involves different tasks from writing modules: the system designer defines roles and relationships rather than algorithmsand data structures.These concerns are sufficiently different to require a separate language. The architectural language must support system configuration, independence of entities (hence reusability), abstraction, and analysis of properties ranging from functionality to security and reliability [36]. The model must be supported by a notation.
+A. Components and Connectors
+Systems are composed from identifiable components and connectors of various distinct types. The components interact in identifiable, distinct ways. Components roughly correspond to compilation units of conventional programming languages and other user-level objects such as files. Connectors mediate interactionsamong components;that is, they establish the rules that govern component interaction and specify any auxiliary implementation mechanism required. Connectors do not in general correspond individually to compilation units; they manifest themselves as table entries, buffers, instructions to a linker, dynamic data structures, sequences of system calls embedded in code, initialization parameters, servers that support multiple independent connections, and the like. During system design, it is important to work with good abstractions for interaction without concern for whether their implementations are localized. It is helpful to think of the connector as defining a set of roles that specific named entities of the components must play.
+Our model thus describes software systems in terms of two kinds of distinct, identifiable elements: components and connectors. Each of the two elements has a type, a specification, and an implementation. The specification defines the units of association used in system composition; the implementation can be primitive or composite. Fig. 4 suggests the essential character of the model. Components are the locus of computation and state. Each component has an interface specification that defines its properties. These
+properties include the component’stype or subtype (e.g., filter,
+process, server, data storage), functionality, guarantees about global invariants, performance characteristics, and so on. The specific named entities visible in a component’s interface are its players. The interface includes the signature, functionality, and interaction properties of its players.
+
+Element
+
+Component
+
+Connector ’
+
+Specification
+TYP Unit of association
+
+Component Type
+
+Connector Type
+Implementation
+
+Fig. 4. Gross structure of an architecture language.
+
+Connectors are the locus of definition for relations among components. They mediate interactions but are not “things” to be “hooked up”; rather, they provide the rules for hookingup. Each connector has a protocol specification that defines its properties. These properties include its type or subtype (e.g., remote procedure call, pipeline, broadcast, shared data representation, document exchange standard, event), rules about the types of interfaces it works with, assurances about the interaction, commitments about the interaction such as ordering or performance, and so on. The specific named entities visible in a connector’s protocol are roles to be satisfied. The interface includes rules about the players that can match each role, together with other interaction properties.
+Components may be either primitive or composite. Primitive components may be implemented as code in a conventional programming language, shell scripts of the operating system, software developed in an application such as a spreadsheet, or other means external to the architectural description language. Composite components define configurations in a notation independent of conventional programming languages. This notation must be able to identify the constituent components and connectors, match the players of components with roles of connectors, and check that the resulting compositions satisfy the specifications of both the components’ interfaces and the connectors’ protocols.
+Similarly, connectors may be either primitive or composite. They are of many kinds: shared data representations, remote procedure calls, data flow, document exchange standards, standardized network protocols, etc. The connectors derived directly from programming languages are typically asymmetric with two complementary roles: a procedure has a definer and multiple callers; data has an owner and multiple users; a simple data stream has one producer and one consumer. However, other, more abstract connectors may be symmetric, and their roles may be more numerous and more specific: in broadcast communication, all participants may be alike; in some event systems any component may raise or respond to any event. The usual impodexport or provideshequires relation is too restrictive to express the relations used in practice-it fails to expose important distinctions. If rich, abstract connectors are to be defined,the architecturalnotation must be able to express complex interaction properties. These might be as diverse as follows:
+guarantees about delivery of packets in a communication system; ordering restrictions on events using traces or path expressions;
+
+318
+
+IEEE TRANSACTIONS ON SOFTWARE ENGINEERING, VOL. 21, NO. 4, APRIL 1995
+
+e incremental productiodconsumption rules about pipelines;
+e the distinction between the roles of clients and servers; e parameter matching and binding rules for conventional
+procedure calls; 0 restrictions on parameter types that can be used for remote
+procedure calls; and so on.
+Primitive connectors may be implemented in a number of ways: as built-in mechanisms of programming languages (e.g., procedure calls or shared data); as system functions of the operating system (e.g., certain kinds of message passing); as library code in conventional programming languages (e.g., X/Motif); as shared data (e.g., Fortran COMMON or Jovial COMPOOL); as entries in task or routing tables; as a combination of library procedures and a single independent process for the connector (e.g., certain kinds of communication services); as interchange formats for static data (e.g., RTF); as initialization parameters (e.g., event period and process priority in a realtime operating system) and probably in a variety of other ways. Composite connectors may also appear in these diverse forms; we need (but do not yet have) ways to define them as well.
+The example of Fig. 2, heterogeneous implementation of a pipeline, uses different types of components and connectors. It also shows a composite implementation of one of the filters.
+The remainder of this section deals with three issues of particular interest for general-purpose architectural tools: abstraction and encapsulation (Section 11-B), the appropriate analog for types (Section 11-C), and the ability to provide access to externally developed tools (Section 11-D).
+
+primarily in terms of the prescribed form for communication, data sharing, or other interaction. In practice, the rules for these styles are usually implicit. The combination of localized definitions and higher-level elements makes it possible to formalize rules for styles [I], [ 2 ] .
+Abstract data types rely on an abstractionfunction to show the correspondence between the internal representation of a type and the abstract view that the user (and the specification) takes [16]. For software architectures, abstractions are required to implement higher level components in terms of lower level ones. When a component or connector is not directly implemented by a programming language, its definition must explain how the abstract properties will be implemented. This might take the form of a manual or informal guidance. Even better, it could be a code template, an automated generator, or a formalization. No matter how it is represented, the definition must set out the programmer’s responsibility. When a number of components are connected to form a larger component, the players of the defined unit may be more abstract than the players of the implementation. In that case, the definition must explicitly indicate the correspondence among one or more external players (abstraction), one or more players of the constituent components, and the implementation rule. This is the abstraction mapping of the component. Similarly, abstraction mappings will be required for composite connectors. This differs from data abstraction chiefly in that it maps not only data to an abstract value but rather data plus functions to a set of abstract player types.
+
+B. Abstraction and Encapsulation
+For a composite element, the implementation part consists 3f the following:
+a parts list (components and connectors); composition instructions (association between roles and players); abstraction mapping (relation between internal players and players of the composite); other related specifications (detailed properties of the parts and compositions).
+This localizes and encapsulates information about the system structure rather than distributing it around the system in import/export statements. Since composition information is localized, global properties such as restrictions on topology or types of elements may be checked. Since the abstraction mapping is explicit, we have the opportunity to allocate responsibility for the code correctly implementing higher-level connectors. Further, the composition instructions make the matching of players and roles explicit, so we can break free of name matching as the sole means of making connections, as shown in Section 111-C3), Program 4.
+Common system-composition idioms, such as pipeline, client-server, or blackboard, can be defined as idiomatic patterns, or styles, of components and connectors. These patterns describe the types of components and connectors that can be used and may constrain the interconnection topologies. Indeed, some such styles (e.g., pipe-and-filter) are described
+
+C. Types and Type Checking
+A problem similar to type checking in a programming language arises at four points in an architectural language. Two of these appear in the preceding discussion: the types of components and of connectors and their use in showing adherence to a style. As with any type system, types for components and connectors express the designer’s intent about how to use the element properly and are most useful when the language checks them. The types for connectors and components are not merely enumerations of unrelated items; some are closely related to others. Architectural types describe expected capabilities and limit both what can appear in the construct’s specification and the legitimate ways to use the construct. Examination of real systems shows that type hierarchies of this sort are useful. For example, there are many kinds of memories (components) and many kinds of event systems (connectors). Defining type structures for these elements requires the creation of taxonomies to catalog and structure the type variations. This is part of establishing a full model for architectural composition.
+The third place where type checking appears is at the actual point of associating a component’s players with a connector’s roles. Each of the named entities in the interfaces and protocols must have enough type information and other specification to determine whether the connector definition allows the components to be associated as requested. Furthermore, a component may be used differently by different kinds of connectors. For example, a client might be indifferent to
+
+SHAW el al.: ABSTRACTIONS AND TOOLS FOR SOFIWARE ARCHITECTURE
+
+319
+
+whether its servers are dedicated, shared, or distributed. An abdract pipe may be able to connect both filters and files (but not processes that share data directly). We must therefore support flexible associations between players and roles. For connectors such as procedure call that correspond directly to language constructs, this corresponds to the checks a linker may make. However, for richer, more abstract connectors the checks are more sophisticated.
+The fourth opportunity for type-like checking arises when more than one architectural style is used in designing a single system. This problem also resembles that of reconciling multiple views. A comparison of architectures for a single problem [35]explores this issue.
+Components and connectors must be reusable in different settings, so it’s important to deal reasonably with associations that are slightly mismatched. Common examples include mismatches between the order and types of a library procedure’s arguments and those of the procedure intended to call it; remapping data formats to support sharing; and the subtle differences between remote procedure calls and local procedure calls. If component’s packaging fails to match the packaging needed in use, mechanical adaptation may be possible. Our current implementation makes initial steps toward supporting adaptation in the face of mismatch.
+D.Accommodating Analysis Tools
+Architectural descriptions should be “open” with respect to analysis tools. We must accommodate techniques that are applied at the systems level of design. These analysis tools will often be developed independent of the model. They may address such properties as functionalcorrectness,performance, and timing (e.g., allowable order of operations, real-time guarantees). The architectural description language should be able to interact with any analysis technique that works with information in the architectural specifications.It should be able to record the system-level specifications required by external tools as uninterpreted expressions, deliver information to the tools, receive results from the tools, and incorporate those results in the architectural description.
+Perhaps the most natural kind of system-level analysis is that of functional specification, which might use pre- and post-conditions to check procedure calls, for example. Perry suggested this as part of his software interconnection model [26]. Rather than building a theorem prover into the system, the system could collect the assertions from a procedure’s definer and a potential caller and invoke an external theorem prover to decide whether to allow the call. This will provide a much stronger check than either name matching or signature comparison.
+A second example is rigorous analysis of the real-time properties of a system. For certain classes of systems, correctness depends on the time at which computations are completed, not just on whether the computations themselves are correct. The designer of a system must account for the computation times of individual modules as well as the complex interactions within the composition of modules. As described in Section 111-E, our implementation now supports rate monotonic analysis (RMA), which is a body of techniques for analyzing the schedulability
+
+of preemptive, fixed-priority systems. The Software Engineering Institute at Camegie Mellon has developed a handbook for this family of analysis techniques [18].
+111. UNICON: LANGUAGFEOR
+- UNIVERSAL~ N E C T O RSUPPORT
+In order to gain experience with the practical details of an architectural description language, we have implemented a simplified initial system. The system, called UniCon, emphasizes the structuralaspects of software architecture.It is higher level and more general than existing mechanisms for system composition, but it is low-level compared to the model of Section 11. Specifically, the objectives of this implementation were the following.
+Address real problems of system description and composition; provide a prototype of a practical tool. Provide uniform access to a wide range of connection mechanisms. Select connectors that are available in the local computing environment so we can concentrate on providing them, not inventing them; however, select with diversity in mind. Help software designers to discriminate among different types of components and different types of connectors and to check the legitimacy of proposed configurations. Support both graphical and textual notations with interchange between the representations. Support analysis tools and specification notations developed by others. Preserve compatibility with programming tools in common use. Accept existing components. Use components written in ordinary programming languages, including those not written for use with this tool. Keep added run-time costs to a minimum. Ideally all UniCon-specific elements disappear by the time the executing system is initialized.
+To speed the process of gaining experience, some simplificatibns were made to the model when implementing UniCon, namely, the following.
+UniCon supports composite components but not composite connectors. Abstractions for components and connectors are built in, but new ones cannot yet be defined. These built-in elements sample a diverse space, but the set is in no sense complete and a unifying taxonomy is not yet provided. The only primitive components at present are compilation units. Although the implementation is largely languageindifferent, C is the language supported at present. The syntax has not been refined for conciseness yet. It can be a bit wordy, especially when making intermodule connections of procedures and data with no change of name.
+This section begins by presenting the semantics of UniCon (Section 111-A). As an aid to intuition, this section anticipates the syntax discussion by providing a sample of the textual form of the KWIC example from Fig. 1. The following two sections describe graphical syntax (Section 111-€3) and textual syntax (Section 111-C); these are equivalent. We then describe
+
+320
+
+IEEE TRANSACTIONS ON SOFIWARE ENGINEERING, VOL. 21, NO. 4, APRIL 1995
+
+the way existing code is incorporated as primitive components (Section 111-D) and the technique for using external analysis tools (Section 111-E).
+
+A. Semantics
+Following the model presented in Section 11, UniCon is based on two complementary kinds of constructs: the component and the connector. Their structures are symmetric, except that composite connectors are not yet supported. Each has the following:
+a Name; a specification (called an Interface for a component, a Protocol for a connector); a component or connector Type; a set of global assertions in the form of a Property List; a collection of association units: Players for components, Roles for connectors. Specific details about these are specified in Property Lists; an Implementation.
+Each of these definitions can be understood solely in terms of its specification, and the properties of a system should be derivable from the specification of its components and connectors. This is closely related to Lam and Shankar's properties separability and composability [191. Each provides a template that is instantiated when it is used. Information about distinctions among components, connectors, players, and roles is used for an analog of type checking. The definition of language semantics is organized around this structure. Section 111-A1) describes components, Section 111-A2) describes connectors, and Section 111-A3) describes type checking.
+1 ) Components: Components define computational capabilities. A component consists of an interface that specifies the capabilities the component exports and an implementation, which may be primitive or composite. The interface of a component must be consistent with its implementation. In the case of a primitive implementation, such as a source file or executable, this is the responsibility of the programmer. In the case of a composite implementation, the interface must be consistent with the interfaces of its member components and the protocols of its connectors; its semantics should be derivable from the interfaces of its constituents.
+The interface defines the computational commitments the component can make and constraints on the way the component is to be used. The interface provides the guarantees that will hold of the behavior and performance of the component. It should be possible to use the component by reference to the interface alone. The interface must include the following:
+the component type; assertions and constraints that apply to the entire component; the players defined by the component, which each consist of a name and type and optional attributes like signature, functional specifications, constraints on use, or information required specifically by a component type (e.g., port bindings of Unix file descriptors).
+A component type expresses the designer's intention about the general class of functionality to be provided by the
+
+Program 1. A primitive and a composite component.
+component; it restricts the numbers, types, and specifications of the Players defined by the component. The players, which form the bulk of the interface, are the visible semantic units through which the component can interact, request and provide services, or be influenced by external state or events. The interactions are mediated by the roles of connectors. The detailed specifications of the players appear in the form of property lists, which are lists of attributes and their associated values. Program 1 shows an example of the textual description of both a primitive and a composite component, which will be referenced throughout this section. Component types and their associated players are discussed below in Section 111-A 1)-a).
+To provide some specific intuition for the semantics, we will use the pipeline implementation of KWIC presented in Fig. 1. This example's pipeline involves four filters, one file, four pipes, and the two streams that are Players in the composed system. Three of the filters in this example have the canonical interface for a simple filter, specifying stdin, stdout, and stderr; merge, of course, has two inputs. For these filters the specification further indicates that the data on the stream is line-oriented. Program 1 shows the textual notation for two components from the KWIC example, which will be referenced throughout this section.
+Component KWIC from Program 1 is an example of a system. A system is a component, usually a composite component, that is capable of independent operation in the context of a computer and its operating and runtime systems. The extemal specification of the system is the interface of the component. The system remains eligible for use as a component; indeed, the essence of systems integration is finding ways to treat as subsystems today those things that were systems last week. A system may interact with users and other systems. A system is closed in the sense that all the players of its integace are
+
+I
+
+SHAW et al.: ABSTRACTIONS AND TOOLS FOR SOFTWARE ARCHITECTURE
+TABLE I BUILT-INCOMPONENT TYPESAND THEIR PLAYERS
+
+321
+TABLE II
+A ~ I ' R " ~ THATAPPLYTO COMPONENTS
+
+bound to its execution environment; it implements a function that is discrete and complete in the mind of its designer. This is the result of an architectural definition.
+A component's implementation may be either primitive or composite, Primitive implementations provide one or more ways to locate a definition in some programming language and are discussed below in Section 111-A1)-b). Composite implementationsinstantiate a set of components and configure them with connectors and are discussed in Section 111-AI)-c).
+a ) Built-in Component Types: Component types and player types are currently defined by enumeration, but extensions may be supported some day. Table I lists the component types currently supported and the players allowed for each. This set of component types was selected opportunistically: we wanted to reflect components and connectors used in practice and to cover as wide a variety as possible. Each of these is described in detail below.
+Component type Module corresponds to a compilation unit in a typical programming language. The RoutineDef players correspond to exported procedures and functions. The Routinecall players correspond to imported procedures and functions. Similarly, GlobalDataDef and GlobalDataUse players correspond to export and import of named data. The ReadFile and WriteFile players provide an inpudoutput capability'. These players correspond directly to language constructs or system calls. However, modules frequently define one or more coherent collections of players; when designers think about the architecture of the system, they think about the use of a collection of players rather than about all the individuals. UniCon captures this with an abstract player, PLBundle, that corresponds to a set of individual players related to procedure calls or data use. Modules are intended to provide definitions that will be linked in a single name space. Component type Computation is a specialization of Module whose interface is restricted to defining procedures, functions, and bundles thereof and using procedures, functions, and data defined elsewhere. It is intended to capture purely computational units that are collections of procedure definitionsand calls. Similarly,component type SharedData is a specialization of Module whose interface is restricted to defining and referencing data.
+2This currently makes no provision for interactive input and output. This will be addressed soon by adding a connector for typescripts, later by adding a connector that provides protocol for interaction with a user-defined graphical interface.
+
+Component type SeqFile corresponds to sequential files in which lines, characters, or records (as specified by the RecordFormat attribute) are read sequentially from the front (ReadNext) and written sequentially at the end
+(WriteNext).
+Component type Filter corresponds to Unix filters in which input arrives in streams and output is-produced in streams (Streamln and StreamOut). The syntax of the stream (the structure imposed on elements in the stieam) may be specified by the Signature attribute. Component type Process corresponds to an independently scheduled process at the operating system level. It differs from Filter in that it interacts via remote procedure calls (RPCDef and RPCCaZl) rather than data flow.3 SchedProcess is a special type of Process that admits of real-time analysis and scheduling; (see Section 111-E). A SchedProcess provides an abstract player RTLoad that provides the informationrequiredfor real-time scheduling using attributes Segmentset, Trigger, SegmentDef, and TriggerDef. A General component type allows any player types. thus allowing the definition of arbitrary components; it does not support analysis or checking. Using general components when it is possible to use more specific types defeats the purpose of component typing.
+Attributes in property lists provide further specification of a component. Each attribute is relevant to one or more component types and may be required or optional; it must specify what to do if multiple values are specified for the attribute, for example, in different property lists. The possibilities are currently to use the most recent (replace), to construct a list of all values (merge), and to refuse multiple definitions (error). Certain attributes pertain to a component as a whole. For
+31nterprocess data sharing will be added in the future.
+
+322
+
+IEEE TRANSACTIONS ON SOFIWARE ENGINEERING, VOL. 21, NO. 4, APRIL 1995
+
+TABLE 111 AT~RIE~UTTEHSATAPPLYTO PLAYERS
+TABLE IV ATTRIBUTESDEFINEFDORPRIMITIVE COMPONENTS
+example, in cases where it is possible to provide instantiation parameters to an entire component, those are provided with the property list for the component itself. Table I1 lists component attributes, and Table I11 gives the attributes defined for Players. They are largely specific to the type of the Player.
+b) Implementation of Primitive Components: Primitive components are implemented directly in the code of some programming language or data stored in files. They are made available to UniCon by providing an appropriate specification as a wrapper. Code may be represented as source, object, or executable; other representations will be added as required.
+Since multiple representations for a component may be available (for example, both source and object code), UniCon allows multiple representations, called variants, to be specified. When a primitive component is instantiated, the Variant attribute can be used to select the preferred variant. This capability can be exploited, for example, to provide variants with different performance properties or variants with special support for debugging or monitoring. Table IV shows the attributes defined for primitive implementations of components.
+The KWIC indexer example is constructed from primitive filter components, like the Sort component shown in Program 1. The interfaces of the component filters are very similar to the interface for the whole system. The implementations are primitive, and since they correspond directly to executable Unix filters, they have only one variant.
+c ) Implementation of Composite Components:Composite components provide the capability of building up progressively
+
+larger subsystems from components of (potentially different) types. A composite implementation must provide three kinds of information.
+The Parts: Instantiations of the components and connectors from which the composite component is constructed. The Configuration: Specification of how the instantiations of connectors link the instantiations of components, i.e. the associations4 between players and roles. The Abstraction: Specification of how the players of the interface will be associated with players of the implementation.
+Since more than one instance of an element (component or connector) definition may be used in a single implementation, these definitions are templates to be instantiated for each use. Each instantiation may provide a property list that further constrains the attributes of the element. The merge rule of the attribute determines the interpretation when multiple values are provided for an attribute.
+The configuration of the composite implementation is defined by explicitly connecting players and roles. Each match is checked by comparing the type of the player against the Accepts attribute of the component, ensuring that maximum and minimum connection counts are satisfied.
+The inte$ice of the component being defined specifies the players that the component must provide; these are the ExtemalPlayers. In the implementation, players are provided when components are instantiated; these are the ZntemalPlayers. The abstraction step defines ExtemaZPlayers in terms of InternalPlayers. Two cases arise as follows.
+In the simple case, one of the constituent components defines an IntemalPlayer of the same type and specification as the Externalplayer. In this case, simple name binding suffices to export the player through the interface. The more complex case arises when an Externalplayer is of a type not directly supported by the programming language. In this case the ExtemalPlayer must be implemented by more concrete IntemalPlayers of the implementation. This is the case, for example, when a StreamIn is implemented with calls on library routines that read standard input. It will become increasingly common as we add more abstract players that are realized as calls on several specific procedures according to set protocols. The definition of such an abstract connector must specify the functionality that the implementation must provide. In this case, the binding must indicate the name of the Externalplayer in the interface and show how IntemalPlayers satisfy the required functionality. The special attribute MapsTo identifies the IntemalPlayer(s).
+Warnings about ExtemalPlayers and roles that are not associated with IntemalPlayers are given as appropriate. Setting the MinAssocs attribute of a Player to 0 indicates that it is normal for the Player to be unassociated. A Library attribute is provided to indicate that many players will normally remain unassociated.
+4An association is either a bind (to an external player of a component) or a connect (to a role of a connector).
+
+SHAW el al.: ABSTRACTlONS AND TOOLS FOR SOFIWARE ARCHITECTURE
+
+In the implementation of KWIC in Program 1, four filters and a file are used to build a system that is itself a filtcr. The definition of pipe used here corresponds to Unix: as indicated in Table V, it supports the players of sequential files ag well as filters. The implementation is composite and has three parts. First, it instantiates the parts to be used. Next, it binds the StreamIn of the first filter (caps) to the StreamIn of the interface and the StreamOut of the last filter (sorter) to the Streamout of the interface. (This is an example of the simple case where ExtemalPlayers are bound to IntemalPlayers of the same type.) Finally, it configures the system by indicating which inputs and outputs are connected by which pipes. The example shows two ways to do this: by individually associating players to roles of explicitly instantiated pipe connectors and by a single statement that implicitly instantiates the pipe and makes all connections at once. The former allows the connections to be grouped by the designer’s choice; the latter assures the reader that no other roles of the connector are connected elsewhere. The mechanical character of the example provides ample motivation for using the graphical interface described in Section 111-B.
+2) Connectors: Connectors mediate interactions among components. A connector consists of a protocol that specifies the class of interactions the connector provides and an implementation. Connectors define the protocols and mechanics of interaction together with any additional mechanisms required to carry out the interaction: auxiliary data structures, initialization routines, and so on. The connector definition is also the location for specifications of required behavior such as interchange representations and the intemal manifestation (e.g., sequence of procedure calls) of the connector in the code of a component. At present, all connectors are primitive and their implementations are therefore individually crafted within the UniCon implementation.
+The protocol defines the allowable interactions among a collection of components and provides guarantees about those interactions.To do this it defines roles, or the responsibilitiesof various parties that set requirements for the players of components whose interactions are to be govemed by the connector. The author of the component is responsible for ensuring that these responsibilities are satisfied by the implementation. The protocol must include the following:
+the connector type; assertions that constrain the entire connector (for example, rules about timing or ordering); these are the commitments about the interaction that the protocol supports; the roles that participate in the protocol; each consists of a name and type and optional attributes like signature, functional specifications,or constraints on their use.
+A connector type expresses the designer’s intention about the general class of connection to be provided by the connector; it restricts the numbers, types, and specifications of the Roles provided by the connector. In particular, some roles may require players, some may be optional but constrained if present, and some may be restricted to match certain player types. A good example from a programming language would be the generator as defined in Alphard [33].
+
+Program 2. A primitive connector.
+The roles are the visible semantic units through which the connector mediates the interactions among components. Their types are primitive typing units. They are used to identify the players that must cooperate in a successful interaction. Roles identify the kinds of interactions a connector can establish-the kinds of components it can work with and the player types it can handle. When a role appears in a protocol, it must specify a name and role type and may optionally specify other attributes; some of these attributes may be required in particular instances. The detailed specifications of the roles appear in the form of property lists, or lists of attributes and their associated values. Roles form the bulk of the protocol.
+At present, only primitive implementations of. connectors are supported. Program 2 gives the textual definition of the
+pipe connector for the KWIC example. These connectors only have primitive bodies, so there is no issue of matching. The
+bodies are at present defined in an ad hoc manner. Primitive connectors are not further interpreted at the architecture level except through their protocols. This might be as simple ‘as a rule that procedure calls must match procedures in $e fashion allowed by the programming language or as complex as a network protocol supported by several independent communication servers.
+a) Built-Zn Connector Types: Connector types and role types are now defined by enumeration, but extensions may someday be supported. Table V lists the connector types currently supported, the roles allowed for each, and the players that the roles can support. As for component types, we chose them opportunistically.For connectors, especially, we wanted to deal with the practical details of actual implementations.
+Some of these are more closely related than others (the same is true for components).File10 and Pipe are abstractions over the same Unix mechanisms. The language would benefit from type taxonomies that show these relations. In this case, for example, it would not be necessary to identify all three component types for which GlobalDataUse may be a player. Moreover, General could be treated as the root of a taxonomy rather than as a special case.
+Connector type Pipe provides the Unix abstraction of pipe. Depending on whether it establishes an interaction between pipes or files, it chooses the correct implementation mechanism. When a system is constructed of many pipes, filters, and files, UniCon creates an initialization routine that starts up the filters with all the proper port bindings; it handles arbitrary topologies correctly. The KWIC example of Fig. 1 is based on pipes. Specifically, it uses Unix-pipes, which are of type Pipe. These particular pipes are restricted to a single association, so an attribute is provided to override the default. The protocol
+
+324
+
+IEEE TRANSACTIONS ON SOFTWARE ENGINEERING, VOL. 21, NO. 4, APRIL 1995
+
+TABLE V BUILT-INCONNECTOTRYPESAND THEIRROLES
+
+TABLE VI A r r m m s FOR CONNECTORS
+
+specifies two roles, corresponding to the two ends of the pipe. Connector type FileIO sets up sequential file reading and
+writing. Connector types ProcedureCall and DataAccess provide the
+architectural abstractions that correspond to the usual intermodule connections supported by programming languages. In addition to making these connectors visible at the architecture level, they do type checking of the defineshes relation on the basis of signatures rather than the spelling of identifier names.
+Connector type PLBundler supports the abstraction for connecting a collection of procedure or data definitions with their calls or uses. It abstracts from ProcedureCall and DataAccess in the same way that PLBundle abstracts from the corresponding player definitions.
+Connector type RemoteProcCall corresponds to the RPC facility supplied by the operating system. It relieves the user of the need to work explicitly with complex libraries and generator processes.
+Connector type RTScheduler mediates competition for processor resources among a set of real-time processes. It requires an operating system with appropriate real-time capabilities. When rate-monotonic scheduling is selected, UniCon invokes a schedulability analysis to check the real-time correctness of the set of processes to be scheduled. This facility is described in Section 111-E.
+Further specification of each connector is achieved by providing values for certain attributes. These attribute-value associations are made by property lists. Each attribute is relevant to one or more connector types. It may be required or optional. It must specify what to do if multiple values are specified for the attribute, for example in different property lists. The possibilities are currently to use the most recent (replace), to construct a list of all values (merge), and to refuse definitions after the first (error).
+Certain attributes pertain to the connector as a whole. For example, a design decision such as which type of Unix pipe or which real-time scheduling algorithm to use applies to the entire connector. Table VI shows the attributes of entire connectors. Table VI1 lists the attributes defined for Roles. The attributes are largely specific to the type of the Role.
+2) Implementation of Primitive Connectors: The implementation details about these connectors are provided in Section IV. Unlike components, the connectors do not correspond to discrete items to be linked in or referenced. In the current
+
+TABLE VII ATTRIBUTES FOR R O U S
+system, ProcedureCall and DataAccess connectors use the mechanisms (e.g., the linker) of the underlying language and leave no residue at execution time; if renaming is done by a composition, it is handled with compile-time macros.
+Pipe and FileIO connectors use Unix ports, pipes, and files; an initialization procedure sets up the appropriate topology and starts the processes.
+For the RemoteProcCall connector, UniCon automatically generates, compiles, and links the “glue code” for the processes doing the RPC’s. This glue code collects the arguments of the remote procedures and converts them to messages that are passed between processes.
+For the RTScheduler connector, UniCon collects the Trigger, Tracer, and Segment specifications from the RTLoad players and passes them to the Rate Monotonic analysis tool for analysis of the trace information. To establish the connection, UniCon adds Real-Time Mach scheduling information to the processes to make them schedulable in the operating system and makes them available on the target machine for initialization.
+For all processes running under Mach or Real-Time Mach, UniCon turns the code specified in the implementations of the Process or SchedProcess component into heavyweight processes. This is not required for Unix processes since they are already heavyweight processes.
+B. Graphical Notation In practice, designers rely heavily on diagrams for describ-
+ing system architectures. Therefore a graphical form of the notation is essential. The graphical notation for UniCon and its user interface allow specifications to be built incrementally. Figs. 1, 2, and 3 were produced with the graphical interface, except that the annotations were added manually.
+
+I
+
+SHAW et al.: ABSTRACTIONS AND TOOLS FOR SOFIWARE ARCHITECTURE
+
+325
+
+Our emphasis is on defining composite components. Each 1 ) Major Constructs: Section 111-A presented an overview
+
+componentcorresponds to a window in which the parts, config- of the language. It introduced the two fundamental comple-
+
+uration, and abstraction of a composite component are laid out. mentary constructs, the component and the connector, and
+
+The frame of a component’s definition window is shaded to it established the need for separate specification parts and
+
+suggest the type of the component that is being implemented. implementations. In the suggestive syntax given as follows: ’
+
+The designer instantiates components and connectors from a
+
+CAPITALLETTERS are used for the built-in words of
+
+menu of defined types and positions them. Smaller icons on the edges of the components and ends of the connectors represent
+
+the language; BoZdZtalkLetters are used for nonterminal definitions;
+
+players. More identifying information is supplied dynamically as the designer’s focus moves from one element to another. Each element has an associated detailed definition that can be opened and manipulated during design.
+As far as is possible, different types of components, players, and connectors are distinguished iconically. The graphical editor invokes the checking facilities of the language processor to check as much as possible while the diagram is being developed, so errors are largely prevented rather than corrected after the fact. Fig. 2(b) contains two features of particular note: The clouds on the edges of the rev component indicate that an abstraction binding is being used, and the chain links on the
+
+Italicktters are used for fixed enumerations; and CapitalsWithLowerCaseare used for identifiers supplied by the programmer (often constrained to be of a specific kind).
+To avoid tedious syntax with extraneous nonterminals, the expression ( F O O ; ) *denotes a parenthesized list of zero or
++ more FOO’s separated by semicolons; a instead of *
+denotes a list of at least one; a # instead of * denotes zero
+or one (optional feature). As a special case, {FOO}* denotes a sequence of FOO’s with no punctuation. The syntax for components and connectors is
+
+connectors between rev and the two supporting components Component ::= COMPONENT CompTemplateName
+
+show use of definition bundles rather than explicit connections
+
+INTERFACE IS
+
+of individual procedures.
+
+TYPE ComponentType .
+
+The tool does take an initial step toward resolving type mismatches as discussed in Section 11-C. When a connection of Routinecall and RoutineDef with mismatched signatures is
+
+{ Propertyfist } # { Playerfit } #
+END INTERFACE
+
+proposed, the editor selects a connector of type TranslatingProcedurecall. Though not yet fully implemented,this mechanism will allow the connection and provide the designer with a code template that translates the calling signature to the declared signature. The designer must fill in the code to correctly perform the translation. When the graphical composition is complete, the tool generates a correct and complete textual representation.
+
+Pluyerfist
+
+IMPLEMENTATION IS
+{ Propertyfist } #
+PrimComponent I CompComponent
+END IMPLEMENTATION %
+END CompTemplateName
+::= { PLAYER PlayerName IS PlayerType
++ { Propertyfit
+END PlayerName } # }
+
+C. Textual Notation
+
+Connector ::= CONNECTOR ConnTemplateName PROTOCOL IS
+
+UniCon also supports a conventionaltextual form. Since the language is still fluid, we have chosen a very simple syntax that
+relies on property lists to provide information. More elaborate
+concrete syntax will be selected when we relax some of the restrictions noted at the beginning of Section I11 and move on to a successor language. The collected syntax appears in Appendix A.
+The textual notation is interconvertible with the graphical notation. On an initial conversion from text to graphics the screen position attributes will be missing, so manual positioning will be required. Any conversion from graphics to text will yield property lists that include screen position attributes; these are parsed but ignored by the tool.
+The syntax is illustrated with the textual UniCon definition of the system sketched in Fig. 2. At the top level, this system
+
+Rolefit
+
+TYPE Connectorvpe
+{ Propertyfist } #
+RoleList END PROTOCOL IMPLEMENTATION IS
+Primconnector END IMPLEMENTATION END ConnTemplateName ::= { ROLE RoleName IS RoZeType
++ { PropertyList
+END RoleName } # }
+
+2 ) Primitive Components: Primitive components are introduced by creating interfaces as “wrappers” for code written in a conventional programming language. The implementation
+
+is a pipe-and-filtersystem. The example shows how one of the part serves to identify the code and provide startup parameters.
+
+filters is implemented in terms of simple procedures and data. The actual parameters may refer to the formal parameters of
+
+We also use the KWIC indexer of Fig. 1 as an example. It the interface. The system supports multiple versions of imple-
+
+has five primitive components and one composite component. mentations. The primary current use is for providing source,
+
+It uses two types of connectors, for pipes and procedureldata object, and executable representations. It will also support
+
+bundles. The stack component and the PLBundler connector different implementation variants for debugging, performance
+
+are shown in Program 3.
+
+monitoring, different libraries, and different performance char-
+
+326
+
+IEEE TRANSACTIONS ON SOFTWARE ENGINEERING, VOL. 21, NO. 4, APRIL 1995
+
+am IWPLLPIEnrATION
+
+Program 3. Stack component and procedure call connector.
+
+acteristics. When a component is instantiated, it may supply
+
+an attribute to select a variant.
++ Primcomponent ::= { Implementation j
+Implementation ::= VARIANT ImplName IN Filespec
++ { PropertyList
+END ImplName j # }
+
+A typical primitive implementation is the stack component of Program 3 . Note that the full set of operations is exported as
+
+a single player; this abstraction supports the intuition that the operations form a coherent collection and will usually be used as a whole. Only one implementation is provided, the source
+
+code. Contrast this with the definition of sort in Program 1, which provides an executable representation and the switches to provide when the process is started.
+
+3) Composite Components: Composite components provide the mechanism for building up subsystems from primitive
+
+components (compilation units) or smaller subsystems. A composition requires the following:
+
+instantiations of some components, defined in the
+
+CompUses; instantiations of any required connectors, defined in the
+
+ConnUses; association of the Players of some of these components
+
+with the Players of the component being defined, established in the Bind; definition of the interactions among the components,
+
+specifically by defining the fashion in which they are connected and associating the Players of the constituent Interfaces with the Roles of the Protocols, enumerated in the Connect.
+
+The basic syntax addresses these three points. Because
+
+establishing connections in some of the simplest cases can
+
+sometimes become tedious, some syntactic sugaring is also
+
+provided. The PropertyList in the USES clause is intended
+
+to select properties specific to the instance being created (for
+
+example, initialization parameters).
+CompComponent ::= { CompUses I ConnUses I Bind
+1 Connect } +
+
+CompUses
+
+::= USES CompInstance INTERFACE
+
+CompTemplateName
+
+{ PropertyList
+
+END CompInstance } #
+
+ConnUses
+
+::= USES ConnInstance PROTOCOL
+
+ConnTemplateName
+
+{ PropertyList
+
+END ConnInstance } #
+
+Bind
+
+::= SimpleBind I AbstractBind
+
+Simple Bind
+
+::= BIND ExtemalPlayer TO
+
+IntemalPlayer
+
+AbstractBind
+
+::= BIND ExtemalPlayer TO
+
+ABSTRACTION
+
+Property List
+
+END ExtemalPlayer
+
+Connect
+
+::=CONNECT PlayerName TO
+RoleName I
+
+CONNECT RoleName TO
+
+PlayerName
+
+In implementations of components, USES clauses instanti-
+
+ate components or connectors. Properties may be associated
+
+with the entire component or with individual instantiations.
+
+Attributes defined for the individual instantiations provide
+
+values that are combined with values of the template defi-
+
+nition according to the merge rule defined for the attribute.
+
+The AbstractBind partially supports the abstraction mapping
+
+described in Section 11-B; UniCon supports only the simple
+
+form in which a player of one type is "blessed" as adequately
+
+implementing a player of some other type. A common case
+
+is the implementation of Streamout with printf, as in reverse-
+
+filter of Program 4.
+
+The syntax allows the individual connections between play-
+
+ers and roles to appear in any order. Often, however, it
+
+is helpful to group all the CONNECT statements for one
+
+PROTOCOL. In this case the connector instance name is
+
+purely local to that group. Syntactic sugar is provided for
+
+this case. It allows implicit creation of the connector instance
+
+and assurance that all of the associations between ROLES
+
+and PLAYERS are established at one time. It is syntactically
+
+transformed to the obvious ConnUses and set of Connects.
+
+To allow this, a ConnUses and its complete associated set of
+
+Connects can be replaced by:
+
+Establish ::= ESTABLISH ConnTemplate WITH
++ { PlayerName AS RoleName )
+{ PropertyList } #
+
+END ConnTemplate
+
+In the second example, the reverser is a filter whose im-
+
+plementation is shown in Program 4. The upper-level system
+
+composition, with pipes and filters, is essentially similar to
+
+the system in the KWIC indexer example. The reverser filter
+
+is a reverse-filter, whose implementation is given here. The
+
+interface is the standard filter interface, except that since the
+
+code never uses stderr attribute MinAssocs is set to 0 to
+
+show that its use is optional. The implementation instantiates
+
+three components and connects the procedures and data in the
+
+PLBundles that the three components define.
+
+Three parts of the definition deserve special note. First,
+
+the main program, reverse, uses a stack but calls the op-
+
+erations by different names from the stack implementation
+
+at hand. UniCon's connection rules support this renaming
+
+easily. Second, the connection is established between players
+
+that abstract stackness from the collection of individual stack
+
+operations. Third, the component defines a filter in terms of
+
+procedures. This requires an abstraction step. The components
+
+must correctly implement streams, and the definition must
+
+show the correspondence. The rules for implementing streams
+
+SHAW er al.: ABSTRACTIONS AND TOOLS FOR SOFIWARE ARCHITECTURE
+
+327
+
+A Property is any expression that can be properly delimiled by the syntax. This is one of the major mechanisms in support of an open system; properties can be collected syntactically and without interpretation, then shipped off to applications capable of analyzing them.
+When an attribute is known to UniCon, especially when it is used in UniCon processing, the attribute is parsed and interpreted. However, when an attribute is provided purely in support of an external tool, it may be simply passed to the tool as a completely uninterpreted string. This capability is required to support tools not specifically known to the system.
+
+D. Populating the Space of Elements
+
+Program 4. Reverse-filter. A nonprimitive component with abstraction.
+are the same in UniCon as in the underlying system; like other aspects of connection definitions, they are currently built in as special cases. The correspondence is shown in the BIND statements. As described in Section 111-A1)-c), the external player type and the internal player type are different. The appearance of the keyword ABSTRACTION indicates that an abstraction mapping rather than a simple renaming is taking place.
+Additional syntactic sugar is provided for the very common case in which a) procedure calls and data access are being connected, b) the Definers and Callers use the same names, and c) there are no duplicate name conflicts. In this case, the connections can be defaulted, thereby avoiding the creation of very long, error-prone lists of the form
+ESTABLISH ProcedureCall WITH
+Here.F AS Definer
+There.F AS Caller
+Everywhere.F AS Caller
+Etc.F AS Caller
+END ProcedureCall
+or, even worse, the fully un-sugared form. Similarly, members of PLBundles will be connected by default when it is safe and unambiguous to do so.
+4) Primitive Connectors: UniCon currently supports only built-in, or primitive connectors. We are extending the list of built-ins manually. Our emphasis is on incorporating connectors that are already rich, well worked-out, and supported on the platform of our implementation. Since one of the objectives of this implementation is to gain experience with a rich variety of connectors, we are not yet in a position to define composite connectors. The syntax is similar to that for primitive components.
+PrimConnector ::= BUILTIN
+5 ) Property Lists: Property lists appear frequently. Each starts with an attribute name and contains a parenthesized Property.
++ Propertyfist ::= { AttributeName (Property) } .
+
+In order to get meaningful experience with an architecture tool, we must populate its environment with definitions that do useful things. It is far better to populate this space with real elements than to build toy examples with code created for the purpose.
+We have chosen connectors of practical utility and built them into the system. Our major reason was to supply a diverse collection of convincing mechanisms. We did that by selecting mechanisms for which someone else had designed the specification (i.e.. protocol) and developed the implementation. A second reason for this strategy was to gain enough experience to know what the language must provide to support composite connectors.
+Similarly, we chose to accept existing code as primitive components. We do this by creating wrappers that give'the component specification as a UniCon interface and refer to one of the native representations of the code (source, object, executable,...) in the primitive implementation.
+To simplify the creation of these wrappers, we built a semiautomatic tool that extracts the externally visible names of a C module and creates a draft UniCon specification. We have not attempted to perform complete type inference for signatures. Rather, the tool derives a good approximation and provides unresolved signatures to the human user for resolution. In practice, the tool does most of the work. Because of the vagaries of C, some names often appear to be externally visible when that was not the programmers intention, so manual checking is required in any case. Using this tool, we have created wrappers for the code of the UniCon processor itself, and it has successfully constructed itself.
+E. Incorporating Analysis Tools
+UniCon can incorporateexternally developed analysis tools. These tools require information in formats that are not in general known to UniCon. We do this by capturing the toolspecific information as (potentially uninterpreted) entries in property lists. UniCon collects the information required by the tool, forwards it to the tool for analysis, and receives the result for appropriate processing (for example, generation of error messages or provision of an attribute value that will affect system configuration).
+We currently support one analysis tool. The RMA tool, described in Section 11-D determines whether a set of realtime processes will be schedulable under a rate-monotonic
+
+328
+
+IEEE TRANSACTIONS ON SOFTWARE ENGINEERING, VOL. 21, NO. 4, APRIL 1995
+
+TABLE VI11 EVENTTABLEFOR REAL-TIMAENALYSIS
+
+TABLE M
+ACTIONTABLEFOR REAL-TIMEANALYSIS
+
+discipline. The operating system supported is Real-Time Mach [17], [2515.We describe both the UniCon facilities and the
+
+TABLE X .RESOURCTEABLEFOR REAL-TIMEANALYSIS
+
+connection to the analysis tool here. Fig. 3 shows a real-time client-server example, with two
+
+RESOURCES R e m m ID
+
+processes contending for processor time. The real-time char-
+
+acteristics and requirements of this client-server system are
+
+recorded as part of the architectural description, then au- Component type SchedProcess provides an abstraction for
+
+tomatically collected and passed on to a separate analysis processes that must meet real-time deadlines and that the
+
+tool. This tool, also developed at Camegie Mellon, performs operating system schedules accordingly. These processes may
+
+real-time schedulability analyses based on tabular data in be periodic or aperiodic. Real-time applications use Sched-
+
+the “Implementation Table” format introduced in [ 181. These Process components to define computations based on mul-
+
+tables describe the events, actions, and resources of the system. tiple processes that execute periodically, concurrently, and
+
+(In this formulation, an event is an abstraction that consists of in competition for the CPU resource. Interactions among
+
+a stimulus and a set of responses that follow from it.) Tables I, SchedProcess components are mediated by connectors of type
+
+11, and I11 comprise the Implementation Table for the example RTScheduler. This connector type recognizes an Algorithm
+
+of Fig. 3. UniCon allows this information to be recorded in the attribute to choose from among six scheduling algorithms. If
+
+interfaces of SchedProcess components (see Program 5) and the algorithm ratemonotonic is selected, UniCon invokes the
+
+extracts the tables as shown for transmission to the analysis RMA analysis tool to determine whether all of the schedulable
+
+tool.
+
+processes will meet their deadlines.
+
+The RTM-realtime-sched connector establishes a real-time At this level of abstraction, the designer has not indicated
+
+scheduling relation among a number of processes. Since an how the realtime scheduling connector is to be implemented.
+
+abstract real-time task may require code executing in several It might be a single scheduling component that registers
+
+processes, sophisticated scheduling is required. Program 5 processes. However, as described in Section V-A, the intended
+
+presents the significant parts of the code for the example of implementation involves a combination of lightweight and
+
+Fig. 3. This includes the component that does the complete heavyweight processes, in some cases with auxiliary hidden
+
+system configuration (Real-Time-System), the specification processes. The built-in semantics of the connector component
+
+(only) of one schedulable process (RTClient), and the two includes the wrappers as well as the initialization code that
+
+connectors. The component definitions show how property lists sets up the operating system scheduler.
+
+are used to specify the information required by Tables VIII, IX, The RMA analysis tool requires information about exe-
+
+and XI, providing each type of information at the appropriate cution times, periods, relative priorities, and event traces.
+
+point in the design. UniCon extracts the information, creates A Segment corresponds to a block of code and is defined
+
+the tables in the appropriate format, and passes them to the using the SegmentDef attribute. This attribute defines the
+
+RMA analysis tool. The information is also used to initialize Segment’s name and execution time. A Trigger corresponds
+
+the schedulable processes on the correct Real-Time Mach to the cause of the event and is either periodic or aperiodic;
+
+processor under the proper scheduling algorithm.
+
+it is defined using the TriggerDef attribute. This attribute
+
+In this example, the processes also interact via remote proce- defines the Trigger’s name and period. An RTLoad player
+
+dure calls; these interactions are mediated by the RTM-remote- uses the Trigger and SegmentDef attributes to define the
+
+proc-call connector. The full text of the example includes one processor load imposed by the SchedProcess in response to
+
+composite component to define the system, two schedulable a single event. The relative priorities are usually determined
+
+process components that convert simple procedures to pro- for each instantiation; they are provided by attribute Priority,
+
+cesses, two modules that provide the application code of the usually when the SchedProcess is instantiated. Event traces
+
+real-time tasks, two connectors, and two libraries.
+
+describe the sequence of computations that will take place as a
+
+Mach is a microkernel developed at CMU, and a Unix server running on Mach provides a Unix interface and programming environment. RT Mach, also being developed at CMU, is upward compatible with Mach but provides extensions including periodic real-time threads, exception handlers for timing violations, high resolution clocks/timers, real-time synchronization, and realtime interprocess communication. UniCon supports both Mach and RTMach
+
+consequence of an event. A trace may include segments from many SchedProcesses; it therefore cannot be specified until the processes are associated with a RTScheduler connector. Traces are therefore attributes of the connector. Each consists of a trigger and the segments whose execution follows from
+
+interprocess communication (IPC) facilities.
+
+that trigger.
+
+SHAW et al.: ABSTRACTIONS AND TOOLS FOR SOFTWARE ARCHITECTURE
+
+329
+
+want to experiment with a wide variety of mechanisms'to determine what modifications to the toolset are required for the addition of new mechanisms. As a reality check, we have chosen mechanisms that are available and useful in practice. Finally, by using mechanisms that are already available in our environment, we are confronted with the nitty-gritty details of real implementations. The current connectors are of four essentially different kinds. These are described in the sections below.
+
+Program 5. System definition for real-time scheduling example: System definition and connectors.
+IV. IMPLEMENTATION
+The UniCon implementationcurrently supportsthe language described in Section 111. The implementation includes tools that process specifications as described in Sections 111-B to -D: a compiler for the textual form, a graphical interface, a semiautomatic wrapper-generator, and a facility for invoking the RMA analysis tool.
+Much of the underlying technology is standard. The compiler, for example, is in most respects conventional.Its primary product is Odinfiles6 rather than machine code; these invoke the language tools that actually construct the systems. It also generates new source code for initialization purposes. The graphical user interface is built using STk, a Scheme interpreter that bundles Ousterhout's Tk toolkit. The wrappergenerator is based on the Gnu C compiler with, of course, much simplified processing. The interface to the M A tool is a data format for a spreadsheet.
+The novel part of the UniCon implementation is the handling of connectors, in particular high-level connectors. In UniCon, the implementations of connectors are all built in, the motivation for which was the need to gain experience with a variety of underlying mechanisms. That experience will put us in a position to design language-level constructs to allow the addition of user-defined connectors. We also
+60dinfiles are similar to makefiles, in that they specify system construction steps for producing program executables. Odinfiles are processed by the odin utility, a make-like utility that computes complete dependency information automatically. Odin's scripts are shorter and simpler than make's. Odin gains efficiency by eliminating most of the filesystem status queries required by make, by parallel builds on remote machines, and by sharing from a cache of previously computed derived files. For more information on odin, contact Geoff Clemm, geoff@bellcore.com.
+
+A. Procedure Cull and Global Datu Access
+In order to produce running systems, UniCon must support some of the interaction constructs that are native to programming languages. In this capacity, UniCon is similar to a module interconnection language. At present the supported constructs are procedure calls and data naming, but future versions may add other constructs such as exceptions and language-based synchronization (e.g., Ada rendezvous). UniCon defines connector types Procedurecall and DataAccess, and the implementation supports realizations of these in the C programming language, defined as connectors C-proc-call and C-shared-data.
+For each player in a procedure call or global data connection, the compiler keeps track of the location of the source file or object file that implements the player. When the system has been completely parsed and all connections have been successfullymade, UniCon creates an Odinfile which compiles all the source files and links all the object files to produce an executable version of the system. The linker is the.too1 that actually makes the connections for procedure calls and global data access.
+It is not always convenient, appropriate, or possible to use the same procedure name at call site and definition site. To overcome this limitation, UniCon allows renaming, as illustrated by stack in the second example. This is implemented by creating C macros to redefine the differing names to a new, unique name. This implementation strategy, of course, is possible only with "source" files; object-level renaming may be added in the future.
+In addition to the ESTABLISH abbreviation that allows implicit instantiation of a connector, UniCon allows procedures and data uses to be connected implicitly by matching names. This provides the usual capability of a compiler and relieves the system builder from having to enumerate all of the connections in a complex system. After explicit connections have been performed, any Players with insufficient associations are checked to see whether they can be connected implicitly. If so, they are connected and a warning is issued.
+The number of individual procedure call connections between two components can be very large. At the granularity of the system's architecture, it is not helpful to display them all. Furthermore, procedures tend to aggregate into collections of procedures related to some aspect of an interface. In order to support the abstraction of a group of procedure and data connectors, we introduced the player type PLBundle and the related connector PLBundler. The Participant role of the PLBundler accepts both bundled and unbundled players. The
+
+330
+
+IEEE TRANSACTIONS ON SOFTWARE ENGINEERING, VOL. 21, NO. 4, APRIL 1995
+
+PLBundler can connect players of any number of PLBundles; the matching (including renaming) is governed by the Match attribute. In its simplest form it becomes equivalent to a Procedurecall or DataAccess connector.
+B. Unix Pipes and Files
+In the Unix environment, the most common connector is the pipe as supported by most shells. The shell version of pipe, which allows files to be sources and sinks, is an abstraction over the system mechanisms. At the system level, file operations, named pipes, and unnamed pipes are separate entities that all happen to be accessed through ports. Like shells, UniCon inspects the components that a pipe connects and selects the appropriate mechanism to implement the pipe abstraction. Unlike shells, UniCon provides the same notation for pipe configurations as for others and handles arbitrary plumbing topologies.
+UniCon defines the connector type Pipe. The language supports connection of ports to either files or to ports of other processes. The tools select the correct implementation from among the low-level choices provided by Unix. This is independent of programming language. The examples in this paper use a particular form of Pipe connector, the Unix-pipe, whose abstraction is appropriate for this operating system. UniCon goes one step beyond Unix in providing a signature for each stream to specify the syntactic structure expected on the stream. UniCon checks these signatures for consistency.
+Most Unix users regard connecting a sequence of processes together in a pipeline as a simple task. Indeed, most of the myriad Unix shells provide a simple syntactic mechanism for doing so. This mechanism allows a one-way data path, with a source, an arbitrary number of intermediate filters, and a sink. Thus, when most people think of pipes in the Unix environment, the notion of reading from “standard input,” writing to “standard output,” and printing errors on “standard error” (so that they appear on the terminal instead of passing through the pipeline) is the model that comes to mind-indeed, this has been standard for over 20 years [32]. Although this model has proven useful, many other configurations of communicating processes are possible, such as the data merging shown in Fig. 1, two-way communications, loops, and so forth. So firmly ingrained is this standard mechanism that most people are unaware that pipes can be used to connect arbitrary file descriptors from an arbitrary collection of processes together.
+UniCon, on the other hand, supports abstractions that encourage the use of general pipeline topologies. The PortBinding attribute provides for explicit selection of particular ports, and the freedom from linear text allows the creation of complex topologies.
+The low-level details of connecting two processes with a pipe are rather complicated. It requires that the processes have a common ancestor (i.e., parent process), and that the parent establish the pipe connections before doing the exec on the child processes. UniCon uses this model for connecting processes with pipes. The implementation is complicated by a number of additional issues as follows.
+
+UniCon must dynamically assess the interconnection pathway and build the interconnection code based on an arbitrary linking of processes. Because splitting, merging, and data loops are allowed, UniCon must pay careful attention to parenting. Unlike the shell, UniCon allows processes to communicate on file descriptors other than s t d i n and stdout. The UniCon description permits the user to specify which file descriptors the process expects to be present, and connects the pipe appropriately.
+Experience has shown that although the current textual syntax is somewhat cumbersome (the graphical notation is simple), it is very easy to specify complex interconnections such as that found in the KWIC indexer example.
+C. Remote Procedure Call
+Pipes and filters provide data-flow relations among independent processes. Remote procedure call (RPC) complements that with an interprocess relation based on communication and control flow. RPC has a natural abstraction relation with ordinary intraprocess procedure call, but it requires substantial extra effort on the part of the programmer.
+UniCon defines connector type RemoteProcCall. The implementation supports both Mach and RTMach versions of this connector as M-remote-proc-call and RTM-remote-proc-call. They are implemented for Mach 3.0 Interprocess Communication (IPC) Facility and RTMach IPC, respectively.
+Mach and RT Mach implement RPC’s with message passing. The arguments of a remote call are marshaled into a message and delivered to the process that defines the remote procedure; this process unmarshals the arguments and calls the routine in that process; the return value is handled similarly. The glue code that converts simple procedures to remote procedures is very tedious for software engineers to create, so the designers of Mach and RT Mach provide a tool, called the Mach Interface Generator (MIG), that can produce the glue code from simplified specifications of RPC routine definitions.
+For each player in a remote procedure call connection, the compiler keeps track of the location of the source andor object files that comprise the implementation of the process in which the player is found.’ UniCon also keeps track of the RPCDef players and RpcCall players found in each process. For each process that exposes RPCDef players in its interface, UniCon builds a MIG specification containing the required definitions for each remote procedure declaration in that process. For RPCCall players, UniCon keeps track of the MIG-generated files it needs to link with the process to access remote procedures in other processes.
+When the system has been completely parsed and all connections have been successfully made, UniCon creates an Odinfile with the proper system construction steps. For each process doing RPC’s the following steps are required.
+Invoke the Mach interface generator for each MIG specification file constructed for the process. This produces C source code for the RPC glue code.
+7More than one Unix file is associated with a Mach or RT Mach process implementation. See Section IV-A4) for further details.
+
+SHAW el al.: ABSTRACTIONS AND TOOLS FOR SOFTWARE ARCHITECTURE
+
+331
+
+*, Compile the C source for the glue code into object files.
+
+v. EXPERIENCAEND ANALYSIS
+
+Compile the C source code that tums the Process or The UniCon processor is in many respects a quite conven-
+
+SchedProcess implementation into a heavyweight process tional compiler. Its novelty lies in the variety of high-level
+
+[see Section IV-A4)].
+
+connectors it supports and the system configurations it can .
+
+If the implementation of the Process or SchedProcess is describe. The substantialwork of the developmenthas not been
+
+C source, compile it as well.
+
+the creation of the software itself, but simply understanding
+
+Link all the object files to form the Mach or Real-Time- what’s required to achieve the desired functionality.This often
+
+Mach executable process.
+
+involves re-examining standard system facilities (e.g., linkers,
+
+pipes) in order to use them in more general ways than is now
+
+D.Real-Time Scheduling
+
+customary.
+
+Pipes and remote procedure calls raise the abstraction level of connection, but do not stretch the concept of connection much. It’s easy to think of RPC’s in the conventional impodexport model, and even though impodexport doesn’t quite match pipes, pipes are still binary and asymmetrical. In order to investigate connectors of a substantially different form, we incorporated a connector for real-time scheduling of
+
+We demonstrated the first version of UniCon in 1992. Both the language and the implementation are in their second versions. We can now report on our experience with the system. Section V-A discusses our experience with the system and is organized generally around types of connectors. Section V-B reports some performance data. Finally, Section V-C looks to the future.
+
+type RTScheduler. The implementation supports the RT Mach
+
+realization, defined as connector RTM-realtime-sched. In the simplest case, with independent processes, no data or control passes between processes; they interact through competition for processor resources. As described above, the scheduling task becomes more complex when additional interactions are introduced, as through RPC.
+The priority and period information for each SchedProcess component is sufficient for UniCon to schedule the process in RT Mach. If the scheduling policy for the computer has been set to ratemonotonic (with the Algorithm attribute) UniCon also packages up the trace, period, execution time, and priority information, transmits it to the analysis tool for schedulability analysis, and reports the results of the analysis.
+Next, UniCon generates code for the schedulableprocesses. In RT Mach, the basis of scheduling is lightweight processes, called threads.* However, our real-time model requires scheduling for heavyweight processes. The C code specified in the implementation of the SchedProcess component is the implementation of the thread to be scheduled. In order to satisfy both the model and the operating system, UniCon builds a heavyweight process that creates, initializes, and schedules the thread to run in the RT Mach environment. The resulting thread will run with the period and priority specified. UniCon then builds a startup program that sets the scheduling policy in the RT Mach environment to the one specified in the Algorithm attribute. It also generates Odinfile instructions that build the SchedProcess component. If the SchedProcess component makes remote procedure calls, the generation of the Odinfile is deferred until all information aboiit necessary glue code files is known (see Section IV-C above). Finally, UniCon generates a shell script that initializes the RT Mach system that the builder has just created. It executes the startup routine which sets the scheduling policy for the processor and then sets the heavyweight processes in motion.
+
+A. Experience
+The examples in this paper are among the simpler working examples from each of the architecturalstyles we support.This section describes the implementations and some of ‘the issues they brought to light.
+For pipes, files, and filters, the major challenge was implementing a general model that permitted arbitrary configurations as described in Section IV-B. In addition to the matter of startup order, there is also a matter of the correct order of construction: Unix processes do not actually have ports until they are initialized at execution time. As a consequence, UniCon must set up code to create pipe linkages at process initialization time.
+To verify that UniCon provides a smooth bridge from architecture to code, we built the UniCon compiler from a UniCon specification of itself. The compiler consists of 15 C source code modules, 1 lex specification, 1 yacc specification, and 16 C include files. This yields a total of approximately 11 900 lines of source of all types. The UniCon specification was generated semi-automaticallyusing the wrapper-generator discussed in Section 111-D and was expressed in terms of the raw procedures and data of the implementation.The result was fine-tuned by hand to produce the final specification.On a Sun SPARCstation 10, building UniCon from source code took 1 min 43 s to complete (wall clock time). Of this, 1 min 24 s was spent in the Odin utility compiling and linking the system, leaving 19 s of time attributable to the UniCon compiler.
+Procedure call and pipe connectors cannot be mixed arbitrarily. Procedure calls take place within a single address space, whereas pipe connectors are only meaningful at a process (hence name-space)boundary. As a result, a composite implementation may either establish procedure call and data access connections, or it may establish pipe connections. At present, the designer is responsible for determining where process boundaries will fall. The component type structure
+
+helps the designer identify the boundaries.
+
+‘In Unix, a heavyweight process has only one thread, namely “main.” In Mach and RT Mach, heavyweight processes can have more than one thread that execute in parallel. In RT Mach, these threads are schedulable.
+
+The usual method for using remote procedure call (RPC) in Mach requires substantial knowledge of the underlying run-time library facilities, and at the very least a knowledge
+
+332
+
+IEEE TRANSACTIONS ON SOFTWARE ENGINEERING, VOL. 21, NO. 4, APRIL 1995
+
+of the Mach Interface Generator (MIG). UniCon saves the system builder from having to acquire any of this specialized knowledge. When the RPC’s make use of the simple, standard C language types known to the MIG, the system builder need only connect the players in a UniCon specification to create a RPC connection. This takes 3 or 4 lines for each call (one USES and two CONNECT’S,or one ESTABLISH). If complex types are involved, the builder need only add another line for each type definition (the RPCTypeDef attribute) and one line for all the include files where the types can be found (the RPCTypesIn attribute). For Example 3 (Fig. 3, Program 5, Appendix D), two RPC calls and one complex type definition required 10 lines of UniCon code. UniCon builds the glue code from these, hiding the details from the system builder completely. If the system builder were not using UniCon, but rather developing the application by hand, the builder would be required to know the MIG specification language, create a MIG specification of the glue code, and then build an Odinfile that invokes the MIG to create the glue code and compile and link it into the appropriate processes. If the system builder were not using the MIG at all, but rather generating the glue code by hand, building the system would require a very specialized knowledge of Mach and approximately 500 lines of C code.
+This example also reminded us that real code is often not as pure as the models suggest. The modules with the actual code for the real-time tasks called an assortment of library routines, including printf and a routine to convert kernel return codes to error strings. It turns out that these display information in a window to show the progress of the tasks, which is a surrogate for performing some real-time task. However, our client did not originally include this extemal connection as part of the interface of the component. This will tum out to be a relatively common case, as hooks for debuggers, performance monitors, audit trails, and other tasks not directly related to the overt function of the system are generally not regarded as part of its interface. We believe that some facility for structuring the full interface of a component into the facets of interest to various classes of users will be required; the PLBundle player type is an initial step.
+Similarly, running real-time applications under RT Mach requires considerable overhead in process and thread definition. UniCon makes this process transparent. In the implementation of a SchedProcess component, the system builder specifies the implementation of the RT Mach thread, not the process. UniCon then builds the heavyweight process “main” program that creates and properly schedules the thread. UniCon compiles and links the thread and the main program to form the RT Mach process. The system builder need not know any of the RT Mach underlying mechanism for building processes. Mach 3.0 has the same models for lightweight threads and heavyweight processes as RT Mach, so UniCon uses the same model for (nonreal-time) processes in both operating systems.
+From the implementation of the SchedF’rocess component type and the RTScheduler and RemoteProcCall connector types we learned that UniCon is simple enough and “open” enough to support the addition of new component, connector, player, and role types. In addition, the compiler proved to be relatively easy to modify to include the new underlying
+
+I8
+1: KWIC p i p s ,2: heterogeneous 3 nal-timc
+
+TABLE XI BUILDTIMESFOR THREEEXAMPLES
+
+Totd Build Tinu 13 seconds
+30 seconds 6 minute 12 seconds
+
+Timrinodin 11 seconds
+24 seconds 6 minute 5 seconds
+
+Time in LInrCon 2 seconds 6 seconds 1 seconds
+
+mechanism for creating RT Mach processes and for facilitating inter-process communication via RPC. Both of these experiences indicate that we should find little difficulty in populating the UniCon language with new component types and connector types and building systems from compositions of them. This should help us close in on our goals of producing a formal taxonomy of component and connector types and of taking advantage of useful mechanisms that already exist.
+
+B. Pe$ormance
+The cost of using UniCon has two components: the extra runtime cost imposed on the systems it produces and the setup before runtime. The relevant cost measures are computation time for both components and human time for setup. Whereas Section V-A discusses savings in human time that result from not having to leam and operate sophisticated interaction mechanisms, this section discusses computation time.
+UniCon does not impose execution performance penalties after initialization. Some connectors require initialization routines; beyond that, the running code is essentially the same as a programmer would likely have produced without UniCon. More specifically, the following.
+For systems of procedure calls and shared data, the executables produced by UniCon are the same size as those that would be produced by hand by a system builder manually compiling and linking the source files. Systems of pipes and filters require an initialization process as described in Section IV-B to establish the topology and set up the pipes. After this process is finished, no residue of UniCon remains. UniCon initialization is slightly faster than the Unix shell; the same algorithms and mechanisms are used in both cases, but the shell must parse and interpret the commands. Similarly, there is no runtime performance penalty for systems of schedulable processes built by UniCon. Again, the executables are the same size as those that would be built by a system builder. This, however, assumes that a hand-built system would adhere to the same stylistic restrictions that UniCon does, specifically the mapping of abstract real-time tasks to a set of single-threaded heavyweight processes under RT Mach. For remote procedure calls, UniCon automates the recommended process of using the Mach Interface Generator.
+To provide a feeling for pre-runtime costs, Table XI shows the actual build times for our three examples.
+Additionally, the wrapper-generator discussed in Section 111-D was used to produce some of the UniCon specifications in the examples. The execution time for the wrapper-generator to produce the components stack and reverse (see Appendix C) was approximately 1 s. The wrapper-generator took between
+
+I
+
+SHAW et al.: ABSTRACTIONS AND TOOLS FOR SOFTWARE ARCHITECTURE
+
+333
+
+1 k d 16 seconds to produce each wrapper for the UniCon spdcification of itself.
+VI. CONCLUSION
+‘We set out to provide improved support for abstractions that software developers use in designing the architectures of software systems. This required models that build up from the current module interconnection tools. We developed notation and tools to implement the new models and 1) demonstrated their adequacy for existing tasks (i.e., nothing serious left out) and 2) argued by example their appropriateness for the currently unsupported activities designers appear to engage in.
+Until now, compositional design has been based primarily on ad-hoc choice, informal experience, and local expertise. This work is a step toward making this knowledge precise, semantically based, and available to engineers as a matter of routine practice. Just as we now have a science of algorithms and data structures for making design tradeoffs and reasoning about properties of code, we shall also have a science for supporting large-scale composable systems.
+The principled use of compositional structures will have a dramatic effect on software production. It will 1) permit choosing design paradigms to match desired system characteristics, 2) allow developing application-specific frameworks and reference architectures, 3) enable development techniques (e.g., formal analysis, software reuse) to exploit compositional properties of systems, 4) support a high level of parameterization so that large systems can be more easily designed, understood, maintained,and enhanced, and 5 ) enable reusing old code as well as provide ways to recover partial architectural information from existing systems.
+APPENDIX COLLECTEDSYNTAX
+Component ::= COMPONENT CompTemplateName INTERFACE IS TYPE ComponentType
+{ PropertyList } # { PluyerList } #
+END INTERFACE IMPLEMENTATION IS
+{ PropertyList } #
+Primcomponent I
+CompComponent END IMPLEMENTATION END CompTemplateName PluyerList ::= { PLAYER PlayerName IS PlayerType
++ { PropertyList
+END PlayerName } # }
+Connector ::= CONNECTOR ConnTemplateName PROTOCOL IS TYPE ConnectorType
+{ Propertyfist } #
+Role List
+
+END PROTOCOL IMPLEMENTATION IS
+PrimConnector END IMPLEMENTATION END ConnTemplateName RoleList : = { ROLE RoleName IS RoleType
++ { PropertyList
+END RoleName } # }
++ Primcomponent ::= { Implementation } Implementation ::=
+VARIANT ImplName IN Filespec
++ { PropertyList
+END ImplName } # }
+CompComponent ::=
++ { CompUses I ConnUses I
+Bind I Connect }
+CompUses ::= USES CompInstance INTERFACE CompTemplateName { PropertyList
+END CompInstance } #
+ConnUses ::= USES ConnInstance PROTOCOL ConnTemplateName { Propertyfist
+END ConnInstance } #
+Bind ::= SimpleBind I AbstractBind
+SimpleBind ::= BIND ExtemalPlayer TO IntemalPlayer
+AbstractBind ::= BIND ExtemalPlayer TO ABSTRACTION Property List END Externalplayer
+Connect ::=
+CONNECT PlayerName TO RoleName I
+CONNECT RoleName TO PlayerName Establish ::=
++ ESTABLISH ConnTemplate WITH
+{ PlayerName AS RoleName }
+{ Propertyfist } #
+END ConnTemplate PrimConnector ::= BUILTIN
++ PropertyList ::= { AttributeName (Property) }
+ACKNOWLEDGMENT
+Our collaborators at Carnegie Mellon have provided a continuing forum for exploring these ideas. We particularly appreciate critical and stimulating discussions with colleagues in the School of Computer Science, especially D. Garlan, and with participants in the regular research seminar, especially J. Bishop. Much of the experience we needed to implement the SchedProcess component in UniCon came from a collaboration with engineers, especially R. Rajkumar, from Camegie Mellon’s Software Engineering Institute, where they are using
+
+334
+
+IEEE TRANSACTIONS ON SOFTWARE ENGINEERING, VOL. 21, NO. 4, APRIL 1995
+
+UniCon as a front end to describe, analyze, and prototype
+real-time systems. F. Jiang worked on an early version of the
+system.
+The U.S. Government is authorized to reproduce and dis-
+tribute reprints for Government purposes, notwithstanding any
+copyright notation thereon. Views and conclusions contained
+in this document are those of the authors and should not
+be interpreted as representing the official policies, either expressed or implied, of Wright Laboratory, the Department of
+Defense, the United States Government, Siemens Corpora-
+tion, or Camegie Mellon University. Theodore L. Ross was
+supported through Digital Equipment Corporation’s Graduate
+Engineering Education Program.
+REFERENCES
+G. Abowd, R. Allen, and D. Garlan, “Using style to understand descriptions of software architecture,” in Proc. First ACM SIGSOFT Symp. Foundations of Software Eng., Dec. 1993. R. Allen and D. Garlan, “Beyond definitioduse: Architectural interconnection,” in Proc. Workshop on Interface Definition Languages, 1994. __ , “Formalizing architectural connection,” in Proc. Sixteenth Int. Con$ Software Eng., 1994. D. Barstow and A. Wolf, “Design methods and software architectures track,” in Proc. 7th Int. Workshop in Software SpeciJication and Design, New York: IEEE Press, 1993. C. G. Bell and A. Newell, ComputerStructures: Readings and Examples. New York: McGraw-Hill, 1971, Megaprogramming, in Proc. Software Technol. Con$ 1992, DARPA. J. R. Callahan and J. M. Purtilo, “A packaging system for heterogeneous execution environments,” IEEE Trans. Software Eng., vol. 17, pp. 626-635, June 1991. “SARA aided design of software for concurrent systems,” in Proc. Nut. Comput. Con$, 1978. L. W. Cooprider, “The representation of families of software systems,” Ph.D. dissertation, Carnegie Mellon Univ., Apr. 1979. T. R. Dean and J. R. Cordy, “Software structure characterization using connectivity,” in Proc. Workshop on Studies of Software Design, in Lecture Notes in Computer Science. New York: Springer-Verlag. 1995. F. DeRemer and H. H. Kron, “Programming-in-the-large versus programming-in-the-small,” IEEE Trans. Software Eng., vol. SE-2, pp. 80-86, June 1976. D. Garlan and M. Shaw, “An introduction to software architecture, in Advances in Sofware Engineering and Knowledge Engineering, V. Ambriola and G. Tortora, Eds. New York: World Scientific, 1993, vol. 2, pp. 1-39. -, “Software development assignments for a software architecture course,” submitted for publication. N. Habermann and W. Tichy, “Future directions in software engineering,’’ Dagstuhl Sem. Rep. 32, Feb. 1992. “DSSA tool requirements for key process functions,” unpublished manuscript, version 1.0, Oct. 1993. C. A. R. Hoare, “Proof of correctness of data representations,” Acta Informaiica, vol. I, no. 4, pp. 271-281, 1972. T. Kitayama, C. W. Mercer, T. Nakajima, S. Savage, H. Tokuda, and J. Zelenka, Real-Time Mach 3.0 User Reference Manual, School of Comput. Sci., Camegie Mellon Univ., Pittsburgh, PA, Aug. 1993. (Preliminary edition.) M. H. Klein, T. Ralya, B. Pollak, R. Obenza, and M. G. Harobur, A Practitioner’s Handbook f o r Real-Time Analysis: Guide io Rate Monotonic Analysis for Real-Time Systems. New York: Kluwer-Academic, 1993. “A Theory of Interfaces and Modules I-Composition Theorem,” IEEE Trans. Software Eng., vol. 20, pp. 55-71, Jan. 1994. D. A. Lamb, Ed., Proc. Workshop on Studies of Software Design, in Lecture Notes in ComputerScience. New York: Springer-Verlag. 1995. J. Magee, J. Kramer, and Moms Sloman, “Constructing distributed systems in CONIC,” IEEE Trans. Sofware Eng., vol. SE-15, pp. 663-675, 1989. J. Magee, N.Dulay, and J. Krarner, “Structuring parallel and distributed programs,” Software Eng. J . , vol. 8, no. 2, pp. 73-82, Mar. 1993. E. Mettala and M. H. Graham, ‘The domain-specific software architecture program,” CMU/SEI Rep. CMU/SEI-92-SR-9, June 1992.
+
+1241 J. G. Mitchell, W. Maybury, and R. E. Sweet, “Mesa language manual,” Xerox Corp., Palo Alto Res. Cen., Tech. Rep. CSL-79-3, Apr. 1979.
+[25] T. Nakajima, T. Kitayama, H. Arakawa, and H. Tokuda, “Integrated management of priority inversion in RT-Mach,” in Proc. IEEE RealTime Sysi. Symp., Dec. 1993.
+1261 D. E. Perry, “Software interconnection models,” in Proc. Ninth Znt. Con$ Software Eng., IEEE Computer Society Press, Mar. 1987.
+1271 D. E. Perry and A. L. Wolf, “Foundations for the study of software architecture,” in ACM SIGSOFT Software Eng. Notes, Oct. 1992, vol. 17, no. 4, pp. 40-52.
+[28] -, Proc. First Annu. Workshop Pattern Languages for Programming, to be published.
+[29] R. Prieto-Diaz and J. M. Neighbors, “Module interconnection lan-
+guages,” J. Syst. Software, vol. 6, no. 4, pp. 307-334, Nov. 1986. [30] J. Purtilo, The PolyfithSofware Bus., Dep. Comput. Sci., Univ. Mary-
+land, Tech. Rep. 2469, 1990. [31] The PAVG Group, The Rapide-l Executable Language Reference Man-
+ual; the Rapide-l Types Reference Manual, Stanford Univ. Rep., Mar. 1993. [32] D. M. Ritchie and K. Thompson, “The UNIX time sharing system,” Commun. ACM, vol. 17, no. 7, pp. 365-375, July 1974. [33] M. Shaw, Ed., Alphard, Form and Content. New York Springer-Verlag 1981. [34] ___, “Toward higher-level abstractions for software systems,” in Proc. Tercer Simposio Inr. del Conocimientoy su Ingerieria, Oct. 1988. [35] -, Making Choices: A Comparison of SiyJesfor Software Architecture, Carnegie Mellon Univ., Tech. Rep., 1995. 1361 M. Shaw and D. Garlan, “Characteristics of higher-level languages for software architecture,” Carnegie-Mellon Univ., Tech. Rep., 1993. [37] J. W. Thomas, “Module interconnection in programming systems supporting abstraction,” Ph.D. dissertation, Brown Univ., June 1976. [38] W. F. Tichy, “Software development control based on module interconnection,” in Proc. 4th Int. Con$ Software Eng., Munich, Germany, 1979, pp. 2 9 4 1 . [39] J. M. Wing, Ed., in Proc. Workshop on Interface Definition Languages, Carnegie Mellon Univ., Tech. Rep. CMU-CS-94-WDL-1, Jan. 1994.
+Mary Shaw (M’78-SM’81-F’90) received the B.A. degree (cum laude) from Rice University. She received the Ph.D. degree from Carnegie Mellon University (CMU) in 1972.
+She is an Associate Dean for Professional Education Programs, Professor of Computer Science, and member of the Human Computer Interaction Institute and Software Engineering Institute at Carnegie Mellon University. She has been a member of faculty since 1972. From 1984 to 1987, she served as Chief Scientist of CMU’s Software Engineering Institute, where she still holds a joint appointment. She had worked in systems programming and research at the Research Analysis Corporation and Rice University. Her research interests in computer science lie primarily in the areas of programming systems and software engineering, particularly software architecture, programming languages, specifications, and abstraction techniques. Particular areas of interest and projects have included software architectures (Vitruvius), technology transition (SEI), program organization for quality human interfaces (Descartes), programming language design (Alphard, Tartan), abstraction techniques for advanced programming methodologies (abstract data types, generic definitions), reliable software development (strong typing and modularity), evaluation techniques for software (performance specification, compiler contraction, software metria), and analysis of algorithms (polynomial derivative evaluation). She is an author or editor of six books and more than 1 0 papers and technical reports. Dr. Shaw received the Warnier prize for contributions to software engineering in 1993. She is a Fellow of the American Association for the Advancement of Science. She is a member of the Association for Computing Machinery, the Society of Sigma XI, and the New York Academy of Sciences. She serves on Working Group 2.4 (System Implementation Languages) of the International Federation of Information Processing Societies and the IEEE Technical Committee on Software Engineering. In addition, she has served on a number of advisory and review panels, conference program committees, and editorial boards. For additional information on Dr. Shaw, consult her World Wide Web home page (http://www.cs.cmu.edu:80l/afs/cs.cmu.edu/user/shaw/www/Shawhome.html).
+
+I
+
+SHAW et al.: ABSTRACTIONS AND TOOLS FOR SOFTWARE ARCHITECTURE
+
+335
+
+Robert DeLine received the B.S. and M.S. degrees in computer science from
+
+David M. Young (S’85-M’85) received the B.S.
+
+the University of Virginia in 1993, where he designed tools for creating two-
+
+degree in electrical engineering from Comell Uni-
+
+and three-dimensional user interfaces. He is currently a Ph.D. student in the
+
+versity in 1985, and the Master’s degree in software
+
+Computer Science Department at Carnegie Mellon University.
+
+engineering (M.S.E.) degree from the Carnegie Mel-
+
+His research interests include languages and graphical notations for software
+
+Ion University in 1994.
+
+architecture, architectural analysis, and user interface design.
+
+Prior to entering software engineering in 1992, he
+
+For additonal information on Mr. DeLine, consult his World Wide
+
+was a senior engineer designing high-speed image
+
+Web home page (http://www.cs.cmu.eu:800l/afs/cs.cmu.edu/u~r/r~line
+
+processing hardware at Analogic Corporation. He is
+
+/www/home.html).
+
+Founder and President of Madeira Software, Inc.,
+
+Beverley, MA, where he is currently working on
+
+real-time visualization of acoustic data.
+
+Mr. Young is a member of the IEEE Computer Society and the As-
+
+sociation for Computing Maclunery. For additional information on Mr.
+
+Daniel V. Klein received the B.S. degree in mathematics and the M.S. degree Young, consult his World Wide Web home page (http://info.acm.org/-dyoung
+
+in applied mathematics from Carnegie Mellon University (CMU).
+
+homepage.html) .
+
+He has been Vice President of Technical Development, Chief Technical
+
+Officer, and a Director since LoneWolf was founded in 1991. He has also
+
+served as Tutorials Coordinator for USENIX, Inc. Prior to founding the
+
+Lonewolf, he was a Senior Member of the Technical Staff at CMU’s SEI from
+
+1985 to 1991, where he was one of the key developers of the Serpent UIMS.
+
+Gregory Zelesnik received the B.S. degree in
+
+Before coming to the SEI, he worked extensively in software development and
+
+computer science from the University of Dayton in
+
+optimization and served as a consultant for systems and kernel development
+
+1985, and the M.S.E. degree from Carnegie Mellon
+
+both nationally and internationally. He has held various positions at CMU
+
+University in software engineering in 1992.
+
+ranging from Staff Engineer to Manager of Software Systems of Mellon
+
+He is a research programmer in the Computer
+
+Institute’s Computer Engineering Center. He also served for four years as
+
+Science Department (CSD) at Carnegie Mellon
+
+President of CMU’s Staff‘Council. As an independent software developer, he
+
+University (CMU), where he supports the research
+
+has served as consultant to other companies for their product offerings.
+
+work of M. Shaw in Software Architectures.
+
+For additional information on Mr. Klein, consult his World Wide Web
+
+He is currently developing tools to support the
+
+home page (http://www.lonewolf.comvk).
+
+specification and construction of systems as
+
+collections of abstract architectural. components
+
+and connectors. Before joining the CSD, he spent five years at the Software
+
+Engineering Institute (SEI) at CMU, where he helped develop and promote
+
+an AddSQL binding method known as the SQUAda Module Extensions
+
+Theodore L. Ross received the B.S. degree in (SAME), and its associated Description Language (SAMeDL) which has
+
+electrical and computer engineenng and the M.S.E. since become International Standard ISOiIEC 12227:1994. He also spent
+
+degree in software engineering from Carnegie Mel- two years developing a course in software requirements engineenng for the
+
+Ion University in 1986 and 1993, respectively.
+
+Continuing Education Project at the SEI. From 1985 to 1988, he spent two
+
+He is a principle software engineer in the High and one-half years at Softech, Inc., in Washington, D.C., testing various
+
+Performance Networks group in Digital Equipment run-time and prerun-time tools of an Ada Language System (ALS), and
+
+Corporation, where he has been an employee since developing and testing various kernel services in a real-time cyclic executive
+
+1986. He is currently developing system software for an embedded computer.
+
+and device drivers for asynchronous transfer mode
+
+Mr. Zelesnik served on the program committee for the 1994 In-
+
+network equipment. His primary interests are soft- ternational Conference on Requirements Engineering. For additional
+
+ware reuse and the organization and structure of information on Mr. Zelesnik, consult his World Wide Web home page
+
+software systems.
+
+http://www.cs.cmu.edu:8001/afs/cs.cmu.edu/user/gz/www/Zelesnik.htm).
+
