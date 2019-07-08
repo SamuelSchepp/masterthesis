@@ -158,10 +158,6 @@ The app then uses the interpreter framework to display the actual app contents.
 This means, that if the whole app is considered to be the interpreter, it is a hybrid interpreter.
 If only the sub-framework is considered to be an interpreter, it's not considered hybrid.
 
-\subsection{Runtime Models}
-
-todo
-
 \subsection{Abstraction}
 
 It is possible to achieve even more platform independence, by implementing the virtual machine component in a common language.
@@ -193,7 +189,7 @@ Also, modern programming paradigms like functional or reactive programming, mult
 
 Another suitable platform is Kotlin Native, which makes it possible to actually use classes and functions as if there where implemented natively.
 Kotlin is a modern functional programming language with a comprehensive tooling support for documentation and unit testing.
-It is a very safe language, because it supports optionals, coroutines, automatic operator synthesis\footnote{In Kotlin, data classes are collections of fields where many operators like equals, copy and toString are automatically generated.} and other modern programming paradigms.
+It is a very safe language, because it supports optionals, coroutines, automatic operator synthesis\footnote{In Kotlin, data classes are collections of fields where many operators like \textit{equals}, \textit{copy} and \textit{toString} are automatically generated.} and other modern programming paradigms.
 As of June 2019, Kotlin Native multi-platform libraries are still an experimental feature.
 
 One aspect of the mos interpreter has been abstracted into a Kotlin Native framework.
@@ -201,7 +197,7 @@ A routing algorithm for the map layer has been developed as a framework so that 
 While iOS uses the exported framework file, the Android project includes the framework's source files and compiles them directly to Android-native machine code.
 
 The JavaScript Core approach makes it hard to exchange data and implement callback mechanisms.
-While it is easy for the iOS application to set function pointers and exchange JSON data, the impact on the overall complexity must be evaluated by re-writing the demonstrator in JavaScript.
+While it is easy for the iOS application to set function pointers and exchange \ac{JSON} data, the impact on the overall complexity must be evaluated by re-writing the demonstrator in JavaScript.
 Since JavaScript does not allow multi-threading, this alternative should not be considered.
 
 The ultimate goal is a common virtual machine implementation where the clients would act as user interface and platform-specific feature providers.
@@ -213,10 +209,15 @@ This thesis elaborated two topics.
 On one hand, the model, it's abstraction approach and requirements have been evaluated.
 On the other hand, the internal structure of the interpreter has been analyzed and an alternative architecture has been proposed.
 
+The paper \textit{Systematic literature review of the objectives, techniques, kinds, and architectures of models at runtime} \cite{szvetits_systematic_2013} analyses the use of models with regard to runtime systems, by using Systematic Literature Review.
+Runtime models take the idea of static artifacts one step further.
+The paper's goal is to identify and classify approaches, architectures and usage of runtime models.
+The research suggests problems like error localization, requirements evolution, abstraction and maintenance are addressed by runtime models.
+Those models can have various architectures, techniques, objectives and kinds.
+The paper proposes those classification to improve development workflows of systems using runtime model support.
 
-
-
-
+One example model is an abstract state machine that can be used to formally describe component behavior, which then can be executed directly.
+The objectives are abstraction, consistency, simulation, platform independence and policy checking.
 
 
 
