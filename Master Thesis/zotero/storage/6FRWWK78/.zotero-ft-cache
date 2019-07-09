@@ -1,0 +1,1247 @@
+Object-Oriented Reengineering Patterns
+Serge Demeyer Stéphane Ducasse Oscar Nierstrasz Version of 2013-11-27
+
+ii
+
+iii
+Praise for Object-Oriented Reengineering Patterns
+“How” to refactor is already well covered in the literature. However, “When” and “Why” can only be learned by experience. This book will give you a head start in learning when to start redesigning a system, when to stop for now, and what effects you can expect to see from your efforts.
+— Kent Beck, Director, Three Rivers Institute
+This book is full of practical, hands-on reengineering knowledge and expertise presented in a form that makes it easy to understand and use. The patterns in this book thus help everyone who is concerned with using reengineering to guide their work. I wish I had had this book in my library earlier.
+— Frank Buschmann, Senior Principal Engineer Siemens AG
+This book is more than its title advertises. Effective reengineering is really about purposeful and efﬁcient reading of someone else’s code in order to produce predictable change. The same processes the authors highlight as patterns of skillful reengineering behavior can easily be cast as the skills you need to create readable, maintainable software systems.
+— Adele Goldberg, Neometron, Inc.
+If a guy named Dave brought a large box to my ofﬁce that contained a lot of documentation and two CDs-installation disks for software that my company wanted to reengineer — I’d be happy to have the authors of this book by my side. Barring that, having their book is the next best thing. No silver bullets, no hype, no promises that this will be easy — just a down-toearth, easy-to-read, extremely useful book of helpful guidelines to tackle the project. Buy this book and browse it before Dave arrives in your ofﬁce! It just might save you and your company a lot of grief.
+— Linda Rising, Independent Consultant
+
+iv
+This book is available as a free download from http://scg.unibe.ch/oorp/.
+Copyright © 2003 by Elsevier Science (USA). Copyright © 2008, 2009 by Serge Demeyer, Stéphane Ducasse and Oscar Nierstrasz. The contents of this book are protected under Creative Commons Attribution-ShareAlike 3.0 Unported license. You are free: to Share — to copy, distribute and transmit the work to Remix — to adapt the work Under the following conditions: Attribution. You must attribute the work in the manner speciﬁed by the author or licensor
+(but not in any way that suggests that they endorse you or your use of the work). Share Alike. If you alter, transform, or build upon this work, you may distribute the result-
+ing work only under the same, similar or a compatible license. • For any reuse or distribution, you must make clear to others the license terms of this
+work. The best way to do this is with a link to this web page: http://creativecommons. org/licenses/by-sa/3.0/ • Any of the above conditions can be waived if you get permission from the copyright holder. • Nothing in this license impairs or restricts the author’s moral rights.
+Your fair dealing and other rights are in no way affected by the above. This is a human-readable summary of the Legal Code (the full license): http://creativecommons.org/licenses/by-sa/3.0/legalcode
+Published by Square Bracket Associates, Switzerland. SquareBracketAssociates.org ISBN 978-3-9523341-2-6 First Open-Source Edition, June, 2008. Revised, September, 2009.
+
+v
+For Ann, Sara and Niels. For Florence, Quentin, Thibaut and Camille.
+For Angela and Frida.
+
+vi
+
+Foreword
+Foreword by Martin Fowler
+For a long time it’s puzzled me that most books on software development processes talk about what to do when you are starting from a blank sheet of editor screen. It’s puzzled me because that’s not the most common situation that people write code in. Most people have to make changes to an existing code base, even if it’s their own. In an ideal world this code base is well designed and well factored, but we all know how often the ideal world appears in our career.
+So this book is important because it’s written from the perspective of what to do with an imperfect yet valuable code base. I also like the fact that it’s based on an effective mix of academic and industrial work. I visited the FAMOOS group in their early days during a chill early winter in Bern. I liked the way that they cycled between the ﬁeld and the lab, trying out ideas on real projects, coming back to the lab to reﬂect.
+This resulting book speaks with that experience. It gives you the building blocks for a plan to tackle a difﬁcult code base, it gives you context for techniques like refactoring. It is a sad fact that there are too few of these kinds of books out there, when reengineering is still a common event. But I’m at least glad to see that while there aren’t many books in this vein, this book is an example of how good they are.
+Martin Fowler, Thought Works, Inc.
+vii
+
+viii
+
+FOREWORD
+
+Foreword by Ralph E. Johnson
+One of the signs of a good pattern is that experts who read it are likely to say “of course, everybody knows that” but beginners are likely to say “interesting, but will it work?” Patterns should be easy to follow, but the most valuable patterns are those that are not obvious. Experts have learned from experience that the patterns work, but beginners have to take the patterns on faith until they use them and develop their own experience.
+Over the last couple of years, I’ve had the chance to give the patterns in this book to a wide variety of people and discuss them. My pattern discussion group has a few members who have decades of consulting experience, and they could quickly regale the group with stories of using these patterns. The younger members loved the stories as they were convinced of the value of the patterns.
+I made students in my software engineering class read some of the patterns as part of a section on reengineering. The section went well even though none of the students got excited by the patterns. They didn’t have the experience to evaluate them. However, one of the students came back to me after his summer job and said that of everything in the course, the material that was the most useful was the patterns on reverse engineering. Before that experience, the patterns seemed believable. Afterwards, they were believed!
+If you have a lot of experience with software reengineering then you probably won’t learn much from this book. You should read it anyway, because you’ll want to give copies to people you work with, and you will want to use the vocabulary of the book when you talk with them. If you are new to reengineering, you should read the book, learn the patterns, and try them. You will learn a lot that will be valuable. Don’t expect to understand the patterns completely before you try them, because patterns are practical, and practical knowledge has to be experienced to be fully understood. Nevertheless, the book will give you a big advantage. It is much easier to learn when you have a path to follow, and this book provides a reliable guide.
+Ralph E. Johnson, University of Illinois at Urbana-Champaign
+
+Contents
+
+Foreword
+
+vii
+
+Preface
+
+xiii
+
+I Introduction
+
+1
+
+1 Reengineering Patterns
+
+3
+
+1.1 Why do we Reengineer? . . . . . . . . . . . . . . . . . . . . . 3
+
+1.2 The Reengineering Lifecycle . . . . . . . . . . . . . . . . . . . 8
+
+1.3 Reengineering Patterns . . . . . . . . . . . . . . . . . . . . . . 12
+
+1.4 The Form of a Reengineering Pattern . . . . . . . . . . . . . . 14
+
+1.5 A Map of Reengineering Patterns . . . . . . . . . . . . . . . . 14
+
+II Reverse Engineering
+
+17
+
+2 Setting Direction
+
+19
+
+2.1 Agree on Maxims . . . . . . . . . . . . . . . . . . . . . . . . . 23
+
+2.2 Appoint a Navigator . . . . . . . . . . . . . . . . . . . . . . . 25
+
+2.3 Speak to the Round Table . . . . . . . . . . . . . . . . . . . . 27
+
+2.4 Most Valuable First . . . . . . . . . . . . . . . . . . . . . . . . 29
+
+2.5 Fix Problems, Not Symptoms . . . . . . . . . . . . . . . . . . 33
+
+2.6 If It Ain’t Broke, Don’t Fix It . . . . . . . . . . . . . . . . . . . 35
+
+2.7 Keep It Simple . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+
+ix
+
+x
+
+CONTENTS
+
+3 First Contact
+
+39
+
+3.1 Chat with the Maintainers . . . . . . . . . . . . . . . . . . . . 45
+
+3.2 Read all the Code in One Hour . . . . . . . . . . . . . . . . . 53
+
+3.3 Skim the Documentation . . . . . . . . . . . . . . . . . . . . . 61
+
+3.4 Interview During Demo . . . . . . . . . . . . . . . . . . . . . 69
+
+3.5 Do a Mock Installation . . . . . . . . . . . . . . . . . . . . . . 77
+
+4 Initial Understanding
+
+83
+
+4.1 Analyze the Persistent Data . . . . . . . . . . . . . . . . . . . 87
+
+4.2 Speculate about Design . . . . . . . . . . . . . . . . . . . . . . 97
+
+4.3 Study the Exceptional Entities . . . . . . . . . . . . . . . . . . 107
+
+5 Detailed Model Capture
+
+117
+
+5.1 Tie Code and Questions . . . . . . . . . . . . . . . . . . . . . 121
+
+5.2 Refactor to Understand . . . . . . . . . . . . . . . . . . . . . . 127
+
+5.3 Step Through the Execution . . . . . . . . . . . . . . . . . . . 133
+
+5.4 Look for the Contracts . . . . . . . . . . . . . . . . . . . . . . 137
+
+5.5 Learn from the Past . . . . . . . . . . . . . . . . . . . . . . . . 141
+
+III Reengineering
+
+147
+
+6 Tests: Your Life Insurance!
+
+149
+
+6.1 Write Tests to Enable Evolution . . . . . . . . . . . . . . . . . 153
+
+6.2 Grow Your Test Base Incrementally . . . . . . . . . . . . . . . 159
+
+6.3 Use a Testing Framework . . . . . . . . . . . . . . . . . . . . 163
+
+6.4 Test the Interface, Not the Implementation . . . . . . . . . . 171
+
+6.5 Record Business Rules as Tests . . . . . . . . . . . . . . . . . 175
+
+6.6 Write Tests to Understand . . . . . . . . . . . . . . . . . . . . 179
+
+7 Migration Strategies
+
+181
+
+7.1 Involve the Users . . . . . . . . . . . . . . . . . . . . . . . . . 185
+
+7.2 Build Conﬁdence . . . . . . . . . . . . . . . . . . . . . . . . . 189
+
+7.3 Migrate Systems Incrementally . . . . . . . . . . . . . . . . . 191
+
+CONTENTS
+
+xi
+
+7.4 Prototype the Target Solution . . . . . . . . . . . . . . . . . . 195 7.5 Always Have a Running Version . . . . . . . . . . . . . . . . 199 7.6 Regression Test After Every Change . . . . . . . . . . . . . . 201 7.7 Make a Bridge to the New Town . . . . . . . . . . . . . . . . 203 7.8 Present the Right Interface . . . . . . . . . . . . . . . . . . . . 207 7.9 Distinguish Public from Published Interface . . . . . . . . . . 211 7.10 Deprecate Obsolete Interfaces . . . . . . . . . . . . . . . . . . 215 7.11 Conserve Familiarity . . . . . . . . . . . . . . . . . . . . . . . 219 7.12 Use Proﬁler Before Optimizing . . . . . . . . . . . . . . . . . 221
+
+8 Detecting Duplicated Code
+
+223
+
+8.1 Compare Code Mechanically . . . . . . . . . . . . . . . . . . 227
+
+8.2 Visualize Code as Dotplots . . . . . . . . . . . . . . . . . . . . 233
+
+9 Redistribute Responsibilities
+
+239
+
+9.1 Move Behavior Close to Data . . . . . . . . . . . . . . . . . . 243
+
+9.2 Eliminate Navigation Code . . . . . . . . . . . . . . . . . . . 253
+
+9.3 Split Up God Class . . . . . . . . . . . . . . . . . . . . . . . . 263
+
+10 Transform Conditionals to Polymorphism
+
+269
+
+10.1 Transform Self Type Checks . . . . . . . . . . . . . . . . . . . 273
+
+10.2 Transform Client Type Checks . . . . . . . . . . . . . . . . . . 281
+
+10.3 Factor out State . . . . . . . . . . . . . . . . . . . . . . . . . . 291
+
+10.4 Factor out Strategy . . . . . . . . . . . . . . . . . . . . . . . . 295
+
+10.5 Introduce Null Object . . . . . . . . . . . . . . . . . . . . . . . 299
+
+10.6 Transform Conditionals into Registration . . . . . . . . . . . 303
+
+IV Appendices
+
+313
+
+A Thumbnail patterns
+
+315
+
+A.1 Testing Patterns . . . . . . . . . . . . . . . . . . . . . . . . . . 316
+
+A.1.1 Retest Persistent Problems . . . . . . . . . . . . . . . . 316
+
+A.1.2 Test Fuzzy Features . . . . . . . . . . . . . . . . . . . . 316
+
+xii
+
+CONTENTS
+
+A.1.3 Test Old Bugs . . . . . . . . . . . . . . . . . . . . . . . 316 A.2 Refactorings . . . . . . . . . . . . . . . . . . . . . . . . . . . . 317
+A.2.1 Encapsulate Field . . . . . . . . . . . . . . . . . . . . . 317 A.2.2 Extract Method . . . . . . . . . . . . . . . . . . . . . . 317 A.2.3 Move Method . . . . . . . . . . . . . . . . . . . . . . . 317 A.2.4 Rename Attribute . . . . . . . . . . . . . . . . . . . . . 318 A.2.5 Rename Method . . . . . . . . . . . . . . . . . . . . . 318 A.2.6 Replace Conditional with Polymorphism . . . . . . . 318 A.3 Design Patterns . . . . . . . . . . . . . . . . . . . . . . . . . . 319 A.3.1 Abstract Factory . . . . . . . . . . . . . . . . . . . . . 319 A.3.2 Adapter . . . . . . . . . . . . . . . . . . . . . . . . . . 319 A.3.3 Facade . . . . . . . . . . . . . . . . . . . . . . . . . . . 319 A.3.4 Factory Method . . . . . . . . . . . . . . . . . . . . . . 319 A.3.5 Flyweight . . . . . . . . . . . . . . . . . . . . . . . . . 320 A.3.6 Null Object . . . . . . . . . . . . . . . . . . . . . . . . 320 A.3.7 Quantity . . . . . . . . . . . . . . . . . . . . . . . . . . 320 A.3.8 Singleton . . . . . . . . . . . . . . . . . . . . . . . . . . 321 A.3.9 State . . . . . . . . . . . . . . . . . . . . . . . . . . . . 321 A.3.10 State Patterns . . . . . . . . . . . . . . . . . . . . . . . 321 A.3.11 Strategy . . . . . . . . . . . . . . . . . . . . . . . . . . 321 A.3.12 Template Method . . . . . . . . . . . . . . . . . . . . . 322 A.3.13 Visitor . . . . . . . . . . . . . . . . . . . . . . . . . . . 322
+
+Preface
+A Fairy Tale
+Once upon a time there was a Good Software Engineer whose Customers knew exactly what they wanted. The Good Software Engineer worked very hard to design the Perfect System that would solve all the Customers’ problems now and for decades. When the Perfect System was designed, implemented and ﬁnally deployed, the Customers were very happy indeed. The Maintainer of the System had very little to do to keep the Perfect System up and running, and the Customers and
+the Maintainer lived happily every after.
+Why isn’t real life more like this fairy tale? Could it be because there are no Good Software Engineers? Could it be
+because the Users don’t really know what they want? Or is it because the Perfect System doesn’t exist?
+Maybe there is a bit of truth in all of these observations, but the real reasons probably have more to do with certain fundamental laws of software evolution identiﬁed several years ago by Manny Lehman and Les Belady. The two most striking of these laws are [LB85]:
+• The Law of Continuing Change — A program that is used in a realworld environment must change, or become progressively less useful in that environment.
+• The Law of Increasing Complexity — As a program evolves, it becomes
+xiii
+
+xiv
+
+PREFACE
+
+more complex, and extra resources are needed to preserve and simplify its structure.
+In other words, we are kidding ourselves if we think that we can know all the requirements and build the perfect system. The best we can hope for is to build a useful system that will survive long enough for it to be asked to do something new.
+
+What is this book?
+This book came into being as a consequence of the realization that the most interesting and challenging side of software engineering may not be building brand new software systems, but rejuvenating existing ones.
+From November 1996 to December 1999, we participated in a European industrial research project called FAMOOS (ESPRIT Project 21975 — Framework-based Approach for Mastering Object-Oriented Software Evolution). The partners were Nokia (Finland), Daimler-Benz (Germany), Sema Group (Spain), Forschungszentrum Informatik Karlsruhe (FZI, Germany), and the University of Bern (Switzerland). Nokia and Daimler-Benz were both early adopters of object-oriented technology, and had expected to reap signiﬁcant beneﬁts from this tactic. Now, however, they were experiencing many of the typical problems of legacy systems: they had very large, very valuable, object-oriented software systems that were very difﬁcult to adapt to changing requirements. The goal of the FAMOOS project was to develop tools and techniques to rejuvenate these object-oriented legacy systems so they would continue to be useful and would be more amenable to future changes in requirements.
+Our idea at the start of the project was to convert these big, objectoriented applications into frameworks — generic applications that can be easily reconﬁgured using a variety of different programming techniques. We quickly discovered, however, that this was easier said than done. Although the basic idea was sound, it is not so easy to determine which parts of the legacy system should be converted, and exactly how to convert them. In fact, it is a non-trivial problem just to understand the legacy system in the ﬁrst place, let alone ﬁguring out what (if anything) is wrong with it.
+We learned many things from this project. We learned that, for the most part, the legacy code was not bad at all. The only reason that there were problems with the legacy code was that the requirements had changed since the original system was designed and deployed. Systems that had been adapted many times to changing requirements suffered from design
+
+xv
+drift — the original architecture and design was almost impossible to recognize — and that made it almost impossible to make further adaptations, exactly as predicted by Lehman and Belady’s laws of software evolution.
+Most surprising to us, however, was the fact that, although each of the case studies we looked at needed to be reengineered for very different reasons — such as unbundling, scaling up requirements, porting to new environments, and so on — the actual technical problems with these systems were oddly similar. This suggested to us that perhaps a few simple techniques could go a long way to ﬁxing some of the more common problems.
+We discovered that pretty well all reengineering activity must start with some reverse engineering, since you will not be able to trust the documentation (if you are lucky enough to have some). Basically you can analyze the source code, run the system, and interview users and developers to build a model of the legacy system. Then you must determine what are the obstacles to further progress, and ﬁx them. This is the essence of reengineering, which seeks to transform a legacy system into the system you would have built if you had the luxury of hindsight and could have known all the new requirements that you know today. But since you can’t afford to rebuild everything, you must cut corners and just reengineer the most critical parts.
+Since FAMOOS, we have been involved in many other reengineering projects, and have been able to further validate and reﬁne the results of FAMOOS.
+In this book we summarize what we learned in the hope that it will help others who need to reengineer object-oriented systems. We do not pretend to have all the answers, but we have identiﬁed a series of simple techniques that will take you a long way.
+Why patterns?
+A pattern is a recurring motif, an event or structure that occurs over and over again. Design patterns are generic solutions to recurring design problems [GHJV95]. It is because these design problems are never exactly alike, but only very similar, that the solutions are not pieces of software, but documents that communicate best practice.
+Patterns have emerged in recent years as a literary form that can be used to document best practice in solving many different kinds of problems. Although many kinds of problems and solutions can be cast as patterns, they can be overkill when applied to the simplest kinds of problems.
+
+xvi
+
+PREFACE
+
+Patterns as a form of documentation are most useful and interesting when the problem being considered entails a number of conﬂicting forces, and the solution described entails a number of tradeoffs. Many well-known design patterns, for example, introduce run-time ﬂexibility at the cost of increased design complexity.
+This book documents a catalogue of patterns for reverse engineering and reengineering legacy systems. None of these patterns should be applied blindly. Each patterns resolves some forces and involves some tradeoffs. Understanding these tradeoffs is essential to successfully applying the patterns. As a consequence the pattern form seems to be the most natural way to document the best practices we identiﬁed in the course of our reengineering projects.
+A pattern language is a set of related patterns that can be used in combination to solve a set of complex problems. We found that clusters of patterns seemed to function well in combination with each other, so we have organized this book into chapters that each presents such a cluster as a small pattern language.
+We do not pretend that these clusters are “complete” in any sense, and we do not even pretend to have patterns that cover all aspects of reengineering. We certainly do not pretend that this book represents a systematic method for object-oriented reengineering. What we do claim is simply to have encountered and identiﬁed a number of best practices that exhibit interesting synergies. Not only is there strong synergy within a cluster of patterns, but the clusters are also interrelated in important ways. Each chapter therefore contains not only a pattern map that suggests how the patterns may function as a “language”, but each pattern also lists and explains how it may be combined or composed with other patterns, whether in the same cluster or a different one.
+
+Who should read this book?
+This book is addressed mainly to practitioners who need to reengineer object-oriented systems. If you take an extreme viewpoint, you could say that every software project is a reengineering project, so the scope of this book is quite broad.
+We believe that most of the patterns in this book will be familiar to anyone with a bit of experience in object-oriented software development. The purpose of the book is to document the details.
+
+xvii
+Acknowledgments
+We would like to thank ﬁrst and foremost our FAMOOS partners at Nokia, Daimler-Benz, FZI and Sema who provided the context for discovering these patterns. Persons like Juha (Julho) Tuominen, Roland Trauter, Eduardo Casais and Theo Dirk Meijler played a crucial role while starting the project. We would especially like to thank our co-authors of the prototype for this book, The FAMOOS Object-Oriented Reengineering Handbook: Holger Bär, Markus Bauer, Oliver Ciupke, Michele Lanza, Radu Marinescu, Robb Nebbe, Michael Przybilski, Tamar Richner, Matthias Rieger, Claudio Riva, Anne-Marie Sassen, Benedikt Schulz, Patrick Steyaert, Sander Tichelaar and Joachim Weisbrod.
+We gratefully acknowledge the ﬁnancial support of the European Union towards ESPRIT project 21975 (FAMOOS) as well as that of the Swiss Government towards projects NFS-2000-46947.96 and BBW-96.0015. The University of Antwerp provided ﬁnancial support in terms of a grant entitled “Object Oriented Reengineering” while the Fund for Scientiﬁc Research in Flanders sponsored by means of a research network named “Foundations of Software Evolution”.
+Some of the material in this book was presented in the graduate course “Object-Oriented software Reengineering” held at the University of Bern in the winter semesters of 1998 and 1999, and at several tutorials at OOPSLA. We would like to thank the participants of the courses and tutorials for their feedback and input. We also would like to thank members of the Software Composition Group at the University of Bern for participating in several pattern workshops and giving valuable feedback on many of the patterns in this book: Michele Lanza, Pietro Malorgio, Robbe Nebbe, Tamar Richner, Matthias Rieger and Sander Tichelaar.
+Several of the patterns in this book have been presented elsewhere. We would like to thank our EuroPLoP shepherds Kent Beck (1998), Kyle Brown (1999), Neil Harrison (2000), Mary Lynn Manns (2000), Don Roberts (1998) and Charles Weir (1998) and all participants of the writers’ workshops where these patterns have been discussed. Special thanks go to Jens Coldewey for helping us out with pattern forms and forces.
+We would like to thank the members and friends of Ralph Johnson’s Software Architecture Group who workshopped several chapters of this book: John Brant, Brian Foote, Alejandra Garrido, Peter Hatch, Ralph Johnson, Brian Marick, Andrew Rosenfeld, Weerasak Witthawaskul and Joe Yoder. Downloading and playing voluminous megabytes of workshop recordings in mp3 format truly made each of us feel like a “ﬂy on the wall”!
+
+xviii
+
+PREFACE
+
+We would like to thank Tim Cox, our editor, and Stacie Pierce, his assistant, both at Morgan Kaufmann, for following our project with such dedication. Also, thanks to Christa Preisendanz at DPunkt Verlag for putting us in touch with Tim in the ﬁrst place! We especially appreciated the two very thorough rounds of reviews that this book underwent, and we only regret that the ﬁnal draft of this book is nothing like the deﬁnitive work some of reviewers clearly hoped it would be! We thank our reviewers for reading between the lines and helping to explain many of these patterns to us: Kyle Brown, Thierry Cattel, Oliver Ciupke, Koen De Hondt, Jim Coplien, Gert Florijn, Neil Harrison, Mary Lynn Manns, Alan O’Callaghan, Don Roberts and Benedikt Schulz.
+
+Part I
+Introduction
+1
+
+Chapter 1
+Reengineering Patterns
+1.1 Why do we Reengineer?
+A legacy is something valuable that you have inherited. Similarly, legacy software is valuable software that you have inherited. The fact you have inherited it may mean that it is somewhat old-fashioned. It may have been developed using an outdated programming language, or an obsolete development method. Most likely it has changed hands several times, and shows signs of many modiﬁcations and adaptations.
+Perhaps your legacy software is not even that old. With rapid development tools and rapid turnover in personnel, software systems can turn into legacies more quickly than you might imagine. The fact that the software is valuable, however, means that you do not just want to throw it away.
+A piece of legacy software is critical to your business, and that is precisely the source of all the problems: in order for you to be successful at your business, you must constantly be prepared to adapt to a changing business environment. The software that you use to keep your business running must therefore also be adaptable. Fortunately a lot of software can be upgraded, or simply thrown away and replaced when it no longer serves its purpose. But a legacy system can neither be replaced nor upgraded except at a high cost. The goal of reengineering is to reduce the complexity of a legacy system sufﬁciently that it can continue to be used and adapted at an acceptable cost.
+The speciﬁc reasons that you might want to reengineer a software system can vary signiﬁcantly. For example:
+• You might want to unbundle a monolithic system so that the indi-
+3
+
+4
+
+CHAPTER 1. REENGINEERING PATTERNS
+
+vidual parts can be more easily marketed separately or combined in different ways.
+• You might want to improve performance. (Experience shows that the right sequence is “ﬁrst do it, then do it right, then do it fast”, so you might want to reengineer to clean up the code before thinking about performance.)
+• You might want to port the system to a new platform. Before you do that, you may need to rework the architecture to clearly separate the platform-dependent code.
+• You might want to extract the design as a ﬁrst step to a new implementation.
+• You might want to exploit new technology, such as emerging standards or libraries, as a step towards cutting maintenance costs.
+• You might want to reduce human dependencies by documenting knowledge about the system and making it easier to maintain.
+Though there may be many different reasons for reengineering a system, as we shall see, however, the actual technical problems with legacy software are often very similar. It is this fact that allows us to use some very general techniques to do at least part of the job of reengineering.
+Recognizing the need to reengineer
+How do you know when you have a legacy problem?
+Common wisdom says, “If it ain’t broke, don’t ﬁx it.” This attitude is often taken as an excuse not to touch any piece of software that is performing an important function and seems to be doing it well. The problem with this approach is that it fails to recognize that there are many ways in which something may be “broken”. From a functional point of view, something is broken only if it no longer delivers the function it is designed to perform. From a maintenance point of view, however, a piece of software is broken if it can no longer be maintained.
+So how can you tell that your software is going to break very soon? Fortunately there are many warning signs that tell you that you are headed towards trouble. The symptoms listed below usually do not occur in isolation but several at a time.
+Obsolete or no documentation. Obsolete documentation is a clear sign of a legacy system that has undergone many changes. Absence of documentation is a warning sign that problems are on the horizon, as soon as the original developers leave the project.
+
+1.1. WHY DO WE REENGINEER?
+
+5
+
+Missing tests. Even more important than up-to-date documentation is the presence of thorough unit tests for all system components, and system tests that cover all signiﬁcant use cases and scenarios. The absence of such tests is a sign that the system will not be able to evolve without high risk or cost.
+Original developers or users have left. Unless you have a clean, welldocumented system with good test coverage, it will rapidly deteriorate into an even less clean, more poorly documented system.
+Inside knowledge about system has disappeared. This is a bad sign. The documentation is out of sync with the existing code base. Nobody really knows how it works.
+Limited understanding of the entire system. Not only does nobody understand the ﬁne print, but hardly anyone has a good overview of the whole system.
+Too long to turn things over to production. Somewhere along the line the process is not working. Perhaps it takes too long to approve changes. Perhaps automatic regression tests are missing. Or perhaps it is difﬁcult to deploy changes. Unless you understand and deal with the difﬁculties it will only get worse.
+Too much time to make simple changes. This is a clear sign that Lehman and Belady’s Law of Increasing Complexity has kicked in: the system is now so complex that even simple changes are hard to implement. If it takes too long to make simple changes to your system, it will certainly be out of the question to make complex changes. If there is a backlog of simple changes waiting to get done, then you will never get to the difﬁcult problems.
+Need for constant bug ﬁxes. Bugs never seem to go away. Every time you ﬁx a bug, a new one pops up next to it. This tells you that parts of your application have become so complex, that you can no longer accurately assess the impact of small changes. Furthermore, the architecture of the application no longer matches the needs, so even small changes will have unexpected consequences.
+Maintenance Dependencies. When you ﬁx a bug in one place, another bug pops up somewhere else. This is often a sign that the architecture has deteriorated to the point where logically separate components of the system are no longer independent.
+Big build times. Long recompilation times slow down your ability to make changes. Long build times may also be telling you that the
+
+6
+
+CHAPTER 1. REENGINEERING PATTERNS
+
+organization of your system is too complex for your compiler tools to do their job efﬁciently.
+Difﬁculties separating products. If there are many clients for your product, and you have difﬁculty tailoring releases for each customer, then your architecture is no longer right for the job.
+Duplicated code. Duplicated code arises naturally as a system evolves, as shortcut to implementing nearly identical code, or merging different versions of a software systems. If the duplicated code is not eliminated by refactoring the common parts into suitable abstractions, maintenance quickly becomes a nightmare as the same code has to be ﬁxed in many places.
+Code Smells. code smells Duplicated code is an example of code that “smells bad” and should be changed. Long methods, big classes, long parameter lists, switch statements and data classes are few more examples that have been documented by Kent Beck and others [FBB+99]. Code smells are often a sign that a system has been repeatedly expanded and adapted without having been reengineered.
+What’s special about Objects?
+Although many of the techniques discussed in this book will apply to any software system, we have chosen to focus on object-oriented legacy systems. There are many reasons for this choice, but mainly we feel that this is a critical point in time at which many early adopters of object-oriented technology are discovering that the beneﬁts they expected to achieve by switching to objects have been very difﬁcult to realize.
+There are now signiﬁcant legacy systems even in Java. It is not age that turns a piece of software into a legacy system, but the rate at which it have been developed and adapted without having been reengineered.
+The wrong conclusion to draw from these experiences is that “objects are bad, and we need something else”. Already we are seeing a rush towards many new trends that are expected to save the day: patterns, components, UML, XMI, and so on. Any one of these developments may be a Good Thing, but in a sense they are all missing the point.
+One of the conclusions you should draw from this book is that, well, objects are pretty good, but you must take good care of them. To understand this point, consider why legacy problems arise at all with object-oriented systems, if they are supposed to be so good for ﬂexibility, maintainability and reuse.
+
+1.1. WHY DO WE REENGINEER?
+
+7
+
+First of all, anyone who has had to work with a non-trivial, existing object-oriented code base will have noticed: it is hard to ﬁnd the objects. In a very real sense, the architecture of an object-oriented application is usually hidden. What you see is a bunch of classes and an inheritance hierarchy. But that doesn’t tell you which objects exist at run-time and how they collaborate to provide the desired behavior. Understanding an object-oriented system is a process of reverse engineering, and the techniques described in this book help to tackle this problem. Furthermore, by reengineering the code, you can arrive at a system whose architecture is more transparent, and easier to understand.
+Second, anyone who has tried to extend an existing object-oriented application will have realized: reuse does not come for free. It is actually very hard to reuse any piece of code unless a fair bit of effort was put into designing it so that it could be reused. Furthermore, it is essential that investment in reuse requires management commitment to put the right organizational infrastructure in place, and should only be undertaken with clear, measurable goals in mind [GR95].
+We are still not very good at managing object-oriented software projects in such a way that reuse is properly taken into account. Typically reuse comes too late. We use object-oriented modelling techniques to develop very rich and complex object models, and hope that when we implement the software we will be able to reuse something. But by then there is little chance that these rich models will map to any kind of standard library of components except with great effort. Several of the reengineering techniques we present address how to uncover these components after the fact.
+The key insight, however, is that the “right” design and organization of your objects is not something that is or can be evident from the initial requirements alone, but rather as a consequence of understanding how these requirements evolve. The fact that the world is constantly changing should not be seen purely as a problem, but as the key to the solution.
+Any successful software system will suffer from the symptoms of legacy systems. Object-oriented legacy systems are just successful objectoriented systems whose architecture and design no longer responds to changing requirements. A culture of continuous reengineering is a prerequisite for achieving ﬂexible and maintainable object-oriented systems.
+
+8
+
+CHAPTER 1. REENGINEERING PATTERNS
+
+1.2 The Reengineering Lifecycle
+Reengineering and reverse engineering are often mentioned in the same context, and the terms are sometimes confused, so it is worthwhile to be clear about what we mean by them. Chikofsky and Cross [CI92] deﬁne the two terms as follows:
+“Reverse Engineering is the process of analyzing a subject system to identify the system’s components and their interrelationships and create representations of the system in another form or at a higher level of abstraction.”
+That is to say, reverse engineering is essentially concerned with trying to understand a system and how it ticks.
+“Reengineering ... is the examination and alteration of a subject system to reconstitute it in a new form and the subsequent implementation of the new form.”
+Reengineering, on the other hand, is concerned with restructuring a system, generally to ﬁx some real or perceived problems, but more speciﬁcally in preparation for further development and extension.
+The introduction of term “reverse engineering” was clearly an invitation to deﬁne “forward engineering”, so we have the following as well:
+“Forward Engineering is the traditional process of moving from high-level abstractions and logical, implementation-independent designs to the physical implementation of a system.”
+How exactly this process of forward engineering can or should work is of course a matter of great debate, though most people accept that the process is iterative, and conforms to Barry Boehm’s so-called spiral model of software development [Boe88]. In this model, successive versions of a software system are developed by repeatedly collecting requirements, assessing risks, engineering the new version, and evaluating the results. This general framework can accommodate many different kinds of more speciﬁc process models that are used in practice.
+If forward engineering is about moving from high-level views of requirements and models towards concrete realizations, then reverse engineering is about going backwards from some concrete realization to more abstract models, and reengineering is about transforming concrete implementations to other concrete implementations.
+Figure 1.1 illustrates this idea. Forward engineering can be understood as being a process that moves from high-level and abstract models and ar-
+
+1.2. THE REENGINEERING LIFECYCLE
+
+9
+
+Requirements
+
+Reengineering
+New requirements
+
+Reverse engineering
+
+Forward engineering
+
+Designs
+Code
+Figure 1.1: Forward, reverse and reengineering
+tifacts to increasing concrete ones. Reverse engineering reconstructs higherlevel models and artifacts from code. Reengineering is a process that transforms one low-level representation to another, while recreating the higherlevel artifacts along the way.
+The key point to observe is that reengineering is not simply a matter of transforming source code, but of transforming a system at all its levels. For this reason it makes sense to talk about reverse engineering and reengineering in the same breath. In a typical legacy system, you will ﬁnd that not only the source code, but all the documentation and speciﬁcations are out of sync. Reverse engineering is therefore a prerequisite to reengineering since you cannot transform what you do not understand.
+Reverse engineering
+You carry out reverse engineering whenever you are trying to understand how something really works. Normally you only need to reverse engineer a piece of software if you want to ﬁx, extend or replace it. (Sometimes you need to reverse engineer software just in order to understand how to use it. This may also be a sign that some reengineering is called for.) As a consequence, reverse engineering efforts typically focus on redocumenting software and identifying potential problems, in preparation for reengineering.
+
+10
+
+CHAPTER 1. REENGINEERING PATTERNS
+
+You can make use of a lot of different sources of information while reverse engineering. For example, you can:
+• read the existing documentation • read the source code • run the software • interview users and developers • code and execute test cases • generate and analyze traces • use various tools to generate high-level views of the source code and
+the traces • analyze the version history
+As you carry out these activities, you will be building progressively reﬁned models of the software, keeping track of various questions and answers, and cleaning up the technical documentation. You will also be keeping an eye out for problems to ﬁx.
+Reengineering
+Although the reasons for reengineering a system may vary, the actual technical problems are typically very similar. There is usually a mix of coarsegrained, architectural problems, and ﬁne-grained, design problems. Typical coarse-grained problems include:
+• Insufﬁcient documentation: documentation either does not exist, or is inconsistent with reality.
+• Improper layering: missing or improper layering hampers portability and adaptability.
+• Lack of modularity: strong coupling between modules hampers evolution.
+• Duplicated code: “copy, paste and edit” is quick and easy, but leads to maintenance nightmares.
+• Duplicated functionality: similar functionality is reimplemented by separate teams, leading to code bloat.
+The most common ﬁne-grain problems occurring in object-oriented software include:
+
+1.2. THE REENGINEERING LIFECYCLE
+
+11
+
+• Misuse of inheritance: for composition, code reuse rather than polymorphism
+• Missing inheritance: duplicated code, and case statements to select behavior
+• Misplaced operations: unexploited cohesion — operations outside instead of inside classes
+• Violation of encapsulation: explicit type-casting, C++ “friends” . • Class abuse: lack of cohesion — classes as namespaces
+Finally, you will be preparing the code base for the reengineering activity by developing exhaustive test cases for all the parts of the system that you plan to change or replace.
+Reengineering similarly entails a number of interrelated activities. Of course, one of the most important is to evaluate which parts of the system should be repaired and which should be replaced.
+The actual code transformations that are performed fall into a number of categories. According to Chikofsky and Cross:
+“Restructuring is the transformation from one representation form to another at the same relative abstraction level, while preserving the system’s external behavior.”
+Restructuring generally refers to source code translation (such as the automatic conversion from unstructured “spaghetti” code to structured, or “goto-less”, code), but it may also entail transformations at the design level.
+Refactoring is restructuring within an object-oriented context. Martin Fowler deﬁnes it this way:
+“Refactoring is the process of changing a software system in such a way that it does not alter the external behavior of the code yet improves its internal structure.”
+— Martin Fowler, [FBB+99]
+It may be hard to tell the difference between software “reengineering” and software “maintenance”. IEEE has made several attempts to deﬁne software maintenance, including this one:
+“the modiﬁcation of a software product after delivery to correct faults, to improve performance or other attributes, or to adapt the product to a changed environment”
+
+12
+
+CHAPTER 1. REENGINEERING PATTERNS
+
+Most people would probably consider that “maintenance” is routine whereas “reengineering” is a drastic, major effort to recast a system, as suggested by ﬁgure 1.
+Others, however, might argue that reengineering is just a way of life. You develop a little, reengineer a little, develop a little more, and so on [Bec00]. In fact, there is good evidence to support the notion that a culture of continuous reengineering is necessary to obtain healthy, maintainable software systems.
+Continuous reengineering, however, is not yet common practice, and for this reason we present the patterns in this book in the context of a major reengineering effort. Nevertheless, the reader should keep in mind that most of the techniques we present will apply just as well when you reengineer in small iterations.
+
+1.3 Reengineering Patterns
+Patterns as a literary form were introduced by the architect Christopher Alexander in his landmark 1977 book, A Pattern Language. In this book, Alexander and his colleagues presented a systematic method for architecting a range of different kinds of physical structures, from rooms to buildings and towns. Each issue was presented as a recurring pattern, a general solution which resolves a number of forces, but must be applied in a unique way to each problem according to the speciﬁc circumstances. The actual solution presented in each pattern was not necessarily so interesting, but rather the discussion of the forces and tradeoffs consisted of the real substance they communicated.
+Patterns were ﬁrst adopted by the software community as a way of documenting recurring solutions to design problems. As with Alexander’s patterns, each design pattern entailed a number of forces to be resolved, and a number of tradeoffs to consider when applying the pattern. Patterns turn out to be a compact way to communicate best practice: not just the actual techniques used by experts, but the motivation and rationale behind them. Patterns have since been applied to many aspects of software development other than design, and particularly to the process of designing and developing software.
+The process of reengineering is, like any other process, one in which many standard techniques have emerged, each of which resolves various forces and may entail many tradeoffs. Patterns as a way of communicating best practice are particularly well-suited to presenting and discussing these techniques.
+
+1.3. REENGINEERING PATTERNS
+
+13
+
+Reengineering patterns codify and record knowledge about modifying legacy software: they help in diagnosing problems and identifying weaknesses which may hinder further development of the system, and they aid in ﬁnding solutions which are more appropriate to the new requirements. We see reengineering patterns as stable units of expertise which can be consulted in any reengineering effort: they describe a process without proposing a complete methodology, and they suggest appropriate tools without “selling” a speciﬁc one.
+Many of the reverse engineering and reengineering patterns have some superﬁcial resemblance to design patterns, in the sense that they have something to do with the design of software. But there is an importance difference in that design patterns have to do with choosing a particular solution to a design problem, whereas reengineering patterns have to do with discovering an existing design, determining what problems it has, and repairing these problems. As a consequence, reengineering patterns have more to do with the process of discovery and transformation than purely with a given design structure. For this reason the names of most of the patterns in this book are process-oriented, like Always Have a Running Version [p. 199], rather than being structure-oriented, like Adapter [p. 319] or Facade [p. 319].
+Whereas a design pattern presents a solution for a recurring design problem, a reengineering pattern presents a solution for a recurring reengineering problem. The artifacts produced by reengineering patterns are not necessarily designs. They may be as concrete as refactored code, or in the case of reverse engineering patterns, they may be abstract as insights into how the system functions.
+The mark of a good reengineering pattern is (a) the clarity with which it exposes the advantages, the cost and the consequences of the target artifacts with respect to the existing system state, and not how elegant the result is, (b) the description of the reengineering process: how to get from one state of the system to another.
+Reengineering patterns entail more than code refactorings. A reengineering pattern may describe a process which starts with the detection of the symptoms and ends with the refactoring of the code to arrive at the new solution. Refactoring is only the last stage of this process, and addresses the technical issue of automatically or semi-automatically modifying the code to implement the new solution. Reengineering patterns also include other elements which are not part of refactorings: they emphasize the context of the symptoms, by taking into account the constraints that reengineers are facing, and include a discussion of the impact of the changes that the refactored solution may introduce.
+
+14
+
+CHAPTER 1. REENGINEERING PATTERNS
+
+1.4 The Form of a Reengineering Pattern
+In Figure 1.2 we see an example of a simple pattern that illustrates the format we use in this book. The actual format used may vary slightly from pattern to pattern, since they deal with different kinds of issues, but generally we will see the same kind of headings.
+The name of a pattern, if well-chosen, should make it easy to remember the pattern and to discuss it with colleagues. (”I think we should Refactor to Understand or we will never ﬁgure out what’s going on here.”) The intent should communicate very compactly the essence of a pattern, and tell you whether it applies to your current situation.
+Many of the reengineering patterns are concerned with code transformation, in which case a diagram may be used to illustrate the kind of transformation that takes place. Typically such patterns will additionally include steps to detect the problem to be resolved, as well as code fragments illustrating the situation before and after the transformation.
+
+1.5 A Map of Reengineering Patterns
+The patterns in this book are organized according to the reengineering lifecycle presented earlier. In ﬁgure 3 we can see the chapters in this book represented as clusters of patterns along the lifecycle. The diagram suggests that the patterns may be applied in sequence. Though this may well be the case, in practice you are more likely to iterate between reverse engineering and reengineering tasks. The diagram is simplistic in the same sense that the “waterfall” lifeycle is simplistic: it may be a useful way to keep track of the different software engineering activities and their relationships, even though we know that they are not carried out sequentially but iteratively.
+Each cluster of patterns is presented as a simple “pattern language” — a set of related patterns that may be combined to address a common set of problems. As such, each chapter will typically start with a overview and a map of the patterns in that chapter, suggesting how they may be related.
+Setting Direction contains several patterns to help you determine where to focus your reengineering efforts, and make sure you stay on track. First Contact consists of a set of patterns that may be useful when you encounter a legacy system for the ﬁrst time. Initial Understanding helps you to develop a ﬁrst simple model of a legacy system, mainly in the form of class diagrams. Detailed Model Capture helps you to develop a more detailed model of a particular component of the system.
+
+1.5. A MAP OF REENGINEERING PATTERNS
+
+15
+
+Figure 1.2: The format of a typical reengineering pattern
+
+16
+
+CHAPTER 1. REENGINEERING PATTERNS
+
+Figure 1.3: A map of reengineering pattern clusters
+Tests: Your Life Insurance! focusses on the use of testing not only to help you understand a legacy system, but also to prepare it for a reengineering effort. Migration Strategies help you keep a system running while it is being reengineered, and increase the chances that the new system will be accepted by its users. Detecting Duplicated Code can help you identify locations where code may have been copied and pasted, or merged from different versions of the software. Redistribute Responsibilities helps you discover and reengineer classes with too many responsibilities. Transform Conditionals to Polymorphism will help you to redistribute responsibilities when an object-oriented design has been compromised over time.
+
+Part II
+Reverse Engineering
+17
+
+Chapter 2
+Setting Direction
+When you start a reengineering project, you will be pulled in many different directions, by management, by the users, by your own team. It is easy to be tempted to focus on the parts that are technically the most interesting, or the parts that seem like they will be easiest to ﬁx. But what is the best strategy? How do you set the direction of the reengineering effort, and how do you maintain direction once you have started?
+Forces
+• A typical reengineering project will be burdened with a lot of interests that pull in different directions. Technical, ergonomic, economic and political considerations will make it difﬁcult for you and your team to establish and maintain focus.
+• Communication in a reengineering project can be complicated by either the presence or absence of the original development team.
+• The legacy system will pull you towards a certain architecture that may not be the best for the future of the system.
+• You will detect many problems with the legacy software, and it will be hard to set priorities.
+• It is easy to get seduced by focussing on the technical problems that interest you the most, rather than what is best for the project.
+• It can be difﬁcult to decide whether to wrap, refactor or rewrite a problematic component of a legacy system. Each of these options will address different risks, and will have different consequences for
+19
+
+20
+
+CHAPTER 2. SETTING DIRECTION
+
+Figure 2.1: Principles and guidelines to set and maintain direction in reengineering project.
+the effort required, the speed with which results can be evaluated, and the kinds of changes that can be accommodated in the future. • When you are reengineering the system, you may be tempted to over-engineer the new solution to deal with every possible eventuality.
+Overview
+Setting Direction is a cluster of patterns that can apply to any development project, but also have special relevance to a reengineering effort. As such, we have chosen a streamlined pattern format to describe them (Problem, Solution and Discussion).
+You should Agree on Maxims in order to establish a common understanding within the reengineering team of what is at stake and how to achieve it. You should Appoint a Navigator to maintain the architectural vision. Everyone should Speak to the Round Table to maintain team awareness of the state of the project.
+To help you focus on the right problems and the critical decisions, it is wise to tackle the Most Valuable First. Note that this will help you to Involve the Users [p. 185] and Build Conﬁdence [p. 189]. In order to decide whether to wrap, refactor or rewrite, you should Fix Problems, Not Symptoms. Change for change’s sake is not productive, so If It Ain’t Broke,
+
+21
+Don’t Fix It. Although you may be tempted to make the new system very ﬂexible and generic, it is almost always better to Keep It Simple.
+
+22
+
+CHAPTER 2. SETTING DIRECTION
+
+2.1. AGREE ON MAXIMS
+
+23
+
+2.1 Agree on Maxims
+Problem How do you establish a common sense of purpose in a team?
+Solution Establish the key priorities for the project and identify guiding principles that will help the team to stay on track.
+Discussion Any reengineering project must cope with a large number of conﬂicting interests. Management wants to protect its legacy by improving competitiveness of its product and reducing maintenance costs. Users want improved functionality without disrupting their established work patterns. Developers and maintainers would like their jobs to become simpler without being made obsolete. Your team members may each have their own ideas about what a new system should look like.
+Unless there is a clear understand about certain fundamental questions, such as What is our business model? or Who is responsible for what? you risk that the team will be pulled apart by conﬂicting interests, and you will not achieve your goal. Maxims are rules of conduct that can help steer a project that is pulled in many directions. Goldberg and Rubin [GR95] give numerous examples of maxims, such as “Everyone is responsible for testing and debugging” and “You cannot do it right the ﬁrst time.”
+All of the patterns in this chapter can be read as maxims (rather than as patterns), since they are intended to guide a team and keep it on track. A maxim like Most Valuable First, for example, is intended to prevent a team from squandering reengineering effort on technically interesting, but marginal aspects that neither protect nor add value to the legacy system. Agree on Maxims is itself a maxim, that can help a team detect when it is rudderless.
+A key point to remember is that any maxim may only have a limited lifetime. It is important to periodically reevaluate the validity of any maxims that have been adopted. A project can get completely off track if you agree on the wrong maxims, or the right ones but at the wrong time.
+
+24
+
+CHAPTER 2. SETTING DIRECTION
+
+2.2. APPOINT A NAVIGATOR
+
+25
+
+2.2 Appoint a Navigator
+Problem How do you maintain architectural vision during the course of complex project?
+Solution Appoint a speciﬁc person whose responsibility in role of navigator is to ensure that the architectural vision is maintained.
+Discussion The architecture of any system tends to degrade with time as it becomes less relevant to new, emerging requirements. The challenge of a reengineering project is to develop a new architectural vision that will allow the legacy system to continue to live and evolve for several more years. Without a navigator, the design and architecture of the old system will tend to creep into and take over the new one.
+You should tackle the Most Valuable First so you can determine what are the most critical issues that the new architecture should address, and test those aspects early in the reengineering project.
+A sound architecture will help you to Fix Problems, Not Symptoms. Alan O’Callaghan also refers to the navigator as the “Keeper of the Flame” [ODF99].
+
+26
+
+CHAPTER 2. SETTING DIRECTION
+
+2.3. SPEAK TO THE ROUND TABLE
+
+27
+
+2.3 Speak to the Round Table
+Problem How do you keep your team synchronized?
+Solution Hold brief, regular round table meetings.
+Discussion Knowledge and understanding of a legacy system is always distributed and usually hidden. A reengineering team is also performing archeology. The information that is extracted from a legacy system is a valuable asset that must be shared for it to be exploited.
+Nobody has time for meetings, but without meetings, communication is ad hoc and random. Regular, focussed, round table meetings can achieve the goal of keeping team members synchronized with the current state of affairs. Round table meetings should be brief, but everyone must be required to contribute. A simple approach is to have everyone say what they have done since the last meeting, what they have learned or perhaps what problems they have encountered, and what they plan to do until the next meeting.
+Round table meetings should be held at least once a week, but perhaps as often as daily.
+Minutes of a meeting are important to maintain a log of progress, but keeping minutes can be an unpleasant task. To keep it simple, record only decisions taken and actions to be performed by a certain deadline.
+Beck and Fowler recommend “Stand Up Meetings” (meetings without chairs) as a way to keep round table meetings short [BF01].
+
+28
+
+CHAPTER 2. SETTING DIRECTION
+
+2.4. MOST VALUABLE FIRST
+
+29
+
+2.4 Most Valuable First
+Problem Which problems should you focus on ﬁrst?
+Solution Start working on the aspects which are most valuable to your customer.
+Discussion A legacy system may suffer from a great number of problems, some of which are important, and others which may not be at all critical for the customer’s business. By focussing on the most valuable parts ﬁrst, you increase the chance that you will identify the right issues at stake, and that you will be able to test early in the project the most important decisions, such as which architecture to migrate to, or what kind of ﬂexibility to build into the new system.
+By concentrating ﬁrst on a part of the system that is valuable to the client, you also maximize the commitment that you, your team members and your customers will have in the project. You furthermore increase your chances of having early positive results that demonstrate that the reengineering effort is worthwhile and necessary.
+Nevertheless there are a number of difﬁculties in applying this pattern: Who is your customer?
+• There are many stakeholders in any legacy system, but only one of these is your customer. You can only set priorities if you have a clear understanding who should be calling the shots.
+How do you tell what is valuable?
+• It can be difﬁcult to assess exactly what is the most valuable aspect for a customer. Once a company asked us to assess if a system could be modularized because they wanted to switch their architecture. After long discussions with them, however, it turned out that in fact they really wanted to have a system where business rules could be more explicit, a system that new programmers could understand more easily to reduce the risk that only one programmer understands it.
+• Try to understand the customer’s business model. This will tell you how to assess the value of the various aspects of the system. Everything that does not relate directly to the business model is likely to be a purely technical side-issue.
+
+30
+
+CHAPTER 2. SETTING DIRECTION
+
+• Try to determine what measurable goal the customer wants to obtain. This must be an external manifestation of some aspect of the system or its evolution, for example, better response time, faster time to market of new features, easier tailoring to individual clients needs.
+• Try to understand whether the primary goal is mainly to protect an existing asset, or rather to add value in terms of new features or capabilities.
+• Examine the change logs and determine where the most activity has historically been in the system. The most valuable artifact is often the one which receives the most change requests (see Learn from the Past [p. 141]).
+• If the customer is unwilling or unable to set priorities, then play the Planning Game [BF01]: collect requirements from all the stakeholders, and make a ballpark estimate of the effort required for each identiﬁable task. Given an initial budget of effort for an early ﬁrst milestone, ask the customer to select tasks that will ﬁt in the budget. Repeat this exercise at each iteration.
+• Beware of changing perceptions. Initially the customer may draw your attention to certain symptoms of problems with the legacy system, rather than the problems themselves (see Fix Problems, Not Symptoms [p. 33]).
+Isn’t there a risk of raising expectations too high?
+• If you fail to deliver good initial results, you will learn a lot, but you risk losing credibility. It is therefore critical to choose carefully initial tasks which not only demonstrate value for the customer, but also have a high chance of success. Therefore, take great care in estimating the effort of the initial tasks.
+• The key to success is to plan for small, frequent iterations. If the initial task identiﬁed by the customer is too large to demonstrate initial results in a short time frame (such as two weeks), then insist on breaking it down into smaller subtasks that can be tackled in shorter iterations. If you are successful in your ﬁrst steps, you will certainly raise expectations, but this is not bad if the steps stay small.
+What if the most valuable part is a rat’s nest?
+• Unfortunately, reengineering a legacy system is often an act of desperation, rather than a normal, periodic process of renovation. It may well be that the most valuable part of the system is also the part that is the most complex, impenetrable and difﬁcult to modify and debug.
+
+2.4. MOST VALUABLE FIRST
+
+31
+
+• High changes rates may also be a sign of large numbers of software defects. 80% of software defects typically occur in 5% of the code, thus the strategy to “Renovate the Worst First” [Dav95] can pay off big by eliminating the most serious source of problems in the system. There are nevertheless considerable risks:
+– it may be hard to demonstrate early, positive results, – you are tackling the most complicated part of the system with
+little information, – the chances are higher that you will fall ﬂat on your face.
+• Determine whether to wrap, refactor or rewrite the problematic component by making sure you Fix Problems, Not Symptoms.
+Once you have decided what is the most valuable part of the system to work on, you should Involve the Users [p. 185] in the reengineering effort so you can Build Conﬁdence [p. 189]. If you Migrate Systems Incrementally [p. 191], the users will be able to use the system as it is reengineered and provide continuous feedback.
+
+32
+
+CHAPTER 2. SETTING DIRECTION
+
+2.5. FIX PROBLEMS, NOT SYMPTOMS
+
+33
+
+2.5 Fix Problems, Not Symptoms
+Problem How can you possibly tackle all the reported problems?
+
+Solution Address the source of a problem, rather than particular requests of your stakeholders.
+
+Discussion Although this is a very general principle, it has a particular relevance for reengineering. Each stakeholder has a different viewpoint of the system, and may only see part of it. The problems they want you to ﬁx may just be manifestations of deeper problems in the system. For example, the fact that you do not get immediate feedback for certain user actions may be a consequence of a dataﬂow architecture. Implementing a workaround may just aggravate the problem and lead to more workarounds. If this is a real problem, you should migrate to a proper architecture.
+A common difﬁculty during a reengineering effort is to decide whether to wrap, refactor or rewrite a legacy component. Most Valuable First will help you determine what priority to give to problems in the system, and will tell you which problems are on your critical path. Fix Problems, Not Symptoms tells you to focus on the source of a problem, and not its manifestation. For example:
+• If the code of a legacy component is basically stable, and problems mainly occur with changes to clients, then the problem is likely to be with the interface to the legacy component, rather than its implementation, no matter how nasty the code is. In such a case, you should consider applying Present the Right Interface [p. 207] to just ﬁx the interface.
+• If the legacy component is largely defect-free, but is a major bottleneck for changes to the system, then it should probably be refactored to limit the effect of future changes. You might consider applying Split Up God Class [p. 263] to migrate towards a cleaner design.
+• If the legacy component suffers from large numbers of defects, consider applying Make a Bridge to the New Town [p. 203] as a strategy for migrating legacy data to the new implementation.
+This pattern may seem to conﬂict with If It Ain’t Broke, Don’t Fix It, but it doesn’t really. Something that is not really “broken” cannot really be the source of a problem. Wrapping, for example, may seem to be a
+
+34
+
+CHAPTER 2. SETTING DIRECTION
+
+workaround, but it may be the right solution if the real problem is just with the interface to a legacy component.
+
+2.6. IF IT AIN’T BROKE, DON’T FIX IT
+
+35
+
+2.6 If It Ain’t Broke, Don’t Fix It
+Problem Which parts of a legacy system should you reengineer and which should you leave as they are?
+Solution Only ﬁx the parts that are “broken” — those that can no longer be adapted to planned changes.
+Discussion Change for change’s sake is not necessarily a good thing. There may well be parts of the legacy system that may be ugly, but work well and do not pose any signiﬁcant maintenance effort. If these components can be isolated and wrapped, it may never be necessary to replace them.
+Anytime you “ﬁx” something, you also risk breaking something else in the system. You also risk wasting precious time and effort on marginal issues.
+In a reengineering project, the parts that are “broken” are the ones that are putting the legacy at risk:
+• components that need to be frequently adapted to meet new requirements, but are difﬁcult to modify due to high complexity and design drift,
+• components that are valuable, but traditionally contain a large number of defects.
+Software artifacts that are stable and do not threaten the future of the legacy system are not “broken” and do not need to be reengineered, no matter what state the code is in.
+
+36
+
+CHAPTER 2. SETTING DIRECTION
+
+2.7. KEEP IT SIMPLE
+
+37
+
+2.7 Keep It Simple
+Problem How much ﬂexibility should you try to build into the new system?
+Solution Prefer an adequate, but simple solution to a potentially more general, but complex solution.
+Discussion This is another general principle with special signiﬁcance for reengineering. We are bad at guessing how much generality and ﬂexibility we really need. Many software systems become bloated as every conceivable feature is added to them.
+Flexibility is a double-edged sword. An important reengineering goal is to accommodate future change. But too much ﬂexibility will make the new system so complex that you may actually impede future change.
+Some people argue that it is necessary to “plan for reuse”, hence to make an extra effort to make sure that every software entity that might conceivably by useful to somebody else is programmed in the most general way possible, with as many knobs and buttons as possible. This rarely works, since it is pretty well impossible to anticipate who will want to use something for what purpose. The same holds for end-user software.
+“Do the simplest thing that will work” is a maxim of Extreme Programming [Bec00] that applies to any reengineering effort. This strategy reinforces Involve the Users [p. 185] and Build Conﬁdence [p. 189] since it encourages you to quickly introduce simple changes that users can evaluate and respond to.
+When you do the complex thing, you will probably guess wrong (in terms of what you really need) and it will be harder to ﬁx. If you keep things simple, you will be done faster, get feedback faster, and recover from errors more easily. Then you can make the next step.
+
+38
+
+CHAPTER 2. SETTING DIRECTION
+
+Chapter 3
+First Contact
+You are part of a team developing a software system named proDoc which supports doctors in their da The main functional requirements concern (i) maintaining patient ﬁles and (ii) keeping track of the money to be paid by patients and health insurances. The health care legislation in Switzerland is quite complicated and changes regularly, hence there are few competitors to worry about. Nevertheless, a fresh start-up company has recently acquired considerable market-share with a competing product named XDoctor. The selling features of XDoctor are its platform independency and its integration with the internet. The system offers a built-in e-mail client and web-browser. XDoctor also exploits the internet for the transaction processing with the health insurances.
+To ensure its position in the market, your company has purchased XDoctor and now wants to recover as much as possible from the deal. In particular, they want to lift the internet functionality out of XDoctor to reuse it into proDoc. You are asked to make a ﬁrst evaluation and develop a plan on how to merge the two products into one. At the outset, there is very little known about the technical details of the competing product. From the original development team of four persons, only one has joined your company. His name is Dave and he has brought a large box to your ofﬁce containing lots of paper (the documentation?) and two CDs. The ﬁrst is the XDoctor installation disk containing an installer for Windows, MacOS and Linux. The other contains about 500,000 lines of Java code and another 10,000 lines of C code. Looking kind of desperately at this box sitting on your desk, you’re wondering “Where on earth do I start?”
+39
+
+40
+
+CHAPTER 3. FIRST CONTACT
+
+Forces
+It is surprising how often reengineering projects get started. Not only does it happen after a fusion of two companies, but we also encountered projects in which code libraries were obtained from companies that later went bankrupt, or in which complete maintenance teams quit their project leaving behind a very valuable but incomprehensible piece of code. Of course, the obvious question to ask is “Where do I start?” It turns out that this is one of the crucial questions to answer during a reengineering project, which is why we devote an entire chapter to its answer.
+All the patterns in this cluster can be applied to the very early stages of a reengineering project: you’re facing a system that is completely new for you, and within a few days you must determine whether something can be done with it and present a plan how to proceed. Making such an initial assessment is difﬁcult, however, because you quickly need accurate results while considering the long-term effects of your decisions. To deal with the inherent conﬂict between quick, accurate and longer term effects, the patterns in this cluster must resolve the following forces.
+• Legacy systems are large and complex. Scale is always an issue when dealing with legacy systems.1 However, there is only so much a single reengineering team can do and when the legacy system is too big or too complex you can’t do the job in one shot. Consequently, split the system into manageable pieces, where a manageable piece is one you can handle with a single reengineering team.
+How much a single team can manage varies with the goal of the reengineering project, the state of the original system, the experience and skills in your team and the culture in your organization. Our teams consisted of three to ﬁve persons and they could handle between 500.000 and a million lines of code. However, these ﬁgures will certainly have to be adapted for the reengineering project you are facing. As a rule of the thumb, assume that a single team can reengineer as much code as they can write from scratch. Improve your estimates during the reengineering project by keeping logs of how much your team actually reengineered.
+If you need to split the code up, stay as close as possible to current system structure and the organization of the maintenance team. Once you have a good understanding of the system structure, consider alternatives which are better suited for the project goal.
+1During the FAMOOS project we faced systems ranging between 500.000 lines of C++ and 2.5 million lines of Ada.
+
+41
+• Time is scarce. Wasting time early on in a project has severe consequences later on. This is especially relevant during reverse engineering, because there you feel uncertain and then it is tempting to start an activity that will keep you busy for a while instead of addressing the root of the problem. Consequently, consider time as your most precious resource. Therefore, defer all time-consuming activities until later and use the ﬁrst days of the project to assess the feasibility of the project’s goals. All patterns in this cluster are meant to quickly identify the opportunities and risks for your project and as such will help you set the overall direction of the project.
+• First impressions are dangerous. Making important decisions based on incomplete knowledge implies that there is a chance you will make the wrong decision. There is no way to avoid that risk during your ﬁrst contact with a system, however you can minimize its impact if you always double-check your sources.
+• People have different agendas. Normally, you will join a group of people where several members will have lots of experience with the system to be reengineered. Perhaps members of the original development team are still available or maybe the reengineering team includes persons who have been maintaining the system for some time. At least there will be end users and managers who believe enough in this system to request a reengineering project. You are supposed to complement the team with your reengineering skills and expertise, hence you should know who you are dealing with.
+Typically, your new colleagues will fall into three categories. The ﬁrst category are the faithful, the people who believe that reengineering is necessary and who thrust that you are able to (help them) do it. The second is the category of the sceptical, who believe this whole reengineering business is just a waste of time either because they want to protect their jobs or either because they think the whole project should start again from scratch. The third category is the category of the fence sitters, who do not have a strong opinion on whether this reengineering will pay off, so they just wait and see what happens. Consequently, in order to make the project a success, you must keep convincing the faithful, gain credit with the fence sitters and be wary of the sceptics.
+Overview
+Wasting time is the largest risk when you have your ﬁrst contact with a system, therefore these patterns should be applied during a short time span, say one week. After this week you should grasp the main issues and
+
+42
+
+CHAPTER 3. FIRST CONTACT
+
+Figure 3.1: Assess the feasibility of the project during your First Contact with the system.
+based on that knowledge plan further activities, or — when necessary — cancel the project.
+The patterns Chat with the Maintainers and Interview During Demo will help you get acquainted with the people involved. As a rule of the thumb, spend four days to gather information and use the last day of the week to compile all this information into a ﬁrst project plan. There is no strict order in which to apply the patterns, although the order as suggested by the sequence in the book is kind of typical. Nevertheless, we have often ﬁnd ourselves combining fragments of these patterns because of the necessity to double-check. For instance, during a second meeting with the maintainers we usually start with an Interview During Demo but ask questions about what we have learned from Read all the Code in One Hour and Skim the Documentation. Also, after an interview we quickly check the source code and documentation to conﬁrm what has been said.
+In certain situations we have experienced that some patterns are not applicable due to a lack of resources. For instance, if all the maintainers have left the company you cannot Chat with the Maintainers. Also, certain systems lack an external user-interface and then it is pointless to try an Interview During Demo with an end-user. This isn’t necessarily a problem, because some of these patterns may be irrelevant for your project goal anyway. However, the absence of resources is an extra risk to the project and it should be recorded as such in the ﬁrst project plan.
+
+43
+What Next
+Once you have the necessary information, it is time to compile the ﬁrst project plan. Such a plan is very similar to the plans you normally use when launching a project and the standard document templates used in your company should therefore be used. When necessary, bend the rules to include at least the following items.
+• Project Scope. Prepare a short (half a page) description of the project, including its context, its goals and the criteria that will be used to verify whether you reached those goals. Involve the Users [p. 185] and Agree on Maxims [p. 23] to write this part of the plan.
+• Opportunities. Identify those factors you expect will contribute to achieve the project goals. List the items that you have discovered during the ﬁrst contact, such as the availability of skilled maintainers and power-users, the readability of the source code or the presence of up-to date documentation.
+• Risks. Consider elements that may cause problems during the course of the project. List those items that you did not ﬁnd or where the quality was inferior, such as missing code libraries or the absence of test suites. If possible, include an assessment for the likelihood (unlikely, possible, likely) and the impact (high, moderate, low) for each risk. Special attention must be paid to the critical risks, i.e. the ones that are possible/likely and have a moderate/high impact or the ones that are likely but have a low impact.
+• Go / No-go decision. At some point you will have to decide whether the project should be continued or cancelled. Use the above opportunities and risks to argue that decision.
+• Activities. (In case of a “go” decision) Prepare a ﬁsh-eye view of the upcoming period, explaining how you intend to reach the project goal. In a ﬁsh-eye view, the short term activities are explained in considerable detail while for the later activities a rough outline is sufﬁcient. Most likely, the short term activities will correspond to the patterns described in Initial Understanding. For the later activities check the subsequent chapters.
+The list of activities should exploit the opportunities and reduce the (critical) risks. For instance, if you list the presence of up-to date documentation as an opportunity and the absence of a test suite as a critical risk, then you should plan an activity which will build a test suite based on the documentation.
+
+44
+
+CHAPTER 3. FIRST CONTACT
+
+3.1. CHAT WITH THE MAINTAINERS
+
+45
+
+3.1 Chat with the Maintainers
+Intent Learn about the historical and political context of your project through discussions with the people maintaining the system.
+Problem
+How do you get a good perspective on the historical and political context of the legacy system you are reengineering?
+This problem is difﬁcult because:
+• Documentation, if present, typically records decisions about the solution, not about the factors which have inﬂuenced that solution. Consequently, the important events in the history of the system (i.e., its historical context) are rarely documented.
+• The system is valuable (otherwise they wouldn’t bother to reengineer it) yet management has lost control (otherwise they wouldn’t need to reengineer the system). At least some of the people related issues concerning the software system are messed up, thus the political context of a legacy system is problematic by nature.
+• Persons working with the system might mislead you. Sometimes people will deliberately deceive you, especially when they are responsible for the problematic parts of the system or when they want to protect their jobs. Most of the time they will mislead you out of ignorance, especially when chief developers are now working on other projects and the junior staff are the only ones left for system maintenance.
+Yet, solving this problem is feasible because:
+• You are able to talk to the maintenance team. While they might not know everything about the original system context, they most likely know a great deal about how the system got to its current state.
+Solution
+Discuss with the system maintainers. As technical people who have been intimately involved with the legacy system, they are well aware of the system’s history and the people-related issues that inﬂuenced that history.
+To avoid misleading information, treat the maintainers as “brothers in arms”. Try to strike a kind of bargain where you will make their job easier
+
+46
+
+CHAPTER 3. FIRST CONTACT
+
+(more rewarding, more appreciated, — whatever is most likely to convince them) if they will just take some time to explain you about what they are doing. This has the extra beneﬁt that it will gain you the respect you need for the later phases of your reengineering project.
+Hints
+Here are some questions that may help you while discussing with the maintainers. It is best to ask these questions during an informal meeting (no ofﬁcial minutes, no ofﬁcial agenda) although you should be prepared to make notes after the meeting to record your main conclusions, assumptions and concerns.
+• What was the easiest bug you had to ﬁx during the last month? And what was the most difﬁcult one? How long did it take you to ﬁx each of them? Why was it so easy or so difﬁcult to ﬁx that particular bug?
+Those kinds of questions are good starters because they show that you are interested in the maintenance work. Answering the questions also gives the maintainers the opportunity to show what they excel at, which will make them less protective of their job. Finally, the answers will provide you with some concrete examples of maintenance problems you might use in later, more high-level discussions.
+• How does the maintenance team collect bug reports and feature requests? Who decides which request gets handled ﬁrst? Who decides to assign a bug report or feature request to a maintainer? Are these events logged in some kind of database? Is there a version or conﬁguration management system in place?
+These questions help to understand the organization of the maintenance process and the internal working habits of the maintenance team. As far as the political context concerns, it helps to assess the relationship within the team (task assignment) and with the end users (collection of bug reports).
+• Who was part of the development/maintenance team during the course of years? How did they join/leave the project? How did this affect the release history of the system?
+These are questions which directly address the history of the legacy system. It is a good idea to ask about persons because people generally have a good recollection of former colleagues. By afterwards asking how they joined or left the project, you get a sense for the political context as well.
+• How good is the code? How trustworthy is the documentation?
+
+3.1. CHAT WITH THE MAINTAINERS
+
+47
+
+This question is especially relevant to see how well the maintenance team itself can assess the state of the system. Of course you will have to verify their claims yourself afterwards (see Read all the Code in One Hour and Skim the Documentation).
+• Why is this reengineering project started? What do you expect from this project? What will you gain from the results?
+It is crucial to ask what the maintainers will gain from the reengineering project as it is something to keep in mind during the later phases. Listen for differences — sometimes subtle — in what management told you they expect from the project and what the maintainers expect from it. Identifying the differences will help you get a sense of the political context.
+
+Tradeoffs
+Pros
+• Obtains information effectively. Most of the signiﬁcant events in the life-time of a software system are passed on orally. Discussing with the maintainers is the most effective way to tap into this rich information source.
+• Get acquainted with your colleagues. By discussing with the maintainers you have a ﬁrst chance to appraise your colleagues. As such, you’re likely to gain the necessary credibility that will help you in the later phases of the reengineering project.
+
+Cons
+• Provides anecdotal evidence only. The information you obtain is anecdotal at best. The human brain is necessarily selective regarding which facts it remembers, thus the recollection of the maintainers may be insufﬁcient. Worse, the information may be incomplete to start with, since the maintainers are often not the original developers of the system. Consequently, you will have to complement the information you obtained by other means (see for instance Skim the Documentation, Interview During Demo, Read all the Code in One Hour and Do a Mock Installation).
+
+48
+
+CHAPTER 3. FIRST CONTACT
+
+Difﬁculties
+• People protect their jobs. Some maintainers may not be willing to provide you with the information you need because they are afraid of losing their jobs. It’s up to you to convince them that the reengineering project is there to make their job easier, more rewarding, more appreciated. Consequently, you should ask the maintainers what they expect from the reengineering project themselves.
+• Teams may be unstable. Software maintenance is generally considered a second-class job, often left to junior programmers and often leading to a maintenance team which changes frequently. In such a situation, the maintainers cannot tell you about the historical evolution of a software system, yet it tells you a great deal about its political context. Indeed, you must be aware of such instability in the team, as it will increase the risk of your project and reduce the reliability of the information you obtain. Consequently, you should ask who has been part of the development/maintenance team over the course of the years.
+Example
+While taking over XDoctor, your company has been trying to persuade the original development team to stay on and merge the two software systems into one. Unfortunately, only one member — Dave — has agreed to stay and the three others have left for another company. As it is your job to develop a plan for how to merge the two products, you invite Dave for lunch to have an informal chat about the system.
+During this chat you learn a great deal. The good news is that Dave was responsible for implementing the internet communication protocols handling the transactions with the health insurances. As this was one of the key features lacking in your product, you’re happy to have this experience added to your team. More good news is that Dave tells you his former colleagues were quite experienced in object-oriented technology, so you suspect a reasonable design and readable source code. Finally, you hear that few bug reports were submitted and that most of them have been handled fast. Likewise, the list of pending product enhancements exists and is reasonably small. So you conclude that the customers are quite happy with the product and that your project will be strategically important.
+The not so good news is that Dave is a hard core C-programmer who was mainly ignored by his colleagues and left out of the design activity for the rest of the system. When you ask about his motives to stay in the
+
+3.1. CHAT WITH THE MAINTAINERS
+
+49
+
+project he tells you that he originally joined because he was interested to experiment with internet technology but that he is kind of bored with the low-level protocol stuff he has been doing and wants to do more interesting work. Of course, you ask him what he means with “more interesting” and he replies that he wants to program with objects.
+After the discussion, you make a mental note to check the source code to assess the quality of the code Dave has written. You also want to have a look at the list of pending bugs and requests for enhancements to compare the functionality of the two products you are supposed to merge. Finally, you consider contacting the training department to see whether they have courses on object-oriented programming as this may be a way to motivate your new team member.
+Rationale
+“The major problems of our work are not so much technological as sociological in nature.”
+— Tom De Marco, [DL99]
+Accepting the premise that the sociological issues concerning a software project are far more important then the technological ones, any reengineering project must at least know the political context of the system under study.
+“Organizations which design systems are constrained to produce designs which are copies of the communications structure of these organizations.”
+— Melvin Conway, [Con68]
+Conway’s law is often paraphrased as: “If you have 4 groups working on a compiler; you’ll get a 4-pass compiler”
+One particular reason why it is important to know about the way the development team was organized, is because it is likely that this structure will somehow reﬂect the structure of the source code.
+A second reason is that before formulating a plan for a reengineering project, you must know the capabilities of your team members as well as the peculiarities of the software system to be reverse engineered. Discussing with the maintainers is one of the ways — and given the “time is scarce” principle, a very efﬁcient one — to obtain that knowledge.
+“Maintenance fact #1. In the late ‘60s and throughout the 70’s, production system support and maintenance were clearly treated as
+
+50
+
+CHAPTER 3. FIRST CONTACT
+
+second-class work. Maintenance fact #2. In 1998, support and maintenance of production systems continues to be treated as second-class work.”
+— Rob Thomsett, [Tho98]
+While talking with the maintainers, you should be aware that software maintenance is often considered second-class work. If that’s the case for the maintenance team you are talking with, it may seriously disturb the discussion. Either because the maintenance team has changed frequently, in which case the maintainers themselves are unaware of the historical evolution. Or because the people you discuss with are very protective about their job, in which case they will not tell you what you need to know.
+Known uses
+During our experience with reengineering projects we made it a habit to kick-off the project during a meeting with the maintenance team. Only in retrospect did we understand how crucial such a meeting is to build up the trust required for the rest of the project. We learned the hard way that maintainers are very proud about their job and very sensitive to critique. Therefore, we emphasize that such a kick-off meeting must be “maintainer oriented”, i.e. aimed to let the maintainers show what they do well and what they want to do better. Coming in with the attitude that you — the newcomer — will teach these stupid maintainers how to do a proper job will almost certainly lead to disasters.
+“The RT-100 — was developed by a third-party software vendor in the late 1980s and acquired by Nortel in 1990. For the next three years Nortel enhanced and maintained it before outsourcing it to another vendor to be systematically rewritten. This effort failed and the system was returned to Nortel in mid 1994. By this time, the original design team has been disbanded and scattered, and the product’s six customers organizations were quite unhappy. RT-100 was assigned to Nortel’s Atlanta Technology Park laboratory. No staff members there had any experience with ACD software, and, due to another project’s cancellation, staff morale was quite low.”
+— Spencer Rugaber and Jim White, [RW98]
+The above quote is from a paper which describes the story of a reengineering project, and depicts very well the typical desperation a reengineering project had to start with. Yet — as described in the paper itself — this early assessment of the historical and political context made it possible for
+
+3.1. CHAT WITH THE MAINTAINERS
+
+51
+
+the project to succeed, because they knew very well which factors would make the stakeholders happy and consequently could motivate the new reengineering team.
+In one of the case-studies of the DESEL project (Designing for Ease of System Evolution), Stephen Cook reports that it is crucial to talk to the maintainers as they know best which aspects of the domain are likely to change and which ones are likely to remain stable [CHR01]. As such, the maintainers have submerged knowledge about how the system could have been built, knowledge which is seldom documented. Yet, during this discussion one must emphasize a “design for evolution” mind-set, to force the maintainers to detach themselves from the latest problems they have been solving.
+Related Patterns
+There are several pattern languages which explicitly deal with the way a software development team is organized [Cop95] [Har96] [Tay00] [BDS+00]. Although meant for a forward engineering situation, it is good to be aware of them while discussing with the maintainers, because it may help you assess the situation more quickly.
+What Next
+During the discussion, you should avoid jumping to conclusions. Therefore, make sure that whatever you learn out of the discussion is veriﬁed against other sources. Typically these sources are the people working with the system (Interview During Demo), the documentation (Skim the Documentation) and the system itself (i.e., Read all the Code in One Hour & Do a Mock Installation).
+With this veriﬁcation, you have a solid basis to write down an initial plan for tackling the legacy system, including the possibility to cancel the project altogether. The discussion with the maintainers will inﬂuence this plan in various ways. First of all, you have a sense for the willingness of the maintenance team to cooperate, which will affect the work plan considerably. Second, you know the history of the system, including those parts that make it valuable and those events that caused most of the maintenance problems. Your plan will aim to resurrect the valuable parts and tackle those maintenance problems. Third, you have a sense for how the maintenance team communicates with the other stakeholders, which is important to get the plan accepted.
+
+52
+
+CHAPTER 3. FIRST CONTACT
+
+3.2. READ ALL THE CODE IN ONE HOUR
+
+53
+
+3.2 Read all the Code in One Hour
+Intent Assess the state of a software system by means of a brief, but intensive code review.
+Problem
+How can you get a ﬁrst impression of the quality of the source code? This problem is difﬁcult because:
+• The quality of the source code will vary quite a lot, depending on the people that have been involved in the development and maintenance of the system.
+• The system is large, so there is too much data to inspect for an accurate assessment.
+• You’re unfamiliar with the software system, so you do not know how to ﬁlter out what’s relevant.
+Yet, solving this problem is feasible because:
+• You have reasonable expertise with the implementation language being used, thus you can recognize programming idioms and code smells.
+• Your reengineering project has a clear goal, so you can assess the kind of code quality required to obtain that goal.
+Solution
+Grant yourself a reasonably short amount of study time (i.e., approximately one hour) to read the source code. Make sure that you will not be disturbed (unplug the telephone and disconnect your e-mail) and take notes sparingly to maximize the contact with the code.
+After this reading session, produce a short report about your ﬁndings, including
+• a general assessment of whether reengineering seems feasible and why (not);
+• entities which seem important (i.e., classes, packages, · · ·); • suspicious coding styles discovered (i.e., “code smells” [FBB+99]);
+
+54
+
+CHAPTER 3. FIRST CONTACT
+
+• parts which must be investigated further (i.e., tests).
+Keep this report short, and name the entities like they are mentioned in the source code.
+Hints
+The “time is scarce” principle demands some preparation. A checklist might help you focus your effort during the reading session. Such a checklist may be compiled from various sources.
+• The development team may have employed code reviews as part of their quality assurance. If they did, make sure you incorporate the checklists used during the reviews. If they didn’t, try some generic checklists used to review the kind of code you are dealing with.
+• Some development teams applied coding styles and if they did, it is good to be aware of them. Naming conventions especially are crucial to scan code quickly.
+• The programmers might have used coding idioms (i.e., C++ [Cop92] [Mey98] [Mey96]; Smalltalk [Bec97]) which help you recognize typical language constructs.
+• You probably have some questions that you would like an answer to.
+Below are some additional items you might add to your checklist because they provide good entry points for further examination.
+• Functional tests and unit tests convey important information about the functionality of a software system. They can help to verify whether the system is functioning as expected, which is very imported during reengineering (see Tests: Your Life Insurance!).
+• Abstract classes and methods reveal design intentions. • Classes high in the hierarchy often deﬁne domain abstractions; their
+subclasses introduce variations on a theme. • Occurrences of the Singleton [p. 321] pattern may represent informa-
+tion that is constant for the entire execution of a system. • Surprisingly large structures often specify important chunks of func-
+tionality. • Comments reveal a lot about the design intentions behind a particular
+piece of code, yet may often be misleading.
+
+3.2. READ ALL THE CODE IN ONE HOUR
+
+55
+
+Tradeoffs
+Pros
+• Start efﬁciently. Reading the code in a short amount of time is very efﬁcient as a starter. Indeed, by limiting the time and yet forcing yourself to look at all the code, you mainly use your brain and coding expertise to ﬁlter out what seems important.
+• Judge sincerely. By reading the code directly you get an unbiased view of the software system including a sense for the details and a glimpse on the kind of problems you are facing. Because the source code describes the functionality of the system — no more, no less — it is the only accurate source of information.
+• Learn the developers vocabulary. Acquiring the vocabulary used inside the software system is essential to understand it and communicate about it with other developers. This pattern helps to acquire such a vocabulary.
+Cons
+• Obtain low abstraction. Via this pattern, you will get some insight in the solution domain, but only very little on how these map onto problem domain concepts. Consequently, you will have to complement the information you obtained with other, more abstract representations (for instance Skim the Documentation and Interview During Demo).
+Difﬁculties
+• Does not scale. Reading all the code does not scale very well, from our experience a rate of 10,000 lines of code per hour is reasonable. When facing large or complex code, don’t try to spend more time to read more code as intensive reading is most effective when done is short bursts of time (no more than 2 hours). Instead, if you have a clear criterion to split the source code, try to pass a series of sessions. Otherwise, just go through all of the code and mark those parts that seem more important than others (based on Chat with the Maintainers) and then read in different sessions.
+However, given the “Time is Scarce” principle, you should force yourself to be brief. Consequently, when dealing with large or complex code, don’t bother too much with the details but remind your-
+
+56
+
+CHAPTER 3. FIRST CONTACT
+
+self of the goal of reading the code, which is an initial assessment of the suitability for reengineering.
+• Comments may mislead you. Be careful with comments in the code. Comments can help you in understanding what a piece of software is supposed to do. However, just like other kinds of documentation, comments can be outdated, obsolete or simply wrong. Consequently, when ﬁnding comments mark on your checklist whether it seems helpful and whether it seems outdated.
+
+Example
+From the discussion with Dave (the sole person left from the original development team and the one responsible for the low-level C-code) you recall that their system was mainly written in Java, with some low-level parts written in C and the database queries in SQL. You have experience with all these languages, so you are able to read the code.
+You start by preparing a check-list and besides the normal items (coding styles, tests, abstract classes and methods, classes high in the hierarchy, · · ·) you add a few items concerning some questions you want resolved. One of them is “Readability of the C-code”, because you want to verify the coding style of Dave, your new team member. A second is the “Quality of the database schema”, because you know that the data of the two systems sooner or later will have to be integrated. A third is the “Handling of currencies”, because Switzerland will join the Euro-region and within six months all ﬁnancial data must be converted to this new currency.
+From reading the C-code, you learn that this part is quite cryptic (short identiﬁers with mysterious abbreviations, long multi-exit loops, · · ·). Nevertheless, the modules handling the internet protocols have unit tests, which makes you feel more conﬁdent about the possibility to incorporate them into your system.
+The Java code presents a problem of scale: you can’t read 50.000 lines of code in a single hour. Therefore, you pick some ﬁles at random and you immediately discover that most class names have a two-character preﬁx, which is either UI or DB. You suspect a naming convention marking a 2tiered architecture (database layer and user-interface layer) and you make a note to investigate this further. Also, you recognize various class- and attribute names as being meaningful for the health care domain (such as Class DBPatient with attributes name, address, health insurance, · · ·). You even perceive a class DBCurrency, so you suppose that switching to Euro won’t cause a lot of problems, since the developers took the necessary precautions. Most of the classes and methods have comments following the
+
+3.2. READ ALL THE CODE IN ONE HOUR
+
+57
+
+Javadoc conventions, so you suspect that at least some of the documentation will be up-to date. Finally, you identiﬁed a large singleton object which contains various strings that are displayed on the screen, which leads you to conclude that it will even be possible to localize the system.
+All this looks rather promising, however there are also a number of discouraging observations. What makes you most pessimistic is the presence of numerous long methods with large parameter lists and complex conditionals. Many of them seem to mix UI-logic (enabling/disabling of buttons and menu-items) with business-logic (updating database records). One thing (the calculation of prices) seems especially complicated and you make a note to investigate this further.
+Concerning the database, you again recognize various table names and column names that are meaningful in the context of the health care domain. At ﬁrst glance, the schema looks normalized, so here as well reverse engineering seems promising. The database also employs some stored procedures, which warrants further investigation.
+After the reading session, you summarize your conclusions in the following note.
+• Incorporating the internet protocols is feasible: unit-tests and responsible programmer available.
+• Suspect a 2-tiered architecture based on naming convention. What about the business logic — mixed in with UI? (further veriﬁcation!)
+• Readable code with meaningful identiﬁers; reverse engineering looks promising.
+• Currency object is present: Euro-conversion looks feasible (further investigation!)
+• Javadoc conventions used; verify documentation.
+• Calculation of prices seems complicated; why?
+• Database schema looks promising. Stored procedures requires further investigation.
+Rationale
+Code reviews are widely acknowledged as being a very effective means to ﬁnd problems in programs written by peers [GG93] [Gla97]. Two important prerequisites have to be met in order to make such reviews costeffective: (a) a checklist must be prepared to help the reviewer focus on the relevant questions and (b) a review session must be kept short because reviewers cannot concentrate for a very long time (2 hours at maximum).
+
+58
+
+CHAPTER 3. FIRST CONTACT
+
+I took a course in speed reading and read “War and Peace” in twenty minutes. It’s about Russia.
+— Woody Allen
+There is an important difference between traditional code reviews and the ones you perform during your ﬁrst contact with a software system. The former is typically meant to detect errors, while the latter is meant to get a ﬁrst impression. This difference implies that you need to care less about details and thus that you can read more code. Typical guidelines for code-reviews state that about 150 statements per hour can be reviewed [BP94]. However, during your ﬁrst contact you don’t need such a detailed analysis and thus can increase the volume of code to be reviewed. We didn’t perform any serious empirical investigation, but from our experience 10,000 lines of code per hour seems reasonable.
+Known Uses
+The original pattern was suggested by Kent Beck, who stated that it is one of the techniques he always applies when starting a consultant job on an existing system. Robson [RBCM91] reports code reading as “the crudest method of gaining knowledge about a system” and acknowledges that it is the method most commonly used to understand an existing program. Some case studies reports also mention that reading the source code is one of the ways to start a reengineering project [BH95] [JC00].
+While writing this pattern, one of our team members applied it to reverse engineer the Refactoring Browser [RBJ97]. The person was not familiar with Smalltalk, yet was able to get a feel for the system structure by a mere inspection of class interfaces. Also, a special hierarchy browser did help to identify some of the main classes and the comments provided some useful hints to what parts of the code were supposed to do. Applying the pattern took a bit more than an hour, which seemed enough for a relatively small system and slow progress due to the unfamiliarity with Smalltalk.
+One particularly interesting occurrence of this pattern took place towards the end of the FAMOOS project. During the course of one week, a heterogeneous team of reverse engineers went for an on-site visit to participate in a kind of reverse engineering contest. The assignment was to invest four days and use the available reverse engineering tools to learn as much as possible about a particular C++ system. The ﬁfth day was then used to report the ﬁndings to the original developers for veriﬁcation. One of the team members ﬁnished his assignment too early, and took the opportunity to Read all the Code in One Hour. It turned out that this one
+
+3.2. READ ALL THE CODE IN ONE HOUR
+
+59
+
+person had a much better overview of the system: he could participate in all discussions and could even explain some of the comments of the developers.
+What Next
+After you Read all the Code in One Hour you should Do a Mock Installation to evaluate the suitability for reengineering. You may complement your ﬁndings if you Skim the Documentation and carry out an Interview During Demo to maximize your chances of getting a coherent view of the system. Before actually making a decision on how to proceed with the reengineering project, it is probably worthwhile to Chat with the Maintainers once more.
+At the end of your ﬁrst contact with the system, you should decide on how to proceed with (or cancel) the project. Reading the code will inﬂuence this decision in various ways. First of all, you have assessed the quality of the code (i.e., the presence of coding idioms and suspicious coding styles) and thus of the feasibility of reengineering project. Second, you have identiﬁed some important entities, which are good starting points for further exploration.
+The list of the important entities (i.e., classes, packages, · · ·) resulting from Read all the Code in One Hour can be used to start Analyze the Persistent Data [p. 87] and Study the Exceptional Entities [p. 107]. This way you can reﬁne your understanding of the source code, especially the way it represents the problem domain.
+
+60
+
+CHAPTER 3. FIRST CONTACT
+
+3.3. SKIM THE DOCUMENTATION
+
+61
+
+3.3 Skim the Documentation
+Intent Assess the relevance of the documentation by reading it in a limited amount of time.
+Problem
+How to identify those parts of the documentation that might be of help? This problem is difﬁcult because:
+• Documentation, if present, is usually intended for the development team or the end users and as such not immediately relevant for reengineering purposes. Worse, it is typically out of date with respect to the current state of affairs, thus it may contain misleading information.
+• You do not yet know how the reengineering project will proceed, hence you cannot know which parts of the documentation will be relevant.
+Yet, solving this problem is feasible because:
+• Some form of documentation is available, so at least there is a description that was intended to help the humans concerned with the system.
+• Your reengineering project has a clear goal, so you can select those parts of the documentation that may be valuable and those parts that will be useless.
+Solution
+Prepare a list summarizing those aspects of the system that seem interesting for your reengineering project. Then, match this list against the documentation and meanwhile make a crude assessment of how up to date the documentation seems. Finally, summarize your ﬁndings in a short report, including
+• a general assessment of whether the system documentation will be useful and why (not);
+• a list of those parts of the documentation that seem useful and why (e.g., requirement speciﬁcations, desired features, important constraints, design diagrams, user and operator manuals);
+
+62
+
+CHAPTER 3. FIRST CONTACT
+
+• for each part, an impression of how up to date the description is.
+Hints
+Depending on the goal of the reengineering project and the kind of documentation you have at your disposal, you may steer the reading process to match your main interest. For instance, if you want insight into the original system requirements then you should look inside the system speciﬁcation, while knowledge about which features are actually implemented should be collected from the end-user manual or tutorial notes. If you have the luxury of choice, avoid spending too much time trying to understand the design documentation (i.e., class diagrams, database schemas, · · ·): rather record the presence and reliability of such documents as this will be of great help in the later stages of reengineering.
+Check whether the documentation is outdated with respect to the actual system. Always compare version dates with the date of delivery of the system and make note of those parts that you suspect are unreliable.
+The fact that you are limited in time should force you to think how you can extract the most useful information. Below are some hints for things to look out for.
+• A table of contents gives you a quick overview of the structure and the information presented.
+• Version numbers and dates tell you how up to date that part of the documentation is.
+• Figures are a a good means to communicate information. A list of ﬁgures, if present, may provide a quick access path to certain parts of the documentation.
+• Screen-dumps, sample print-outs, sample reports, command descriptions, reveal a lot about the functionality provided by the system.
+• Formal speciﬁcations (e.g., state-charts), if present, usually correspond with crucial functionality.
+• An index, if present contains the terms the author considers signiﬁcant.
+Tradeoffs
+Pros
+• Provides a high abstraction level. Documentation is supposed to be read by humans, thus at a certain level of abstraction. It may be
+
+3.3. SKIM THE DOCUMENTATION
+
+63
+
+that this abstraction level is not high enough for your reengineering project, but at least you can skip a few decoding steps. • Focus on relevant parts. By preparing yourself with a list of what seems interesting the reading session becomes goal-oriented, as such increasing your chances of ﬁnding something worthwhile. Moreover, by making a quick assessment of how up to date the description is, you avoid to waste time on irrelevant parts.
+Cons
+• Misses crucial facts. A quick read in overview mode is likely to miss crucial facts recorded in the documentation. However, you can counter this effect to some degree by preparing yourself a list of what you would like to ﬁnd.
+• You may ﬁnd irrelevant information only. There is a small chance that not a single part of the documentation seems relevant for your reengineering project. Even in such a situation, the time spent on reading is worthwhile because now you can justify not to worry about the documentation.
+Difﬁculties
+• Targets a different audience. Documentation is costly to produce, hence is written for the end users (e.g., user manuals) or the development team (e.g., design). Documentation is also costly to maintain, hence only the stable parts of the system are documented. Consequently, the information you ﬁnd may not be directly relevant, hence will require careful interpretation.
+• Documentation contains inconsistencies. Documentation is almost always out of date with respect to the actual situation. This is quite dangerous during the early phases of a reengineering project, because you lack the knowledge to recognize such inconsistencies. Consequently, avoid to make important decisions based on documentation only — ﬁrst verify your ﬁndings by other means (in particular, Read all the Code in One Hour and Interview During Demo).
+Example
+After your informal chat with Dave and your code reading sessions you have some general idea what would be the interesting aspects of the sys-
+
+64
+
+CHAPTER 3. FIRST CONTACT
+
+tem. You decide to skim through the documentation to see whether it contains relevant information.
+You prepare yourself by compiling a list of aspects you would like to read about. Besides obvious items like design diagrams, class interface descriptions (Javadoc?) and database schema, the list includes Euro (does the user manual say something about Euro conversions?) and the speciﬁcation of internet protocol.
+Next, you go to Dave and ask him for all of the documentation concerning the software system. Dave looks at you with a small grin on his face: “You’re not really gonna read all of that, are you?” “Not exactly,” you say to him, “but at least I want to know whether we can do something with it.” Dave looks in the box he has given you earlier and hands you three folders full of paper — the design documentation — and one booklet — the user manual.
+You start with the user manual and — bingo: in the index you discover an entry for Euro. Turning to the corresponding pages, you see that the Euro is actually a chapter on its own consisting of about ﬁve pages, so you mark those page numbers for further study. Next you skim through the table of contents and there you notice a title “Switching to French / German”. Reading these pages you see that localizing the software is a documented feature. Localizing wasn’t in your checklist but it is still important so you gladly add a note about it. All of this looks rather promising, so you verify the release date of the user manual and you see that it is quite recent. A good start indeed!
+Opening the ﬁrst folder (entitled “Classes”) of the design documentation, you ﬁnd more or less what you were expecting: a print-out of the class interface as generated by Javadoc. Not that interesting to read on paper, but you continue to leaf through the pages anyway. Your ﬁrst impression is that the actual descriptions coming with each of the classes and methods are quite shallow. An impression which gets conﬁrmed when you examine three random pages in more detail. Next, you look for descriptions for those classes interfacing with the C-code implementing the internet protocol and there you even ﬁnd empty descriptions. The litmus test with the release date of the documentation reveals that this documentation is quite old, so you make a note to check the online documentation.
+The second folder contains a nice surprise: it is a generated description of the database schema, describing for each table what the purpose of each column is. Just like with the Javadoc class interface descriptions, the documentation itself is quite shallow but at least you have a way of ﬁnding what each record in the database is supposed to represent. Here as well, the litmus test with the document release date tells you to verify the online version of the same documentation.
+
+3.3. SKIM THE DOCUMENTATION
+
+65
+
+At ﬁrst glance, the third folder seems to contain rubbish: various copies of miscellaneous documents which seem only vaguely related with your project. The ﬁrst document is a price-list for medicines, the next ten are extracts from the health care legislation. Still you continue to leaf through the pages and you stumble upon some ﬁnite state diagrams which appear to describe the internet protocol used to communicate with the health insurances. Apparently, the document is a copy from some pages out of a technical speciﬁcation but unfortunately no references to the original are included. Even the release date for this document is missing, so you don’t have the means to verify whether this speciﬁcation is outdated.
+You conclude the reading session with the following report:
+• User manual is clear and up-to date: good source for black-box description of functionality.
+• Euro is provided for (pp. 513-518); localization as well (pp. 723-725).
+• Class interfaces descriptions are generated; shallow but verify on line.
+• Documentation for database schema is generated; shallow but verify on line.
+• Finite state-machines for the internet protocol? Status questionable: verify with Dave.
+• One folder containing miscellaneous documents (price-lists, instruction leaﬂets, · · ·)
+Rationale
+“It is not unusual for a software development organization to spend as much as 20 or 30 percent of all software development effort on documentation.”
+— Roger Pressman, [Pre94]
+Documentation, as opposed to source code, is intended to explain the software system at an abstraction level well suited for humans. Therefore, the documentation will certainly contain information “nuggets”; the only problem is how to ﬁnd the relevant ones. Finding relevant information is made difﬁcult because of two typical circumstances present in almost all reengineering projects.
+“All of the case-studies face the problem of non-existent, unsatisfactory or inconsistent documentation”
+
+66
+
+CHAPTER 3. FIRST CONTACT
+
+— ESEC/FSE 1997 Workshop on Object-Oriented Re-engineering, [DG97]
+First of all, the documentation is likely to be out of sync with respect to the actual situation. For the ﬁve case-studies we investigated during the FAMOOS project, “insufﬁcient documentation” was the only problem all maintainers complained about. Nevertheless, even outdated information may be useful, because at least it tells you how the system was supposed to behave in the past. This is a good starting point to infer how it is used today.
+“The documentation that exists for these systems usually describes isolated parts but not the overall architecture. Moreover, the documentation is often scattered throughout the system and on different media”
+Kenny Wong, et al., [WTMS95]
+Second, documentation is normally produced in a forward engineering context, hence not intended for reengineering purposes. Generated design documentation (e.g., database schemas, Javadoc) for instance, is typically quite up-to date, yet too ﬁne-grained to be useful during the initial phases of a reengineering project. User manuals are black box descriptions of the software system, and thus cannot serve as blueprints of what’s inside the boxes. Here as well you should see the documentation as a good starting point to infer what you’re really interested in.
+Known Uses
+A study by Fjeldstadt and Hamlen reported that “in making an enhancement, maintenance programmers studied the original program about three-and-a-half times as long as they studied the documentation, but just as long as they spent implementing the enhancement.” [Cor89] quoting [FH79]. This equation gives a good impression of the relative importance studying the documentation should have.
+“The case-study began with an effort to understand the existing design of CTAS in general and the CM in particular. — The documentation for CTAS includes motivation and architecture overview, software structures, user manuals and research papers on the underlying algorithms. However, there appears to be no document that explains in high-level terms what the system computes or what assumptions it makes about its environment. Nor is there a design document that
+
+3.3. SKIM THE DOCUMENTATION
+
+67
+
+explains the relationship between the CTAS components: how they communicate, what services they offer, and so forth. We were forced to infer this information from the code, a challenge common to many commercial development efforts.”
+— Daniel Jackson & John Chapin, [JC00]
+The above quotation summarizes quite well that you need to study the documentation, yet that it will not tell you all you need to know. The casestudy they are referring to concerns an air-trafﬁc control system (CTAS) where they reverse- and reengineered a key component CommunicationsManager (CM) of about 80 KLOC C++ code.
+The following anecdote reveals how documentation might mislead you. In one of the FAMOOS case-studies we were asked to evaluate wether a distributed system connecting about a dozen subsystems could be scaled up to connect approximately hundred subsystems. During this evaluation, we studied the class responsible for maintaining all of the TCP/IP connections where the comments described how all of the open connections were maintained in a kind of look-up table. We did ﬁnd a look-up table in the code, but we were unable to map the description of how it worked back to operations manipulating the table. After half a day of puzzling, we gave up and decided to ask the maintainer. His matter-offact response was, “Ah, but this class comment is obsolete. Now that you mention it, I should have deleted it when I redesigned that class.”
+What Next
+You may want to Read all the Code in One Hour immediately after Skim the Documentation to verify certain ﬁndings. It may also be worthwhile to Chat with the Maintainers and Interview During Demo to conﬁrm certain suspicions.
+At the end of your ﬁrst contact with the system, you should decide on how to proceed with (or cancel) the project. Once you have discovered relevant documentation you know that you at least do not have to reproduce this information. Even better, for those parts of the documentation that are relevant but seem inaccurate you have some good starting points for further exploration (for instance Analyze the Persistent Data [p. 87] and Speculate about Design [p. 97]).
+
+68
+
+CHAPTER 3. FIRST CONTACT
+
+3.4. INTERVIEW DURING DEMO
+
+69
+
+3.4 Interview During Demo
+Intent Obtain an initial feeling for the appreciated functionality of a software system by seeing a demo and interviewing the person giving the demo.
+
+Problem
+How can you get an idea of the typical usage scenarios and the main features of a software system?
+This problem is difﬁcult because:
+• Typical usage scenarios vary quite a lot depending on the type of user.
+• If you ask the users, they have a tendency to complain about what’s wrong, while for reverse engineering purposes you’re mainly interested in what’s valuable.
+• The system is large, so there is too much data to inspect for an accurate assessment.
+• You’re unfamiliar with the software system, so you do not know how to ﬁlter out what’s relevant. Yet, solving this problem is feasible because:
+• You can exploit the presence of a working system and a few users who can demonstrate how they use the software system.
+
+Solution
+Observe the system in operation by seeing a demo and interviewing the person who is demonstrating. Note that the interviewing part is at least as enlightening as the demo.
+After this demo, take about the same amount of time to produce a report about your ﬁndings, including:
+• some typical usage scenarios; • the main features offered by the system and whether they are appre-
+ciated or not; • the system components and their responsibilities; • bizarre anecdotes that reveal the folklore around using the system.
+
+70
+
+CHAPTER 3. FIRST CONTACT
+
+Hints
+The user who is giving the demo is crucial to the outcome of this pattern so take care when selecting the person. Therefore, do the demonstration several times with different persons giving the demo. This way you will see variations in what people ﬁnd important and you will hear different opinions about the value of the software system. Always be wary of enthusiastic supporters or fervent opponents: although they will certainly provide relevant information, you must spend extra time to look for complementary opinions in order to avoid prejudices.
+Below are some hints concerning people you should be looking for, what kind of information you may expect from them and what kind of questions you should ask. Of course which people you should talk to depends very much on the goal of your reengineering project and the kind of organization surrounding it, hence this list is provided as a starting point only.
+• An end-user should tell you how the system looks like from the outside and explain some detailed usage scenarios based on the daily working practices. Ask about the working habits before the software system was introduced to assess the scope of the software system within the business processes.
+• A manager should inform you how the system ﬁts within the rest of the business domain. Ask about the business processes around the system to check for unspoken motives concerning your reengineering project. This is important as reengineering is rarely a goal in itself, it is just a means to achieve another goal.
+• A person from the sales department ought to compare your software system with competing systems. Ask for a demo of the functionality most requested by the users (this is not necessarily the same as most appreciated!) and ask how this has evolved in the past and how it might evolve in the future. Use the opportunity to get insight into the various types of end-users that exist and the way the software system is likely to evolve.
+• A person from the help desk should demonstrate you which features cause most of the problems. During this part of the demo, ask how they explain it to their users, because this may reveal mismatches between the actual business practices and the way it is modelled by the software system. Try to get them to divulge bizarre anecdotes to get a feeling for the folklore around the software system.
+• A system administrator should show you all that is happening behind the scenes of the software system (i.e., startup and shutdown, back-
+
+3.4. INTERVIEW DURING DEMO
+
+71
+
+up procedures, data archival, · · ·). Ask for past horror stories to assess the reliability of the system. • A maintainer/developer may demonstrate you some of the subsystems. Ask how this subsystem communicates with the other subsystems and why (and who!) it was designed that way. Use the opportunity to get insight in the architecture of the system and the trade-offs that inﬂuenced the design.
+Variants
+Demonstrate to yourself . A scaled-down variant of Interview During Demo consists of the reverse engineer who demonstrates the system to him- or herself via a trial-and-error process. Such a demonstration obviously lacks the group dynamics that boosts the demonstration, but on the other hand may serve as a preparation technique for a discussion with the designers/maintainers.
+Tradeoffs
+Pros
+• Focuses on valued features. The fact of giving a demo will gently coerce the interviewee to demonstrate those features which are appreciated. As a reverse engineer, that’s of course your main interest.
+• Provides lots of qualitative data. Conducting an interview typically results in a wealth of relevant information, which is very hard to extract by other means.
+• Increases your credibility. Performing an interview, shows to the interviewee that there is a genuine interest in his or her opinions about that system. The interview thus provides a unique opportunity to enlarge the end-users conﬁdence in the result of your reengineering project.
+Cons
+• Provides anecdotal evidence only. The information you obtain is anecdotal at best, just like it is with Chat with the Maintainers. Interviewees will almost certainly omit important facts, either because they forgot or either because they deemed it uninteresting. This effect will be countered to some degree by demonstration, yet prepare to complement the information you obtained by other means (see for
+
+72
+
+CHAPTER 3. FIRST CONTACT
+
+instance Skim the Documentation, Read all the Code in One Hour and Do a Mock Installation).
+• Time may be lacking. At least one person should be able to do the demonstration. This seems a simple requirement but may be hard to achieve in practice. Some systems (embedded systems for example) just don’t have human users and — given the “time is scarce” principle — sometimes it will take too long to make an appointment with someone who is willing to demonstrate the system.
+Difﬁculties
+• Requires interviewing experience. The way the questions are phrased has considerable impact on the outcome of the interview. Unfortunately, not all reverse engineers have the necessary skills to conduct good interviews. When you’re unexperienced, rely on ﬂow of the demonstration to trigger the right kind of questions.
+• Selecting interviewees may be difﬁcult. You should avoid to interview enthusiastic supporters or fervent opponents. Unfortunately, in the beginning of a reengineering project you lack the knowledge to make a good selection. Consequently, rely on other persons’ opinions to make the selection, but prepare to adjust the results based on the enthusiasm (or lack of it) of the interviewees.
+• How to handle real-time software. For certain kinds of systems (especially real-time systems), it is impossible to answer questions while operating the software system. In such a situation, jot down your questions while seeing the demo, and do the actual interview afterwards.
+
+Example
+Now that you checked the source code and the documentation you’re almost convinced that reengineering the XDoctor system will be feasible. However, you still have some doubts about what precisely should be reverse engineered because you don’t really know what the users appreciate in the system. Via the sales department, you get in touch with one of the current users and you make an appointment for the next day. You’re also worried about the state of the internet protocol (incl. the state-chart speciﬁcation you discovered in the documentation) and the way it ﬁts in with the rest of the system, so you step to Dave and ask him whether he can give you a demo of the internet protocols.
+
+3.4. INTERVIEW DURING DEMO
+
+73
+
+Dave is quite pleased to show you his work and immediately starts to type on his keyboard. “See, now I launched the server” he says, pointing at a little console window that appeared on the screen. “Wait a second”, you reply, “what command did you type there?”. “LSVR; you know, for Launch Server”. A bit surprised you ask Dave if there is some kind of manual explaining how to start-up and shut-down this server. Dave explains that there isn’t, but that it is quite easy to infer from the batch ﬁle starting the whole system. He even tells you that there are some command-line options associated with LSVR and that they are all documented in a READ.ME ﬁle and via the -h(elp) option. Next, Dave starts a test program (yes, it is invoked via LSVRTST) and in the console window you see that the server is actually receiving trafﬁc, while the test program is spitting out a long log of all the messages sent and received. Of course, you ask him how he knows that the test succeeded and to your dismay he states that this is done by manually inspecting the log. You decide to switch topics and ask him why this subsystem is called a server, because you would guess that it is actually running on the client machine. This question triggers a heated discussion which eventually leads to an architecture diagram like the one depicted in ﬁgure 6, showing a remote server (managed by the health insurances and accepting), a local server (the L in LSVR probably stands for “local” and not “launch”) and some local clients. From this discussion you kind of understand how the complete system is working. The basic idea is that there are several client computers on various desks connected to a local server via a LAN-network. The local server maintains the database and the internet connections to the health insurances. With the diagram on a little sheet of paper, you ask Dave where this internet protocol originated from. This question again triggers a long story which reminds you that the protocol is designed in Germany (hence the reason why it’s documented with state-charts) and now adopted by the national health insurance companies.
+The next day, you put on your suit and drive off to have a meeting with doctor Mary Johanssen. While introducing yourself, you get the impression that she is not so pleased. You explain the reason of your visit and during the conversation you understand that the doctor is quite worried about your company taking over the XDoctor software. You do your very best to assure her that the main purpose of the demonstration and interview is precisely to learn how your company may best serve the current users and that they do not intend to stop supporting it. Reassured, she starts the actual demonstration. Not surprisingly, the most appreciated feature is the automatic transaction processing with the health insurances, because “it means that I can save on a secretary to do the paperwork”. However, Doctor Johanssen also shows you some other features you were not aware of: built-in e-mail, export to spreadsheet (“I just e-mail this ﬁle
+
+74
+
+CHAPTER 3. FIRST CONTACT
+
+Remote Server
+
+Internet
+
+LAN-network Client Machines
+
+Database
+Figure 3.2: The architecture diagram as you inferred it from the discussion with the maintainer.
+to my bookkeeper”), payments in multiple currencies (“Real good to deal with Euros”). During the course of the demo she tells you that in the beginning the system was a bit unstable (apparently she served as an betatester) and that there are some weird mistakes (the list of patients is sorted by ﬁrst name instead of family name) but all in all she is very pleased with the system.
+Once you are back in your ofﬁce you write a small report, which includes the sequence of commands for testing the local server plus the usage scenario’s for the automatic transaction processing and the payment with multiple currencies. Your report also includes the architecture diagram (ﬁgure 6) and the following observations.
+• Testing of internet protocols is manually: investigate regression tests. • Internet protocol spec comes from a consortium of German health
+insurances. • Sorting of patient list: by ﬁrst name instead of last name.
+Rationale
+“The ability to respond ﬂexibly to the interviewee’s responses is one of the reasons why interviews are so widely used”
+— Simon Bennett, et al.., [BMF99] “Interviews are well suited to exploratory studies where one does not know yet what one is looking for, since the interviewer can adjust the interview to the situation”
+
+3.4. INTERVIEW DURING DEMO
+
+75
+
+— Jakob Nielsen, [Nie99]
+Interviewing people working with a software system is essential to get a handle on the important functionality and the typical usage scenario’s. However, asking predeﬁned questions does not work, because in the initial phases of reengineering you do not know what to ask. Merely asking what people like about a system will result in vague or meaningless answers. On top of that, you risk getting a very negative picture because users have a tendency to complain about a legacy system.
+“The real challenge of analysis begins when the expert must communicate the concept to someone else — to an analyst. Since the concept is often very rich and expansive, it is generally not possible for experts adequately to communicate their entire understanding in a single, holistic expression.”
+— Adele Goldberg & Kenny Rubin, [GR95]
+Compared to a forward engineering situation, a reverse engineer has one major advantage: there is a working software system available and you can exploit its presence. In such a situation it is safe to hand over the initiative to the user by requesting a demo. First of all, a demo allows users to tell the story in their own words, yet is comprehensible because the demo imposes some kind of tangible structure. Second, because users must start from a working system, they will adopt a more positive attitude explaining what works. Finally, during the course of the demo, the interviewer can ask lots of precise questions, getting lots of precise answers, this way digging out the expert knowledge about the system’s usage.
+Known Uses
+The main idea of this pattern — let the user explain the system while using it — is commonly used for evaluating user-interfaces. “Thinking aloud may be the single most valuable usability engineering method. Basically, a thinking-aloud test involves having a test subject use the system while continuously thinking out loud.” [Nie99] The same idea is also often applied during rapid prototyping for requirements elicitation [Som96].
+One anecdote from the very beginning of the FAMOOS project — an application of the Demonstrate to yourself variant of this pattern — shows how ignorant questions arising from seeing a software system in action may trigger dormant expertise within the maintenance team. For one of the case studies — a typical example of a 3-tiered system with a database layer, domain objects layer and user-interface layer — we were asked ‘to
+
+76
+
+CHAPTER 3. FIRST CONTACT
+
+get the business objects out’. Two separate individuals were set to that task, one took a source code browser and a CASE tool and extracted some class diagrams that represented those business objects. The other installed the system on his local PC and spent about an hour playing around with the user interface (that is, he demonstrated the system to himself) to come up with a list of ten questions about some strange observations he made. Afterwards, a meeting was organized with the chief analyst-designer of the system and the two individuals that tried to reverse engineer the system. When the analyst-designer was confronted with the class-diagrams he conﬁrmed that these were indeed the business objects, but he couldn’t tell us whether there was something missing, nor did he tell us anything about the rationale behind his design. It was only when we asked him the ten questions that he launched off into a very enthusiastic and very detailed explanation of the problems he was facing during the design — he even pointed to our class diagrams during his story! After having listened to the analyst-designer, the ﬁrst reaction of the person that extracted the class diagrams from the source code was ‘Gee, I never read that in the source code’.
+Related Patterns
+A lot of good advice concerning how to interact with end users is embodied in the “Customer Interaction Patterns” [Ris00]. The main message of these patterns is that “It’s a Relationship, Not a Sale”, emphasizing that your contacts with the end users should aim to develop a relationship of trust.
+What Next
+For optimum results, you should carry out several attempts of Interview During Demo with different kinds of people. Depending on your taste, you may perform these attempts before, after or interwoven with Read all the Code in One Hour and Skim the Documentation. Afterwards, consider to Chat with the Maintainers to verify some of your ﬁndings.
+At the end of your ﬁrst contact with the system, you should decide on how to proceed with (or cancel) the project. By seeing the demonstrations, you get a feeling for how the people use the system and which features are appreciated. As such you know the valuable parts of the software system and these are probably the ones that must be reverse engineered. The usage scenarios will also serve as an input for patterns like Speculate about Design [p. 97] and Record Business Rules as Tests [p. 175].
+
+3.5. DO A MOCK INSTALLATION
+
+77
+
+3.5 Do a Mock Installation
+Intent Check whether you have the necessary artefacts available by installing the system and recompiling the code.
+
+Problem
+How can you be sure that you will be able to (re)build the system? This problem is difﬁcult because:
+• The system is new for you, so you do not know which ﬁles you need to build the system.
+• The system may depend on libraries, framework, patches and you’re uncertain whether you have the right versions available.
+• The system is large and complex and the exact conﬁguration under which the system is supposed to run is unclear.
+• The maintainers may answer these questions, or you may ﬁnd the answers in the manual, but you still must verify whether this answer is complete.
+Yet, solving this problem is feasible because:
+• You have access to the source code and the necessary build tools (i.e., the makeﬁles, compilers, linkers).
+• You have the ability to re-install the system in an environment that is similar to that of the running system (i.e., the installation CD and a computer with the right operating system).
+• Maybe the system includes some kind of self test (see Tests: Your Life Insurance!), which you can use to verify whether the build or install succeeded.
+
+Solution
+Try to install and build the system in a clean environment during a limited amount of time (at most one day). Run the self test if the system includes one.
+
+78
+
+CHAPTER 3. FIRST CONTACT
+
+Hints
+The main idea is to verify whether you are able to replicate the install and build processes, not to understand them completely.
+Log all small failures you encounter during the build and installation process and the way you solved them, because this will tell you about the conﬁguration of the system and its dependencies on libraries, frameworks and patches. For example you may learn that the system cannot be compiled on a certain location, needs an old legacy library only accessible from a particular machine, or needs a particular patch of the libraries.
+It is possible that at the end of the day you did not succeed to build or install the system completely. This corresponds to a high probability/high impact risk for your reengineering project and therefore, before you continue, you must plan to study the build and install procedures and adapt them where necessary.
+After this build and install experiment, prepare a report containing:
+• version numbers of libraries, frameworks and patches used; • dependencies between the infrastructure (database, network toolkits,
+ports, · · ·); • problems you encountered and how you tried to solve them; • suggestions for improvement; • (in case of incomplete installation or build) your assessment of the
+situation, including possibilities for solutions and workarounds.
+Tradeoffs
+Pros
+• Essential prerequisite. The ability to (re)build or (re)install the system is essential for a reengineering project, therefore you must assess this issue early on. If building or installing proves to be difﬁcult or impossible, plan the necessary corrective actions.
+• Demands precision. Replicating the build and installation process forces you to be precise about the components required. Especially for migration projects this information is crucial because all the components must be available on the target platform as well.
+• Increase your credibility. After the build or install you will have ﬁrsthand experience with the steps that prove to be difﬁcult. It should be
+
+3.5. DO A MOCK INSTALLATION
+
+79
+
+easy to offer some concrete suggestions for improvement, which will undoubtedly increase your credibility with the maintenance team.
+Cons
+• Tedious activity. You will feel very unproductive while you are busy tracking down the causes behind your failures to install the system, especially since most of the problems depend on trivial details that do not interest you now. You can counter this effect to some extent by limiting the amount of time you devote to Do a Mock Installation, but then you will feel even more unproductive because you will not have succeeded in building or installing the system.
+• No certainty. Although this pattern demands precision, there is no guarantee that you will actually succeed to build the system after you have reengineered some of its components. Especially when a reliable self-test is missing you cannot verify whether your build or install was complete.
+Difﬁculties
+• Easy to get carried away. Building or installing a complex system may easily fail due to external factors (missing components, unclear installation scripts). It is tempting to continue ﬁxing these annoying problems due to the “next time it will work” effect. Rather than getting carried away with these details, it is important not to lose sight of the main goal, which is not to build the system, but to gain insight into the build process. Consequently you should limit the time you spend, and focus on documenting the problems that arise so you can address them later.
+Example
+You have carried out an Interview During Demo with some end users, and consequently have a feeling for the important features that should be preserved during your reengineering project. However, before accepting the project you still must verify whether you will be able to change the system. Hence, you decide to do a quick experiment to see whether you carry out a clean build of the system.
+From the box that Dave has left in your ofﬁce, you take the second CD containing all the source code. Browsing the directories you notice one top-level makeﬁle and you decide to give it a try. You copy all the ﬁles
+
+80
+
+CHAPTER 3. FIRST CONTACT
+
+to the Linux partition of your system and type the command make all at the prompt. Everything goes smoothly for a while and the system reports numerous successful java compilations. Unfortunately, after a few minutes the make fails due to a missing library java.sql. You realize that you still have a JDK1.1 installed, while you remember that the documentation mentioned that it should have been JDK1.3. Reluctantly, you trash the whole directory structure, uninstall JDK1.1, download and install a JDK1.3 (downloading takes forever so you fetch yourself a cup of real coffee), and then start again. This time the make proceeds smoothly until the compiling of the C-code starts. The ﬁrst compilation immediately fails due to a missing library ﬁle and you open the C-ﬁle to see what exactly is causing this failure. Apparently something must be wrong with the search paths, because assert.h is a standard library you know is available in your system. By then it is almost lunch-time and since you planned to ﬁnish this build experiment today, you decide to leave the whole C-compilation for later. Dave is here anyway, and since he wrote this C-code he will surely be able to show you how to compile it.
+After lunch, you want to verify whether what you built is OK. A grep of "void main(" reveals that XDoctor.java ﬁle contains the main entry so you type java XDoctor to launch the system. And indeed, the start-up screen you recognize from the demonstration appears and a little status window appears telling that the “the system is connecting to the database”. Immediately thereafter, the system fails with a “something unexpected happens” message and you suspect this is due to the missing database. You decide to investigate this issue later and turn your attention to the installation procedure.
+You put the installation-CD in the CD-drive of your Macintosh to see whether you are able to install the system. Automatically, the typical installation window appears and you proceed through the installation process smoothly. After the installation process completes, the installer asks you to reboot your computer before launching the system. You make a note to verify which system extensions are installed, reboot your computer and then double-click the XDoctor icon which appeared on your desktop. Unfortunately, a window appears which asks you to provide a license key. Studying the CD-box you read that you must have received the license key in a separate letter which of course you did not receive. “Too bad”, you think “it would have been nice to run a demo-version of the system when no license key is provided, just as we do with our proDoc”. Frustrated you decide to give up and write the following report.
+• make with a JDK1.3 appears to work; could not verify whether this build was complete.
+• C-compilation fails: request Dave to demonstrate the build
+
+3.5. DO A MOCK INSTALLATION
+
+81
+
+• Investigate licensing in further detail: how is the system protected?
+• Suggestion: if no license key is provided, run in demo-mode (cf. proDoc).
+• Suggestion: verify pre-conditions when calling XDoctor.main(); system exits with “something unexpectedly happens” after a fresh build.
+
+Known Uses
+In one of the FAMOOS case studies, we had to reengineer a distributed system that was communicating over sockets with a central server by means of a little command language. We received a tape containing a tarﬁle which — according to the letter attached — “contains everything that is required”. Rebuilding and reinstalling the system proved to be difﬁcult, however, and we had to dive into the installation scripts and ask the maintainers for clariﬁcation. In the end, we could not communicate with the central server due to security and connection problems, but we were able to test the system in simulation mode. Although the experiment did not succeed completely, it gave us insights into the system’s architecture. In particular, the way the simulation mode mimicked the central server and the way this was encoded in the source code and the makeﬁles provided us with information that turned out to be crucial during the rest of the project.
+Towards the end of the ﬁrst day of an auditing project we carried out, we requested to see a clean install the following morning. We considered this to be an innocent request meant to prepare things for an Interview During Demo, but during the installation we discovered that one maintainer had to stay overnight to prepare the installation CD. From the subsequent discussion we learned that the system wasn’t meant to be installed: the user base was ﬁxed and the system was designed to download weekly updates over the internet. This explained many peculiarities we observed during a previous effort to Read all the Code in One Hour and helped us a lot to expose the design issues during the remainder of the auditing project.
+When working with a conﬁguration management system, it is a good idea to ﬁrst try to import the code into a clean conﬁguration before recompiling it. In case of a Smalltalk system for instance, one general piece of advice is to ﬁrst try to load the Envy conﬁguration maps that compose the system and then load the code into a clean image [PK01].
+
+82
+
+CHAPTER 3. FIRST CONTACT
+
+What Next
+It can be a good idea to Chat with the Maintainers before you report your conclusions. They may be able to conﬁrm your ﬁndings and clear up some misconceptions. Concrete suggestions for improvement are best discussed with the maintainers, because it is the best way to convince them that you really mean to help them.
+When the build or installation fails completely, you may want to combine Interview During Demo with Do a Mock Installation. In that case, invite a maintainer to demonstrate the build or installation process and ask questions about those steps you have found unclear.
+
