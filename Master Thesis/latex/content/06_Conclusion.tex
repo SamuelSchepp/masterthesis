@@ -111,7 +111,8 @@ This means the loading and caching policies can be fine-tuned to match the requi
 This section will discuss further development approaches and the steps that should now be taken by the team.
 This includes alternative architectures and concrete implementation approaches.
 
-\subsection{Continuous Re-Engineering}
+\subsection{Continuous Reengineering}
+\label{continuous-reengineering}
 
 The next step is the actual implementation of the interpreter.
 It could be considered a full rewrite, but the more intelligent solution is a continuous evolution, which transfers the application into the target architecture.
@@ -127,6 +128,22 @@ After that, the dirt flush mechanism is fully implemented so that every change o
 Each step can be considered to be a sprint in which the application is executable after each iteration.
 Every change is a step in the target direction, because a good abstraction supports maintainability and extensibility.
 After every changes, the team can evaluated if the next step is even possible or if the architecture is not suitable at all.
+
+The book \textit{Reengineering Patterns} \cite{demeyer_object-oriented_2002} systematically describes approaches, that support a re-engineering process of a given system.
+The base patterns include, among other things, test evolution and incremental migration of sub-components.
+The for every approach, the author explains the intent, the problem, a solution, the respective trade offs and examples.
+
+The tools and development processes can be applied to this section, because it directly fits the continuous change approach which is needed to be able to always release an updated version of an evolving system.
+
+One example approach is the idea of coding business logic into automatic tests.
+One key objective of this reengineering concept is the ability to unit test domain specific logic.
+Also, the book suggests to incrementally grow the test base, which is an important aspect of future reengineering processes.
+The tests help to build confidence, that the current change to the system does not break it.
+While not every error can be exposed by tests, they provide a basic assurance.
+
+Another important suggestion is the continuous and incrementally migration of the system, so that it can always be deployed.
+A full rewrite or parallel reengineering while also maintaining the old system results in two code basis'.
+This means, bug fixes and new features must be applied to both system, which can mean that they have to be developed two times, because the new system's environment and architecture could be different.
 
 \subsection{Hybrid Approaches}
 
@@ -202,14 +219,7 @@ Since JavaScript does not allow multi-threading, this alternative should not be 
 
 The ultimate goal is a common virtual machine implementation where the clients would act as user interface and platform-specific feature providers.
 
-
-\section{Related Work}
-
-This thesis elaborated two topics.
-On one hand, the model, it's abstraction approach and requirements have been evaluated.
-On the other hand, the internal structure of the interpreter has been analyzed and an alternative architecture has been proposed.
-
-\subsection{Runtime Models}
+\section{Runtime Models}
 
 The paper \textit{Systematic literature review of the objectives, techniques, kinds, and architectures of models at runtime} \cite{szvetits_systematic_2013} analyses the use of models with regard to runtime systems, by using Systematic Literature Review.
 Runtime models take the idea of static artifacts one step further.
@@ -220,9 +230,6 @@ The paper proposes those classification to improve development workflows of syst
 
 One example model is an abstract state machine that can be used to formally describe component behavior, which then can be executed directly.
 The the goals are abstraction, consistency, simulation, platform independence and policy checking.
-
-\subsection{Reengineering Patterns}
-
 
 
 
