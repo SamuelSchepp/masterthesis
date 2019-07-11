@@ -219,9 +219,14 @@ Since JavaScript does not allow multi-threading, this alternative should not be 
 
 The ultimate goal is a common virtual machine implementation where the clients would act as user interface and platform-specific feature providers.
 
-\section{Runtime Models}
+\section{Related Work}
 
-The paper \textit{Systematic literature review of the objectives, techniques, kinds, and architectures of models at runtime} \cite{szvetits_systematic_2013} analyses the use of models with regard to runtime systems, by using Systematic Literature Review.
+This thesis elaborated two topics.
+The model, it's abstraction approach and requirements have been evaluated.
+In addition, the internal structure of the interpreter has been analyzed and an alternative architecture has been proposed.
+The following section will collate some related papers and resources.
+
+\textbf{Runtime Models:} The paper \textit{Systematic literature review of the objectives, techniques, kinds, and architectures of models at runtime} \cite{szvetits_systematic_2013} analyses the use of models with regard to runtime systems, by using Systematic Literature Review.
 Runtime models take the idea of static artifacts one step further.
 The paper's goal is to identify and classify approaches, architectures and usage of runtime models.
 The research suggests problems like error localization, requirements evolution, abstraction and maintenance are addressed by runtime models.
@@ -230,6 +235,23 @@ The paper proposes those classification to improve development workflows of syst
 
 One example model is an abstract state machine that can be used to formally describe component behavior, which then can be executed directly.
 The the goals are abstraction, consistency, simulation, platform independence and policy checking.
+The virtual machine approach of section \ref{sec:virtualmachineapproach} implements a comprehensive model of a mobile application, while being platform independent.
+
+\textbf{Requirements Engineering:} The paper \textit{Embedding requirements within Model-Driven Architecture} \cite{jeary_embedding_2011} deals with the topic of integrating Requirements Engineering and Business Process Management into a Model Driven Architecture project.
+The objective is to improve and enhance the artifacts of requirements engineering, by using \ac{BPMN} to transform business logic into a Computation Independent Model (CIM).
+This is achieved by standardizing \ac{BPMN} to be able to map the artifacts into intermediate models like the \ac{BPEL}.
+Those can then be converted to \ac{MDA}'s \acp{CIM} and therefor to \acp{PSM}.
+
+The paper concludes by emphasizing the openness of \ac{MDA}, which allows many model variations and tools that can be integrated into the process.
+This way, it is possible to formally map a \ac{BPMN} to a \ac{PSM}.
+
+\textbf{Software Architecture:} The connection between software architecture and abstraction over software is discussed in the paper \textit{Architecture = Abstractions over Software} \cite{jacobsen_architectureabstractions_1999}.
+The main statement is that software design and architecture are a abstraction over the software domain, which elevates the architecture above the usage environment and domain.
+This means, that architecture is domain independent.
+The paper classifies and characterizes various aspects and implications of software architecture like the design process, tools and perspectives.
+Static and dynamic aspects are also being discussed.
+Dynamic aspects of an architecture include snapshots and state snapshots and transitions.
+
 
 
 
