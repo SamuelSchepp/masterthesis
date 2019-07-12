@@ -2,24 +2,24 @@
 
 \chapter{Introduction}
 
-Mobile application and digital media usage is still on the rise\cite{perkins_internet_2018}.
-''Apps'' are one of many possible ways to interact with customers and consumers.
+Mobile application and digital media usage are still on the rise, as \textit{Internet Trends Report 2018} by \textsc{Kleiner Perkins} \cite{perkins_internet_2018} suggests.
+''Apps'' are one of many possible ways for companies and advertisers to interact with customers and consumers.
 A web appearance on social media or a dedicated web page can also fulfill these needs.
 
-A mobile application can enable user specific features without logging in, because the user can be identified by the installed instance, that is unique for every user.
-It is possible to activate special features like geo-fencing, push notifications or local data storage, that is synchronized with the platform specific cloud services (e.g. Apple iCloud or Google Drive), without any custom user authentication.
+A mobile application can enable user specific features without logging in, because the user can be identified by the installed instance, that is unique for every user and is less volatile then a web browser user instance.
+It is possible to integrate specialized mobile phone features like geo-fencing, push notifications or local data storage, that is synchronized with the platform specific cloud services (e.g. Apple iCloud or Google Drive), without any custom user authentication.
 An app is integrated more deeply into the device, than a web app.
-However, web browsers already support a lot of the features by now, that originally were only available to native apps\footnote{E. g. Local storage, push notifications. These features are now part of many browser's APIs.}.
+However, web browsers already support a lot of those device features by now, that originally were only available to native apps\footnote{E. g. Local storage, push notifications. These features are now part of many browser's APIs.}.
 The current development indicates, that the differences will be further eliminated by the browser vendors.
 
 \section{Problem definition}
 
 Mobile applications have significant disadvantages, that push the development of web apps forward.
-Changes have to be approved by the phone vendors, in order to be able to release updates to the app.
-This causes development delays and reduces the ability to react to events or customer requirement changes.
+Changes have to be approved by the phone vendors' review processes, in order to be able to release updates to the app.
+This causes development delays and reduces the ability to react to customer requirement changes or other events that force a change to be made to the app, like hot fixes or dynamic content with additional requirements for display.
 
 All apps have to be kept in good condition, which creates more work, the more apps there need to be maintained.
-New operating system features have to be implemented in all of the apps, which can cause inconsistencies.
+New operating system features have to be implemented in all of the apps, which can cause inconsistencies, and delays in feature delivery.
 All apps have to be tested in detail, to make sure that all apps implement the required change correctly.
 Platform changes can only be dealt with one by one.
 Developers need deep system knowledge to develop the apps.
@@ -28,6 +28,7 @@ Every change has to go through one of each platform experts, so development is e
 An example for a change, that all apps should implement is the display notch.
 It allows the screen to extend to the edge of the display.
 However some of the screen is cut out to make room for sensors and the camera.
+This means, that there was a transition after which phone displays are not considered rectangular anymore.
 
 \begin{figure}[h]
 	\label{notch}
@@ -38,7 +39,7 @@ However some of the screen is cut out to make room for sensors and the camera.
 \end{figure}
 \footnotetext{Source: Apple Human Interface Design Guidelines 2018 \url{https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/adaptivity-and-layout/}}
 
-The notch is integrated to the default interface framework, so that developers can react accordingly and use the provided margins.
+The notch is integrated into the default native interface framework, so that developers can react accordingly and use the provided margins.
 This change requires all apps to implement a correct way to handle that.
 Developers have to go though every screen and correct the view.
 
@@ -50,8 +51,9 @@ But for now, the only way to use these features and be good on battery life and 
 
 Web app wrapper like ''ionic'' are able to use these features and provide their own interface to the web app.
 In this way, a web app can use restricted components like push notifications and beacons.
+But, since the developer depends on the wrapper's \ac{API}, new features might take longer to be implemented into the framework.
 
-With this approach, every new app still has to be developed and old ones have to be maintained individually.
+With this approach, every new app still has to be developed one by one and old ones have to be maintained individually.
 In addition, it involves the dependence on third party framework vendors. 
 Building apps with ionic creates a massive list of dependencies: ionic, angular, npm and nodejs.
 New operating features have to be implemented by the framework maintainers, which can cause massive delays and could completely prevent the implementation of new features.
@@ -77,7 +79,7 @@ These will be used to validate the implementation.
 
 Since the implementation for the iOS platform has been re-engineered to meet current demands, the issues with the old version will be outlined and compared to the new one.
 
-This thesis will show how a model interpreter can be evaluated against requirements and informal criteria.
+This thesis will then show how a model interpreter can be evaluated against requirements and informal criteria.
 In addition, the re-engineering and model development processes will be compared to common approaches in modern literature.
 
 The following questions will be answered by applying theoretical approach to the given example.
@@ -108,6 +110,7 @@ After that, the general concept of model-driven development, code generators and
 The main content will then be about the concrete implementation, by describing the most significant design choices, overall infrastructure and usage examples.
 The focus will be on the two main platforms 'iOS' and 'Android'.
 The web and \textit{.NET} clients are not considered, because they are not targeted for mobile devices and only support a subset of the model.
+An alternative implementation architecture will be presented, which is currently not in development.
 
 In the final chapter, the concept is applied to the implementation, to see how it fits the theoretical model of interpreters.
 Differences are worked out and discussed.

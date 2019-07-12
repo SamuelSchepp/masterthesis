@@ -6,7 +6,7 @@
 
 The system, that is discussed here, is a model interpreter that is designed to run mobile applications on iOS and Android.
 The system, which includes the interpreters and the backends are called \ac{mos}.
-It is in active development and powers over 50 apps that all are available in the Apple AppStore and Google PlayStore.
+It is in active development and powers about 65 apps that are mostly available in the Apple AppStore and Google PlayStore.
 The app categories range from retail to event to city marketing apps\footnote{\url{https://fabrik19.de/technologie/}}.
 
 
@@ -20,22 +20,23 @@ Besides of apps, there are also other projects and solutions, like consulting an
 
 \subsection{Markets}
 
-Fabrik19 does not deliver apps directly to customers, but is partner of retail corporations and city marketing agencies.
+Fabrik19 does not deliver apps directly to end users, but is partner with business customers like retail corporations and city marketing agencies.
 The current flagship is the Gießen App (figure \ref{giessenapp}), which was developed in cooperation with DISTAMA GmbH.
-The app was downloaded 34,000 times and has 20 distinct and active users per day.
+The app was downloaded 40,000 times and has 20 distinct and active users per day.
+Over 500 advertisement partners are represented in the app\footnote{\url{https://distama.de/giessen-app/}}.
 
 \begin{figure}[h]
 	\centering{
 		\includegraphics[width=\linewidth]{images/background/giessenapp.jpg}
 	}
-	\caption{Gießen App, Marketing showcase image. Source: Giessen Entdecken \url{http://giessen-entdecken.de/die-app/}}
+	\caption{Gießen App, Marketing showcase image. Source: Giessen Entdecken \url{https://giessen-entdecken.de/die-app/}}
 	\label{giessenapp}
 \end{figure}
 
 Besides mobile apps, digital signage is another important market.
-The companion to the Gießen App is a stele that contains a large touchscreen and runs an app that is optimized for big touchscreens.
-It is located on the main pedestrian shopping street in Gießen and provides respective information on the stores and points of interests\footnote{\url{https://distama.de/bid-seltersweg/}}.
-Other stele systems are also active in Globus hardware stores and Globus grocery stores.
+The companion to the Gießen App is a stele system that presents a large touchscreen and runs an version of the Gießen App that is optimized for big touchscreens.
+It is located on the main pedestrian shopping street in Gießen and provides information on the stores and points of interests\footnote{\url{https://distama.de/bid-seltersweg/}}.
+Other stele systems are also used in Globus hardware stores and Globus grocery stores.
 
 \begin{figure}[h]
 	\centering{
@@ -54,31 +55,31 @@ The goal was to combine technology knowledge with marketing, to be able to provi
 City marketing agencies are not always able to support an app, because they lack experience and domain knowledge.
 Distama is the mediator between the developer, the customer and the user.
 
-\subsection{Problem}
+\subsection{Challenges}
 
 To be able to deploy dynamic apps and change it's contents live, a model-driven interpreter architecture is being used.
 The contents and behavior are described by modeling the app as an abstract configuration.
 In addition, the client application is developed to reload it's contents and configurations if changed.
 This way, an application that has been deployed one time will always be up to date.
 This is needed for mobile applications but more importantly for digital signage installations.
-That is way, this organization chose a model-driven development approach for it's mobile applications.
+That is why, this organization chose a model-driven development and interpreter architecture approach for it's mobile applications.
+This can be applied to similar situations, where the goal is to produce many application with similar structure, or where behavior and implementation has to be separated, because of complexity.
 
-This can be applied to similar situations, where the requirement is to produce many application with similar structure, or where behavior and implementation has to be separated, because of complexity.
 One example is the generation of C-code for embedded systems using Simulink\footnote{\url{https://www.mathworks.com/products/simulink.html}}.
-It allows designing and modeling algorithms and structures by setting up a graphical block diagram.
+It allows designing and modeling algorithms and structures by setting up graphical block diagrams.
 It is possible to structure algorithms in systems and subsystems, which behave as a block themselves.
-It is then possible to run simulations on those models, which is not as simple on the native code.
-Platform specific C-code can then be generated.
+It is then possible to run simulations on those models, which may not be possible on the native code, because it must be integrated into a testable simulation environment.
+The artifact is platform specific C-code, whose behavior is considered equivalent to that of the model.
 
 Another example are video games or augmented reality applications, where there is a strict separation of content and rendering.
-Content developer are able to artistically create the worlds, while engine experts are available to maintain the rendering and hardware specific optimizations.
+Content developer are able to artistically create the worlds and objects, while engine experts are available to maintain the rendering and hardware specific optimizations.
 
 Those two examples show, that model-driven development is used in several domains and it is a possible solution to manage complexity.
 Additional benefits like the ability to switch to another model without changing the app are the core ideas why the Fabrik19 organization chose this approach.
 
 \section{Model Interpreter System}
 
-The main development focus lays on the app interpreter platform ''mos''.
+The main development focus is on the app interpreter platform ''mos''.
 It supports the two major platforms iOS and Android, but there is also a lightweight version available in .Net, which is running on the steles as a Windows app.
 A web client is also actively in development, which aims to replace the .Net version.
 
