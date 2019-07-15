@@ -81,15 +81,15 @@ Additional benefits like the ability to switch to another model without changing
 
 The main development focus is on the app interpreter platform ''mos''.
 It supports the two major platforms iOS and Android, but there is also a lightweight version available in .Net, which is running on the steles as a Windows app.
-A web client is also actively in development, which aims to replace the .Net version.
+A web client is also in active development, which aims to replace the .Net version.
 
 A configuration are multiple JSON files, that represent the app meta information, its layout and its behavior.
-The files are called node.
-There is one root node, whose \ac{URL} is baked into the app while compiling.
+These files are called node.
+There is one root node, whose \ac{URL} is baked into the app on compile time.
 This root node defines the first screen of the app.
-All the other screens can be defined in other nodes.
-When displaying another node, the new node is loaded from cache or network and its new view is pushed on the view stack, which is done by the interpreter.
-On the particular platforms, this action will look different and will use the platforms native animations.
+All other screens can be defined in additional nodes.
+When displaying a different node, the new node is loaded from cache or network and its new view is pushed on the view stack, which is done by the interpreter.
+On the particular platforms, this action will look different and will use the respective platform's native animations.
 Web apps like Ionic have their own push animations which makes them feel foreign.
 The previous node can pass data, like the ID of the item that should be displayed.
 
@@ -97,22 +97,22 @@ The previous node can pass data, like the ID of the item that should be displaye
 	\centering{
 		\includegraphics[width=\linewidth]{images/background/nodeeditor.png}
 	}
-	\caption{The web based node editor is used to develop and edit the models. The Lauterbach App landing page is displayed.}
+	\caption{The web based node editor is used to develop and edit the models. The displayed file is the Lauterbach App landing page.}
 	\label{nodeditor}
 \end{figure}
 
 The goal is, to be able to create a new app in one day, by meeting with the customer and configuring the app together.
-The syntax of the configuration is designed to abstract all of an apps standard behavior.
-Because of a custom layout system, that can be described with constraints and will layout automatically, it is not possible to recognize that it is only a configured app, instead of a custom native one.
+The syntax of the configuration is designed to abstract all of an apps' standard behavior.
+The custom layout system of mos enables unrestricted, dynamic and relative layouts, which allows for almost any layout.
+This way, it is not obvious, that the app was created using a framework.
 
 The apps have sophisticated caching and optimization mechanisms, which makes it possible to use them completely offline, without any additional configuration effort.
 The configuration, images and data are cached heavily, which makes the apps very fast.
-But because of the dynamic design of the configuration syntax, it is possible to clear the caches and force new versions.
-The cache first policy of the interpreter makes sure, that contents are always available and loads changes in the background.
+But because of the dynamic design of the configuration syntax, it is possible to clear the caches and force the download of new versions.
+The cache first policy of the interpreter makes sure, that the contents are always available and loads changes in the background.
 
-Besides of displaying data, the client is highly intractable and can perform various custom tasks on the device, like uploading local data, saving data to the devices user settings and providing push, beacon and location infrastructure.
-
-This data can be used in describing the layout by defining layer conditions, which makes the app behave accordingly.
+Besides of displaying data, the client is highly intractable and can perform various custom tasks on the device, like uploading local data, saving data to user settings and providing push, beacon and location infrastructure.
+This data can be used in the layout by defining layer conditions, which makes the app behave according to the data, which adds dynamics to the \ac{UI}.
 
 \subsection{Example Configuration}
 
@@ -121,7 +121,7 @@ A node is configured with comprehensive caching and style definitions.
 Structure, data and view are separated to make large apps more maintainable.
 That's why there are separate layout and template models, which are referenced in the node.
 The node that is displayed in listing \ref{lst:nodeexample} is part of the Lauterbach city marketing app.
-The example was reduced by flattening the \ac{JSON} hierarchy and omitting the majority of keys.
+The example was reduced by flattening the \ac{JSON} hierarchy and omitting some keys, to make the example more easy to understand.
 The actual node has 80 lines of \ac{JSON} code.
 Many parameters can be configured to be dependent on device class and display orientation.
 
@@ -130,7 +130,7 @@ Many parameters can be configured to be dependent on device class and display or
 	"baseUrl": "https://prod.domain.de/mos/lauterbach/",
 	"updateInterval": 180,
 	"enablePush": true,
-	"pushUrl": "https://lauterbach.pro.domain.de/",
+	"pushUrl": "https://lauterbach.prod.domain.de/",
 	"splashMinSeconds": 2,
 	"layoutName": "c_home",
 	"template": "home",
@@ -144,7 +144,7 @@ Listing \ref{lst:layoutexample} shows a simplified version of the layout \textit
 It consists of one color layer and one grid layer.
 A color layer has a solid color and is used as a background.
 The grid layer arranges it's sublayers on a grid, while every layer contains information on column span and other layout constraints.
-The key \textit{children} of the grid layer in again contain an array of layers.
+The key \textit{children} of the grid layer contains an array of layers.
 
 \begin{lstlisting}[caption={A simplified layout configuration.}, style=myjava, label=lst:layoutexample]
 {
@@ -169,7 +169,7 @@ The key \textit{children} of the grid layer in again contain an array of layers.
 
 The \ac{URL} of the root node is now used by a client application.
 The result is shown in figure \ref{fig:lauterbachapp}.
-The color layer \textit{bg} is responsible for the white background, while the grid layer contains sub-layers which represent the whole view.
+The color layer \textit{bg} is responsible for the white background, while the grid layer contains sub-layers which define the various view components.
 
 \begin{figure}[h]
 	\centering{
@@ -182,17 +182,17 @@ The color layer \textit{bg} is responsible for the white background, while the g
 \subsection{Use Cases}
 
 The main use cases are marketing and customer interaction.
-The concept is data source driven and enables configuration of any data source.
-Because of a template engine, data can be arranged for display in an intuitive way.
+The \ac{mos} concept is data source driven and enables configuration of various data sources like Facebook news or online blogs.
+A template engine arranges and combines the data for display, which makes the layout definitions independent to the data structure.
 
-Since the configuration can be changed on the fly and without the need of providing an update via app store, the contents can be adjusted to fit current events like holidays or promotions.
+Since the configuration can be changed on the fly and without the need of providing an update via the App Store or Google Play Store, the contents can be adjusted to fit current events like holidays or promotions.
 Especially for digital signage it is important to be able to change the contents without any application updates.
 
 Any change to the configuration is reflected as soon as the app checks for configuration changes.
 The update mechanism are also highly customizable, so that the optimal update intervals and strategies can be used for different apps.
 
-A city marketing app might need a medium update interval, so that promotions and special content are available when needed.
-An event app should have a very short update interval, so that the events program changes or announcements are delivered as fast as possible.
+A city marketing app might need a medium update interval, so that new promotions and special contents are available every day.
+An event or conference app should have a very short update interval, so that program changes or announcements are delivered within minutes or as fast as possible.
 
 
 \subsection{Interoperability}
@@ -200,12 +200,10 @@ An event app should have a very short update interval, so that the events progra
 The app can be filled with data via common REST services, that deliver JSON data.
 The app uses HTTP mechanisms and a custom delta system to only load new data.
 The mos backend system also has a data proxy, which can load any data and provide it in a simpler, pre-processed format, so it is simple for the apps to download.
-This way, it is possible to use any data source and still be able to change the templates and layouts without updates.
+This way, it is possible to use any data source and still be able to use simple data structures in the app.
 
-The apps have the capability to be integrated in a Wordpress instance, a chat service like Mattermost or an secured \ac{API} that uses authentication methods like client certificates, authorization headers or JSON web tokens.
-
+The apps have the capability to be integrated into a Wordpress instance, a chat service like Mattermost or an secured \ac{API} that uses authentication methods like client certificates, authorization headers or JSON web tokens.
 By default any network communication is secured with an app specific client certificate.
-Other authentication methods have to be configured.
 
 \subsection{Existing infrastructure}
 
@@ -219,11 +217,11 @@ At the moment, an app can be build automatically, but the upload is performed ma
 	\item \textbf{Git config}
 	
 	App meta data like app name, root configuration \ac{URL}, capabilities and access request declarations are configured separately.
-	At the moment, the meta data configuration are grunt task configurations that will replace placeholder values of an app template Xcode project.
+	At the moment, the meta data configuration are grunt task configurations that will replace placeholder values of an template Xcode project.
 	
 	\item \textbf{Client app}
 	
-	The client app is the actual interpreter that is uses the configuration backend to load and display the app.
+	The client app is the actual interpreter that is used the configuration backend to load and display the app.
 	The app is build by combining different components like the abstract native mos framework and the app bundle.
 	The app bundle is created by a Jenkins build and represents an actual app instance.
 	The component are described in more detail in section \ref{sec:clientapplication}.
@@ -231,22 +229,25 @@ At the moment, an app can be build automatically, but the upload is performed ma
 	\item \textbf{Jenkins build}
 	
 	Every employee can generate an app using a parameterized Jenkins build job.
-	This job will use the git config to generate a fully configured Xcode project and an exported app (ipa).
+	This job will use the git config to generate a fully configured Xcode project and an exported app (\ac{ipa}).
 	
 	\item \textbf{Configuration and data backends}
 	
 	The apps load their actual app configurations from a configuration backend.
 	This will load a model, that has already been transformed by injecting context specific user data.
-	This makes it easier to outsource complex logic work from the client to the server.
+	This makes it easier to outsource complex logic and user account management from the client to the server.
+	Similar to \ac{PHP}, the server (node.js) produces a model by replacing placeholders with user specific data.
 	
 	\item \textbf{Node editor}
 	
-	The node editor is a web based configuration editor that is used to define the  model, that will later be used by the configuration backends.
+	The node editor is a web based configuration editor that is used to define the model, that will later be used by the configuration backends.
+	A git-based local editor is in development.
+	It's objectives are to simplify development cycles and helps resolving merge conflicts.
 	
 	\item \textbf{B2B access server}
 	
 	Apps can be provided to customers for testing, before they are uploaded to the App Store.
-	This is done by a web portal that offers customers to download their apps directly on their phones.
+	This is done by a web portal that enables customers to download their apps directly on their personal phones.
 	This is done by Apple's Enterprise program, which allows side loading apps on any iPhone that has installed the respective certificate.
 \end{enumerate}
 
@@ -255,7 +256,7 @@ At the moment, an app can be build automatically, but the upload is performed ma
 \section{Models}
 
 Since the mos-Framework tries to abstract mobile application platforms into a common language, the configuration could be considered to be an abstract model of a mobile application.
-To classify and evaluate the model approach for this domain, the following section will discuss models and their properties.
+To classify and evaluate the model approach for this domain, the following section will discuss general models and their properties.
 
 \subsection{General Model Theory}
 \label{generalmodeltheory}
@@ -264,21 +265,22 @@ A general model is described by Herbert Stachowiak\footnote{\cite{stachowiak_all
 He defines three properties, that apply to all models.
 
 \textbf{Representation characteristic}: A model is a representation of an original, that is either a natural or artificial thing, that can have properties and behavior.
-The original can be a model it's self.
+The original can again be a model.
 
-\textbf{Reduction characteristic}: The second property is the ability to reduce properties and behavior of the original to a set, that is relevant for the model handlers.
+\textbf{Reduction characteristic}: The second property is the ability to reduce properties and behavior of the original to a set that is relevant for the instances that handle the model, like software or humans.
 The original might be a complex system and only a subsystem or specific properties and their interaction are relevant.
-For this, the model can reduce the complexity, to be more simple to understand and to minimize the error rate.
+For this, the model can reduce the complexity, to be more simple to understand and to prevent errors.
 
 \textbf{Pragmatic characteristic}: Models can not be clearly assigned to their originals.
-That means, that original and model are not equal, but can be interchanged.
+That means, that original and model are not equal, but can be substituted.
 There are three cases defined by Stachowiak, in which the model can be used as an replacement.
 Models are not only models of something, but they are also models for someone, a person or an artificial model user.
 They perform their functions within a time interval.
 And they are models for a specific purpose.
 Often times, the purpose is an action that is not possible on the original because it may be to complex, or an physical original could be destroyed.
+Depending on what the objective is, the original can be replaced by the model.
 
-If theses properties apply an object, i can be called model according to Stachowiak.
+If theses properties apply an object, it can be called model according to Stachowiak.
 It can be applied by numerous of common usages of the word.
 Mathematical models, philosophical models, simulations and concrete object models are some examples, that fit the requirements.
 
@@ -289,26 +291,25 @@ A descriptive model represents an existing system, as it describes it's current 
 The general model specifications can still be applied, since all three properties are true for such a model.
 It cannot be modified unless the original changes, since it is representing it directly.
 A change to one of them without updating the other would result in the model not representing the original, which makes it a prescriptive model.
-A change on the original which is not relevant to the model will keep its validity.
+A change to the original which is not relevant to the model will retain the model's validity.
 
-Models, that represent a fictive object or system are called prescriptive models.
+Models that represent a fictive object or system are called prescriptive models.
 The prefix ''pre-'' indicates, that the model exists before the original.
 The model is then used to prototype a system, and test their behavior and properties, without the need to create the full system.
 
 According to Seidewitz 2003 \cite{seidewitz_what_2003} both descriptive and prescriptive models define a set of originals.
-That means, that a original can be derived from a model by adding additional information that does not contradict each other.
+That means, that an original can be derived from a model by adding additional information.
 Often times, the information that must be added is trivial or can be fetched from somewhere else.
 That is possible, because the model has by definition all of the necessary information.
-
 A derived original fulfills all of the models properties, otherwise the original is not a correct derivation.
 
 \subsection{Model Representation}
 
 It is common to represent models either by text or using graphical editors.
 Both are suitable for their respective use cases.
-If it is advantageous, that objects and their relationships can be arranged on a two dimensional surface, a graphical can be used.
+If it is advantageous that objects and their relationships can be arranged on a two dimensional surface, a graphical editor can be used.
 If the model syntax is similar to a programming language, graphic editors might obstruct the workflow.
-A text-based representation is commonly used in software development, so it is easy to integrate models into an existing infrastructure, because for example, it is easy to manage versioning using a \ac{VCS}.
+A text-based representation is commonly used in software development, because it is easy to integrate models into an existing infrastructure like \ac{VCS}, because those systems handle text files.
 Also, tools for developing \acp{DSL} or code generators mostly operate on text based model representations, therefore source code.
 
 Graphical models can be easier to understand at first, while the complexity may increase with growing model size.
@@ -317,41 +318,41 @@ Examples for graphical models are \ac{UML} diagrams or visual programming langua
 \section{Model-Driven Architecture}
 \label{modeldrivenarchitecture}
 
-To handle evolving infrastructure, changing requirements and technology development, a model-driven architecture (\ac{MDA}) standard has been developed by the \textit{Object Management Group}\footnote{https://www.omg.org/} \cite{miller_mda_2003}.
-The goals are to lower costs and reduce complexity of a software's maintenance.
+To handle an evolving infrastructure, changing requirements and technology development, a model-driven architecture (\ac{MDA}) standard has been developed by the \textit{Object Management Group}\footnote{https://www.omg.org/} \cite{miller_mda_2003}.
+The goals are to lower costs and reduce complexity of software maintenance.
 The \ac{OMG} noticed, that the requirements of a software system is much more than only the product itself.
 In addition, interoperability, changes to the environment and data migration require constant maintenance and continuous progression.
-Since classic applications are written in a platform dependent programming language, those task tend to be very costly.
-To be able to produce software that is build to last, easy to integrate, easy to change and able to keep up with new technology, they defined a standard on how to model a system.
+Since classic applications are written in a platform dependent programming language, those task tend to be very costly, because there is a large code basis and each application must be maintained individually.
+To be able to produce software that is build to last, easy to integrate, easy to change and able to keep up with new technology, \ac{OMG} defined a standard, \ac{MDA}, on how to model a system.
 Models separate the implementation details that are required to run in a certain environment from the actual way of using the platforms capabilities (\cite{miller_mda_2003} 2.1.2).
 This model is in a certain level of abstraction and can be transformed to platform specific models and therefor executable code.
 Now, with the model as input, parts of the application can be generated.
 If requirements change, the model which is human readable can be changed and new code be generated instantly.
-If the platform changes or new technology like a different data storage or programming language occurs, the tool chain can be updated and all of the generated code can be ge-generated to reflect the current technology state.
+If the platform changes or new technology like a different data storage or programming language occurs, the tool chain can be updated and all of the generated code can be re-generated to reflect the current technology state.
 This leads to long term flexibility of implementation details, integration capabilities, maintenance complexity and simulation (\cite{miller_mda_2003} 1.2).
 
 There are three levels of abstraction defined by \ac{MDA} (\cite{miller_mda_2003} 2.2.11).
 
 \begin{itemize}
 	
-	\item \textbf{Platform Specific Model}
+	\item \textbf{Platform Specific Model (\ac{PSM})}
 	
 	A model defines, how platform specific functionality is used.
-	An example is a \textit{Jenkinsfile}, that models a pipeline of processes that can be run on a Jenkins build service.
+	An example is a \textit{Jenkinsfile}, that models a pipeline of tasks that can be run on a Jenkins build service.
 	It is a model, because there is no concrete code implemented, but instead jobs are modeled by using predefined task definitions and a stage structure.
 	It is platform specific, because Jenkins-specific functionality can be used like defining build status or using plugin interfaces.
 	
-	\item \textbf{Platform Independent Model}
+	\item \textbf{Platform Independent Model (\ac{PIM})}
 	
 	The model is suitable for more than one specific platform.
 	This is achieved by defining a set of functionality that is implemented by multiple platforms.
 	A typical example are \ac{UML} class or activity diagrams, because they define a structure, without relying on a platform.
 	Many platforms support module and class access modifier, so that public, protected and private can easily be mapped to many other platforms.
-	As a consequence \acp{PIM} can be mapped to \acp{PSM}.
+	As a consequence, \acp{PIM} can be mapped to \acp{PSM}.
 	
-	\item \textbf{The Computation Independent Model}
+	\item \textbf{Computation Independent Model (\ac{CIM})}
 	
-	Not only is this kind of model independent to a platform, but also to the way the result is achieved.
+	Not only is this kind of model independent to a platform, but also to the way the result is achieved or calculated.
 	This is typical for declarative models and allows the most freedom for the generator or interpreter.
 	An \ac{SQL} statement can be considered computation and platform independent, since it can be used on multiple \ac{SQL} based platforms and it does not model the way the result is evaluated.
 	Some may argue, that \ac{SQL} is to low level in some contexts and in fact does describe the way of operating on data.
@@ -361,24 +362,24 @@ There are three levels of abstraction defined by \ac{MDA} (\cite{miller_mda_2003
 	
 \end{itemize}
 
-Those three level can wrapped by two additional levels.
+Those three levels can be wrapped by two additional levels.
 \cite{jeary_embedding_2011} 3 defines the level of \textit{Requirements Engineering}, which is the most abstract level and code level which is the lowest level of abstraction.
 By \textit{lowest level}, the author references the lowest human intractable level of code, which can be an object oriented language like Java for example.
-This results in the following abstraction hierarchy:
+This results in the following hierarchy, where 1 represents the highest level of abstraction and 5 the lowest:
 
 \begin{enumerate}
-	\item Code
-	\item Platform Specific Model
-	\item Platform Independent Model 
-	\item The Computation Independent Model
 	\item Requirements Engineering
+	\item Computation Independent Model
+	\item Platform Independent Model
+	\item Platform Specific Model
+	\item Code
 \end{enumerate}
 
 \section{Model-Driven Development}
 
 Models can be used in a software development process (\ac{MDSD}) or as part of a software architecture (\ac{MDA}).
 Software is also a model, which represents real life objects and procedures.
-Since it is well structured by default, it is fairly easy to create model from a existing code basis.
+Since it is well structured by default, it is fairly easy to directly create models from an existing code basis.
 \ac{UML} is a widely used modeling languages, which can represent static, dynamic and interactive aspects of software systems.
 
 The problem is, that the domain specific structure of the code can be hard to understand, because the abstraction level of a modern object oriented programming language is much lower, than the domain requires.
@@ -386,16 +387,16 @@ The problem is, that the domain specific structure of the code can be hard to un
 \textquote{The much-treasured inner structure is present in a cloudy, distributed, and of course also a strongly individualized form.}\footnote{\cite{stahl_model-driven_2006} 14}
 That means, that the domain's structure, components and behavior definition is represented in the software code, but in a way that is hard to understand.
 That is, because the relevant parts and the domain critical definitions are spread in the software's code.
-It is also harder to unterstand a domains properties, by only reading the programming language.
+It is also harder to unterstand a domains properties, by only reading the programming language, because platform and domain code blend together.
 
 A software model, like an \ac{UML} class diagram are an old tool to document and model software systems.
 The problem here is, that the abstraction level of an \ac{UML} class diagram is often times the same as the programming language itself.
 A developer could find himself transforming a class into a diagram or generating a diagram, which does not contribute to the understanding of the domain structure.
-This happens, because the programming language itself is abstracted, but not the domain itself.
+This happens, because the abstraction level of a modern programming language and that of an \ac{UML} class diagram are similar.
 
-To address the problem of widely spread domain implementations, the programs important and relevant structure is compressed in a model, which defines and represents the program on a abstract and formal level.
+To address the problem of widely spread domain implementations, the program's relevant business logic is compressed into a model, which defines and represents the program on an abstract and formal level.
 The model can be a textual \ac{DSL}, a graphical diagram or even an informal text, that is then converted into a concrete syntax.
-It contains all the domain relevant information, which is required to derive a full implementation from it.
+It contains all the domain relevant information, which is required to derive a full implementation.
 
 This procedure results in a model becoming part of the source of a program, and not only the documentation.
 A good model syntax can lead to the model being the documentation itself.
