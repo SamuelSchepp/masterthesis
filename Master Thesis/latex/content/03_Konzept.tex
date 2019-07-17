@@ -551,7 +551,7 @@ Critical parts like layouts, conditions and actions cannot be tested, since they
 Also, the code has many circular and static dependencies, which makes mocking impossible.
 Behavior of \ac{mos} is directly depended on native \ac{UI} elements and vice versa.
 
-Automated UI tests are expensive to maintain and are hard to evaluate.
+Automated \ac{UI} tests are expensive to maintain and are hard to evaluate.
 Using a virtual machine that runs headless\footnote{Headless is a mode of virtual machine hosts, that runs the guest system without a user interface.}, unit tests are possible since any app can be used to test against and simulate user input.
 It is possible to inject virtual app models into the \ac{VM} that can be used to test against.
 This allows for fast test setups and evaluation.
