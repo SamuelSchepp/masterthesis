@@ -4,51 +4,50 @@
 \label{chap:concept}
 
 This chapter will describe the goals of \ac{mos} and it's iOS implementation.
-The first section will describe the informal requirements to the model.
-Also, the model's evolution and progression is discussed, which is relevant to the main idea behind the model interpreter.
+The first section will deal with the requirements to the model.
+After that, the model syntax and interpreter implementation will be presented.
+In the last section of this chapter, an alternative implementation is presented. 
 
 \section{Implementation Goals}
 \label{sec:implementationgloas}
 
 The main problem of mobile app development is the iteration process, which consists of collecting requirements, creating conceptual prototypes and implementing on the two main platforms.
-Since requirements are informal, incomprehensive or change during the development, multiple iterations have to be done to converge to the final product.
-
-To minimize implementation times and be able to do more iterations, \textit{Same Day Delivery}\footnote{The term originates from parcel shipping and means that a parcel arrives at the customer on the day of the order.} tries to eliminate the times, that is independent to the customer.
-That means together with the customer the app is designed and the model is created in one session.
-Since the functional scope is already defined and all of the feature are implemented in the interpreter, the domain expert who is directing the meeting can create the model live and on the fly.
-The App can be tested by the customer directly, without the need to compile an custom app.
-Common tasks like downloading data from a web source, forms and user interaction are configured on a high level, so the customer is able to understand aspects of the app.
+Since requirements are informal, incomprehensive or subject to change during the development, multiple iterations have to be done to converge to the final product.
 
 \subsection{Functional Model Requirements}
 \label{functionalmodelrequirements}
 
 To be able to validate the meta model and an implementation, requirements have to be defined.
-A concrete model also has requirements, which are application specific however.
+A concrete model also has requirements, which are application specific and therefore not part of model requirements.
 That's why, only the meta model and the implementation are considered.
 Since this chapter is about the concept of the \ac{mos} interpreter, the discussion on the requirements of the implementation are found in chapter \ref{chap:implementation}.
 
 The following paragraph lists the functional requirements to the meta model.
 Those are aspects that have significantly influenced design choices.
 All of the listed requirements are high level ones, that reflect the paradigm.
-However, the number of actual concrete requirements would be too high to be presented here.
+However, the number of actual concrete requirements is to high to be presented here.
 There is a lot of implicit behavior, that is defined outside the model.
 
 \begin{enumerate}
 	\item \textbf{Separation into independent sub-models}
 	
-	An app loads a root node, which then can navigate to a different node, or show it's preview.
-	Every node is theoretically independent and can be used as root node.
+	An app loads a root node, which shows it's view.
+	This view can be configured to navigate the user to another node.
+	Technically, every node is independent and can be used as root node.
 	To enable interaction between nodes, an action that displays a new node can inject additional data into the node.
-	An example is a master-detail-view, which is a common pattern in application design.
+	This means, the sub node can be used as a root node, but semantically relevant data is missing.
+	An example for sub nodes is a master-detail-view, which is a common pattern in application design.
 	A master view is a list of all objects.
 	It knows everything and is connected to the database.
 	When the user clicks on one of the objects, the detail view is presented by passing either the database ID or the whole object as parameter.
 	The same approach is possible with nodes, which results in the detail view node not being independent to the master view node.
-	The requirement is met, if there are separate text files for every aspect of the application.
+	The requirement is met, if there are separate text files for every semantic aspect of the application instance.
+	Examples are the various views.
 	
 	\item \textbf{Fully customizable layouts}
 	
-	A layout can be defined by arranging different kinds of layers by configuring layout constraints. Also, native navigation bar, tab bars and side menus can be set independent to the layout.
+	A layout can be defined by arranging different kinds of layers using layout constraints.
+	Also, native navigation bar, tab bars and side menus can be defined independently to the layout.
 	All of the common layer types are supported like text, image and color.
 	Those layers have layer parameters that make them customizable.
 	Position and size can be defined with constraints, by binding the edges of a layer to the edges of other layers or the superior container.
@@ -61,7 +60,7 @@ There is a lot of implicit behavior, that is defined outside the model.
 	
 	Everything that is depended on something else needs to update on changes.
 	For example: If a layer is depended on an \ac{SQL} query and the corresponding tables change their contents, the layer needs to update itself with the new data.
-	Another example are layers that have a form data key and thereupon synchronize their contents with the view's form.
+	Another example are layers that have a form data key and therefore synchronize their contents with the view's form.
 	Layers can also have a setting data key, which enables a layer to synchronize it's value with a field in the database.
 	This makes it possible to use the value in \ac{SQL} queries, apply it to templates or uploading data to a service.
 	
@@ -70,41 +69,43 @@ There is a lot of implicit behavior, that is defined outside the model.
 	The layer runs the query and applies the data to the template, and the template to the layout and displays the layout.
 	If one of the tables that are selected in the query changes, the \textit{layout layer} re-renders itself.
 	
-	This requirement is fulfilled, if the state is always observed and there a no illegal application states, that do not fit the configuration.
-	That means that is a layer is configured to get it's value from one source, this fact cannot be violated by setting a custom value.
-	Instead, the source's value must be changed.
+	This requirement is fulfilled, if there are no illegal application states, that do not fit the configuration.
+	That means that if a layer is configured to get it's value from a specific source and the layer changes it's value, the source must be changed automatically.
 	
 	\item \textbf{Separation of data, templates and layouts}
 	
-	A template defines layer parameters by taking a dictionary of data and applies it to itself. The result can then be applied to a layout.
-	A template overrides layer parameters.
+	A template defines layer parameters by taking a dictionary of data and applies it to itself.
+	The result can then be applied to a layout.
+	A template overrides layer parameters of layers, that have been defined in the layout.
+	Therefore, a mos template is not comparable with Angular or React templates.
 	String literals inside the template can contain mustache\footnote{The string \textit{\{\{data.field\}\}} is replaced with the corresponding value from an object. \url{https://mustache.github.io/}} handles, which are evaluated against the data.
-	This allows reuse components and enables dynamic decision making during run time.
+	This allows the reuse of components and enables dynamic decision making during run time.
 	A layout-layer can dynamically load a sub-layout and apply a template.
 	Since the name of the template is part of the layout-layer's parameters, it can be evaluated on run time and be modified by a mustache syntax.
-	The requirement is met, if there are multiple files for the various aspects and the files can be substituted by equivalent alternatives.
+	The requirement is met, if there are multiple files for the various aspects (data and layout) and the files can be substituted by alternatives.
 	
 	\item \textbf{Database definitions}
 	
 	An \ac{SQL} database can be designed, that is in sync with a data source.
 	Fetch intervals, queries and structure can be defined.
-	Column based queries for inserting data from a data source enables a structure, that is different from the source.
-	This requirement is met, if the model syntax allows the definition of databases and sources, that will later be used to update the application's user data.
+	Column based queries for inserting data from a data source enables custom structures, that are different from the source.
+	This requirement is met, if the model syntax allows the definition of databases and sources.
+	It must be possible to keep the database in sync with the remote source and the user interface.
 	
 	\item \textbf{Actions}
 	
-	An action can perform common tasks like uploading data, setting layer values, or triggering fetches.
+	An action can perform common tasks like uploading data, setting layer values, displaying nodes, or triggering fetches.
 	Actions can be fired by clicking on a layer or are triggered by other actions, which take the result of the previous action as context data to use.
 	The action's parameters can be customized by using handlebar notation and injecting context specific data into the actions.
 	An action always uses the data of it's trigger.
 	If a \textit{request} action\footnote{A request action performs a HTTP request and calls either a success event or a failure event. Those events can then be configured to run actions.} is configured to run a success action, the success action's parameters can access the result of the network request.
-	
-	The requirement is met, if there are configurable and predefined actions, that can be referenced on predefined hooks.
+	The requirement is met, if there are configurable actions, that can be referenced on predefined hooks.
 \end{enumerate}
 
 \subsection{Non-Functional Model Requirements}
 
-The following paragraph lists the non-functional requirements.
+The following paragraph lists the non-functional requirements of the meta model.
+This is relevant for the developers who create models.
 
 \begin{enumerate}
 	\item \textbf{Easy to understand}
@@ -125,21 +126,21 @@ The following paragraph lists the non-functional requirements.
 	
 	The model is easy to parse and is encoded in a common format.
 	Validators can check for simple errors.
-	While parsing performance is not the issue, the interpreter's code base needs to be as simple as possible to avoid errors and to be maintainable.
+	While parsing performance is not the issue, the interpreter's code base needs to be as simple as possible to avoid errors and be maintainable.
 	The requirement is met, if the model can be parsed into data structures, that can later be easily used to build up the object tree.
 	The model syntax already represents the rough structure of the implementation.
 	
 	\item \textbf{Backward and future compatibility}
 	
 	Adding new functionality has to be added without any old interpreters to fail on new models and a new interpreter to fail on old models.
-	Also, every new feature as to be developed with the future in mind.
+	Also, every new feature has to be developed with the future in mind.
 	The feature has to add important value to the models capabilities and has to fit into the design principles of the current feature set.
 	This requirement is met, if additional elements can be added to the already existing ones.
 	This includes, layers, actions, events and node parameters.
 	It is not necessary to implement full and arbitrary compatibility, because that increase the complexity exponentially.
 \end{enumerate}
 
-All of the above functional and non-functional requirements are developed both with a bottom-up and a top-down approach.
+All of the functional and non-functional requirements from above are developed both with a bottom-up and a top-down approach.
 Since the interpreter contains most of the business logic and implicitly defines the meta model, it is one of the key aspects.
 That is why, the meta model is structured to be parsed and interpreted in a simple and direct way.
 In the same way, the usability of the models are also considered, so that both sides are balanced.
@@ -149,7 +150,6 @@ In the same way, the usability of the models are also considered, so that both s
 
 To meet the majority of the non-functional requirements, \ac{JSON} is used to define the model.
 It allows the client to parse common structures and define optional and default values in an maintainable way.
-Also, since the model uses declarative paradigms, C-like imperative language are not suitable.
 
 The model is divided into sub-models.
 The first model is called root node and is loaded by the interpreter on the first app start.
@@ -157,9 +157,7 @@ The \ac{URL} to the root node is compiled into the app.
 A node defines some of the meta data, static data, a starting layout reference and events.
 The meta data contains an \ac{URL}, called \textit{Update URL}, that is used by the client to synchronize layouts, templates and database definitions.
 Database definitions also contain \acp{URL} that are requested if needed to synchronize actual content data.
-
 Next to node definitions, template, layout and database configuration files are part of the model.
-The requesting the root node from a server will also append the additional files, that are cached by the client.
 
 The client implementation is able to optimize the data usage by only reloading data that has changed.
 \ac{HTTP} techniques like ''etag''\footnote{Entity Tag, a unique identifier assigned by the web server to specify a resource and it's version.}, ''modified-since''\footnote{A \ac{HTTP} header containing a timestamp.} or delta updates\footnote{Requesting a resource by \textit{/api/file.60.json} will deliver the changes of the last 60 minutes.} are used to optimize the update process.
@@ -175,7 +173,7 @@ Optimizations can be implemented without changing the model, since they are not 
 A \ac{DSL} that is parsed by an compiler has semantics integrated into the compilation or parsing process, which allows finding errors much earlier.
 A common example is the parsing of a expression tree, which uses a top down parser, that parses parentheses.
 Depending on how the parser is constructed, it allows incorrect parentheses or rejects them because of a parser error.
-Defining the same expression as a \ac{JSON} object 
+Defining the same expression as a safe \ac{JSON} object requires additional tools.
 
 This issue can be fixed by using \ac{JSON} Schema\footnote{\url{https://json-schema.org/}}.
 A schema is a \ac{JSON} object which describes the syntax of given \ac{JSON} data.
@@ -186,12 +184,12 @@ Those could be checked statically or auto-completed in the editor.
 At the moment, these tools are not implemented and typical errors occur regularly.
 The problem is, that those tools take a lot of time to develop, while they do not add any new functionality to the model or the interpreter.
 
-The systems limits it's functionality and new features are hard to implement, since they have to be designed to work together with all of the existing features.
-This means, that the reason of why something is not possible to implement at the moment are incomprehensive and the customer cannot understand, why new features are much more expensive.
+The systems limits its functionality and new features are hard to implement, since they have to be designed to work together with all of the existing features.
+This means, the reasons of why something is not possible to implement at the moment are incomprehensive and the customer cannot understand, why new features are much more expensive.
 An example would be custom user interface animations.
-While it is easy to hard-code some animations to specific elements in a classical app, it is much harder to define a representation for the model.
-That is because animations then have to be valid on any scenario.
-If an animation looks weird, there has to be a decision if the model is badly designed, or there is a error in the client code.
+While it is easy to hard-code some animations to specific elements in a classic app, it is much harder to define a representation for the model.
+That is because animations have to be valid in any scenario.
+If an animation looks weird, the model could be designed badly, or there is an error in the client code.
 Also, the level of abstraction has to be defined so all of the future animations can be expressed and the way of defining the animation must be compatible with the different platforms.
 
 %
@@ -210,7 +208,7 @@ This approach is used by \ac{UI} frameworks to reuse existing code or by \ac{RIS
 
 The syntax is developed top-down and bottom-up.
 To be able to have a systematic approach to model-driven development, the simplicity of the syntax is one of the key non-functional requirements.
-On the other hand, a simple interpreter is also important, so some syntax elements are built to fit the current interpreter implementations.
+A simple interpreter is also important, so some syntax elements are built to fit the current interpreter implementations.
 That is why, the system is developed by considering all levels and iterative development is used.
 
 \begin{figure}[h]
@@ -223,7 +221,8 @@ That is why, the system is developed by considering all levels and iterative dev
 
 Figure \ref{fig:iterativedevelopment} shows the informal development approach that is used to develop a model.
 The method is highly agile and team oriented, since multiple code bases have to be managed by different kind of people.
-Service-side services, the different platform interpreters and the model itself have to be developed in parallel.
+Server-side services, the different platform interpreters and the model itself have to be developed in parallel.
+The figure demonstrates, that a missing feature can either be implemented by using existing features, or by extending the model's capabilities.
 
 \section{Client Application}
 \label{sec:clientapplication}
