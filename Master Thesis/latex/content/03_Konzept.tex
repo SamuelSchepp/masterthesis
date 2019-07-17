@@ -227,7 +227,7 @@ The figure demonstrates, that a missing feature can either be implemented by usi
 \section{Client Application}
 \label{sec:clientapplication}
 
-the next section will outline a possible architecture for the client application.
+The next section will outline a possible architecture for the client application.
 Since the main artifact is an iOS framework, from which only the main method has to be called, the bundle's architecture is independent to the framework's functionality.
 
 In addition to the interpreter and a model, there are additional artifacts and software components, that are needed to support a mobile application software platform.
@@ -249,22 +249,22 @@ The following subsection will describe the components in detail.
 
 Mobile applications for Android and iOS need to compile application specific information into the app.
 This meta data can not be loaded in run time, because the operating system needs them to manage the apps.
-Examples are the build number, version string, interface orientations and the root \ac{URL}.
+Examples are the app's name, the build number, version string, interface orientations and the root \ac{URL}.
 This configuration is not fully platform independent, since the different systems require different information.
 In the case of iOS, the development tool Xcode, which is required to build iOS apps will not build an app until the needed meta data is provided.
 
 The \textit{App Config} also contains media like the app icon and the splash screen image.
 Also, the \textit{Pre-Load Bundle} is included, which is a directory and contains images and nodes.
-This directory is used to load data from disk instead of the network.
+This directory is used to load data from disk instead of the network to boost the initial startup time.
 
 
 \subsection{App Template}
 
 The \textit{App Template} is a template file structure that is used to create a run-able app.
-On its own, the \textit{App Template} is an incomplete app container that contains handlebars placeholder.
+On its own, the \textit{App Template} is an incomplete app container that contains handlebar placeholder.
 A grunt task takes the \textit{App Config} and replaces the placeholders.
-This way, an app container is created, which is able to compile and ready to be submitted to the store.
-A continuous integration environment should be able to build all apps, given a list of all app names.
+This way, an app container is created, which is able to compile and be submitted to the store.
+A continuous integration environment is able to build all apps, given a list of all app names.
 
 \subsection{App Bundle}
 
@@ -273,15 +273,6 @@ It is the result of compiling the \textit{App Config}, the \textit{App Template}
 It does not contain the model itself, because it is loaded from the web the first time the user opens the app.
 This way, the model can be changed on the fly, while the app itself is still waiting for review or ready to release.
 
-The model is interpreted by the Bundle, which lets the model run inside a virtual environment.
-The \ac{mos} run time enables declarative model design and handles the data flow.
-Similar to a virtual machine, the model can access subsystems and interfaces that are normally not available in the target platform.
-For example, a custom event system handles app wide events and actions.
-Also it provides the interface to the custom layers.
-Those are layers in the view hierarchy that have more functionality then the default ones.
-The biggest aspect is the calculation of changes.
-Since relations are defined declarative, changes to the data have to update and re-layout the layer accordingly if needed.
-Also the update of database data and the scheme is a big part of the system.
 
 \subsection{Functional Interpreter Requirements}
 \label{functionalinterpreterrequirements}
@@ -294,14 +285,14 @@ The behaviors, that are discussed per requirement are not expressed by the model
 \begin{enumerate}
 	\item \textbf{Reflects changes to the model}
 	
-	After the configuration changes, the interpreter app loads the changes and updates it's behavior. This includes database configurations, layouts and caches.
+	If the configuration changes, the interpreter app loads the changes and updates it's behavior. This includes database configurations, layouts and caches.
 	This requirement is fulfilled, if there is no need to manually download new configuration data.
-	Instead, configured polling policies and hash comparison approaches make sure, that the configuration is updated in a appropriate interval.
+	Instead, configured polling policies and hash comparison approaches make sure, that the configuration is updated in an appropriate interval.
 	
 	\item \textbf{Offline capable}
 	
 	All of the content that has been displayed in the app must be cached and available for offline use.
-	This includes nodes, images, layouts and templates.
+	This includes nodes, images, layouts, templates and database data.
 	This requirement is met, if everything that was downloaded stays available until new data was loaded.
 	This means that most of the read-only workflows still work in the actual app, if configured correctly.
 	It is not required for the app to work on first launch without internet access.
@@ -310,7 +301,7 @@ The behaviors, that are discussed per requirement are not expressed by the model
 	
 	All nodes are loaded from cache.
 	If a node is not available, the node will be downloaded from the network.
-	If the not is available but is expired, the new version will be downloaded.
+	If the node is available but is expired, the new version will be downloaded.
 	Until the download finishes, the old node will be displayed.
 	This also applies to layouts, templates, images, database configurations and database content.
 	Expired data will be used until the latest data is loaded.
@@ -329,15 +320,14 @@ The behaviors, that are discussed per requirement are not expressed by the model
 	
 	Dynamic model errors must lead to safe fall-back behaviors.
 	Under no circumstances should the app crash or display incomprehensible error messages.
-	Since there is no static model analysis, the app must be prepared with default values.
+	Since there is no static model analysis, the app must be prepared with default values and default behavior that will be used in case of miss-configuration or runtime errors.
 	The requirement is met, if the app does not crash at any circumstances and poor configuration does not lead to incomprehensible error messages, that could confuse the user.
 	In case of doubt, nothing should happen.
 \end{enumerate}
 
-Some of the special behavior of the interpreter is available to the model to be described.
+Some of the special behavior of the interpreter is configurable via the model.
 The caching policies of a node can be configured in detail.
 Also, the cache can be invalidated on the basis of a regular expression.
-Those are a few examples of the model and the interpreter 
 
 \subsection{Non-Functional Interpreter Requirements}
 \label{nonfunctionalinterpreterrequirements}
@@ -349,7 +339,7 @@ The following section will list non-functional requirements of the interpreter.
 	
 	Using the app must feel as lightweight as possible.
 	That is why, the battery usage must be kept low.
-	Since all of the modern mobile operating system have battery management tool integrated into the system, users can see which apps use a lot of battery.
+	Since all of the modern mobile operating system have battery management tools integrated into the system, users can see which apps use a lot of battery.
 	If the app is listed there, the probability is high that the user will consider deleting it.
 	Bad configurations can have a significant impact on battery usage.
 	The requirement is met, if the app's battery usage is not noticeably high.
@@ -359,15 +349,15 @@ The following section will list non-functional requirements of the interpreter.
 	
 	The must start as fast as possible.
 	Especially the first start is important, because it's the first impression that a user gets from the app.
-	Because of a strict cache policy, other starts are faster anyway.
-	The requirement is met if two seconds after the user tapped the app icon, the app is either fully launched or a progress indicator is displayed that shows, that the app is currently downloading necessary data.
+	Because of a strict cache policy, subsequent starts are faster anyway.
+	The requirement is met if two seconds after the user tapped the app icon, the app is either fully launched or a progress indicator is displayed that shows, that the app is currently downloading required data.
 	
 	\item \textbf{High \ac{UI} and animation performance}
 	
 	The \ac{UI} should always be responsive and adequate loading indicators must be used.
 	It is accepted, that poorly designed models can lead to slow UI.
 	This is possible because of the high level of detail of the models.
-	The requirement is met is met, if a reasonable configuration allows 60 \ac{fps} \ac{UI} animations.
+	The requirement is met is met, if all reasonable configurations allow 60 \ac{fps} in \ac{UI} animations.
 	
 	\item \textbf{Low network usage}
 	
@@ -397,7 +387,7 @@ The given interpreter client has a number of technical limitations and inconsist
 The following subsection will outline some of the major issues, that are part of the re-engineering process.
 Most of them are non-functional requirements, that are met while the app was in development and the feature set was smaller.
 While the app grew, conditions and the correlations between components became more complex.
-There have been two main problems, that can be subject to a major refactorization.
+There have been three main problems, that can be subject to a major refactorization.
 
 
 \begin{enumerate}
@@ -406,27 +396,26 @@ There have been two main problems, that can be subject to a major refactorizatio
 	
 	Every change to a layer results in a re-layout and a full repaint of the parent container.
 	If the layout frame did not change, a re-paint is not needed.
-	Complex layouts like search results in combination with per entry conditions result in a slow \ac{UI} with up to two seconds wait time between rendering frames.
+	Complex layouts like search results in combination with conditions on each entry lead to slow \ac{UI} with up to two seconds wait time between rendering frames.
 	
 	\item \textbf{Every operation runs on the main thread.}
 	
-	To prevent race conditions and visual noise, the entire application run only on the main thread.
+	To prevent race conditions and visual noise, the entire application runs only on the main thread.
 	Complex layouting and database-driven \ac{UI} elements block the UI thread.
-	On fast devices, this works well, because there no visual noise.
-	That means that the user doesn't see how the UI is getting built, but instead sees the full \ac{UI} after one display refresh frame.
+	On fast devices, this works well, because there is no visual noise.
+	That means that the user doesn't see how the \ac{UI} is getting built, but instead sees the full \ac{UI} after one display refresh frame.
 	
 	\item \textbf{No abstraction between native platform code and independent \ac{mos} behavior.}
 	
 	The app uses native interfaces like the view stack to organize it's contents.
 	Instead of using a virtual node stack, the view hierarchy is traversed to find nodes.
-	Also, every mos element manages or has a reference to the native result.
+	Also, many mos elements manage or have references to native data structures like UIView\footnote{UIView is a native iOS class, representing an UI element. UIView can only be used on the main thread.}.
 	
 \end{enumerate}
 
-\section{Native Approach}
+\section{Current Implementation}
 \label{sec:nativeapproach}
 
-One re-engineering approach is to fully combine native elements with \ac{mos} behavior.
 The main reason for this approach is the simplicity of the code and the low distance to the native components.
 This approach works for a rather small interpreter feature set.
 To compensate bad performance, simple and highly optimized code should be used.
@@ -441,12 +430,12 @@ The problem is, that applying changes to the native elements can result in new c
 If a layer is configured to change it's state based on the child count of another layer, the \ac{UI} has to be rendered multiple times, which is very expensive.
 
 While the feature set grew, the requirements to the system got higher.
-New features like the application of changes to layers in a different node result in a high workload on the main thread.
+New features like the application of changes to layers in a different nodes result in a high workload on the main thread.
 Introducing concurrency now is only possible on a few marked-out aspects, because the code operates on the \ac{UI} in an unstructured way.
-\ac{UI} operations are only allowed on the main thread, otherwise, the change will be ignored.
+\ac{UI} operations are only allowed on the main thread, otherwise, the change will be ignored or the app could crash.
 The opposite of this approach is explained in the following section, which tries to separate \ac{mos} and \ac{UI} code.
 
-\section{Virtual Machine Approach}
+\section{Reengineering Approach: Virtual Machine}
 \label{sec:virtualmachineapproach}
 
 \textsc{Popek} and \textsc{Goldberg} \cite{popek_formal_1974} defined 1974, that a virtual machine is a duplicate of a real computer.
@@ -460,15 +449,15 @@ To improve performance and maintainability of a model-driven mobile application,
 The \ac{VM} is a software system that is implementing the platform specific behavior.
 In the context of \ac{mos} that would be conditions, states, layouting, data and caching.
 It could be integrated as an external framework and is independent of the actual platform and user interface.
-The system would run in a own thread and not on the main thread.
+The system would run in an own thread and not on the main thread.
 
 \subsection{Native Components}
 
-Every interface to the native \acp{API} are managed by custom, platform depended components, that can be registered in the \ac{VM}.
+Every interface to the native \acp{API} is managed by custom, platform depended components, that can be registered in the \ac{VM}.
 For example, an \ac{SQL} interface is provided that will open connections and run \ac{SQL} statements.
 The \ac{UI} component will be asked to render some layers.
 All the layers are already lay-outed and their respective sub-layers evaluated.
-It should be as easy for the native components to perform their work, since they only translate the system's objects and tasks to native ones.
+It should be easy for the native components to perform their work, since they only translate the system's objects and tasks to native ones.
 The logic between elements will be handled by the virtual machine.
 
 Since the system will run on it's own thread, the \ac{UI} will be fast and responsive and only \ac{UI} related work will block the main thread and with that the \ac{UI}.
@@ -486,9 +475,9 @@ The main challenge is the interface between the \ac{VM} and the native app insta
 This interface must be efficient and thin, but also implement all the changes that can occur to the \ac{UI}.
 The implementation of the \ac{VM} logic is easier, since most parts are already implemented, but have to be extracted and refactored to not have circular dependencies.
 Existing performance improvements should be evaluated if it suites the new system.
-One example is the custom ContextChange pattern, that will collection all changes and will merge them to one resulting change that will be delegated to the layers.
-This will be used if multiple actions will be fired.
-If the database is changed several times during this time, there will only be one notifications to depended layers.
+One example is the custom ContextChange pattern, that will collect all changes and will merge them to one resulting change that will be delegated to the layers.
+This will be used if multiple actions are fired.
+If the database is changed several times during this time, there will be only one notification to depended layers.
 This should be used in the new \ac{VM} system to prevent multiple redundant messages to the host.
 
 \subsection{Virtual View Hierarchy}
@@ -498,10 +487,9 @@ One of the major benefits is the virtual view hierarchy.
 Inspired by React's virtual \ac{DOM}, the \ac{VM} handles a virtual view hierarchy, which is used to calculate layouts and the layer changes.
 While it is very expensive to layout and render native view components, virtual elements can be lay-outed very fast, because no user interface render system is involved.
 This means that all changes and their resulting changes can be applied on the virtual view hierarchy in multiple iterations without the need to interfere with the main thread.
-Layers that have changed will be marked as dirty and after every change is processed, the actual \ac{UI} is updated to reflect the virtual hierarchy.
+Layers that have changed will be marked as dirty and after all changes completed, the actual \ac{UI} is updated to reflect the virtual hierarchy.
 
-To minimize the amount of change application to the view, only on useful occasion
-The application of changes in the native view should only happen on useful occasions, to minimize the main thread utilization.
+The commit of changes to the native view should only happen on useful occasions, to minimize the main thread utilization.
 The web \ac{UI} framework Angular uses a change detection system, that hooks into the browser specific event system to trigger an update only if changes are even possible.
 
 
@@ -509,27 +497,26 @@ The web \ac{UI} framework Angular uses a change detection system, that hooks int
 	\begin{center}
 		\begin{tabular}{l|l|l}
 			Category   & Examples & \ac{mos} equivalent  \\ \hline
-			DOM Event & click & Layer Actions       \\
-			& keyup & App Events    \\
-			& onreadystatechange       \\
+			DOM Event & click, keyup, & Layer Actions,       \\
+			& onreadystatechange, & App Events    \\
 			& ...       \\ \hline
-			Timer Event     & setTimeout & setTimeout Action \\
-			& setInterval \\
+			Timer Event     & setTimeout, & setTimeout Action \\
+			& setInterval, \\
 			& ... \\ \hline
-			Network Response   & Ajax & -       \\
-			& WebSockets \\
+			Network Response   & Ajax, & Update Manager,      \\
+			& WebSockets, & Actions \\
 			& ... 
 		\end{tabular}
 	\end{center}
-	\caption{Events, that are used for change detection by Angular and their \ac{mos} counterpart.}
+	\caption{Events, that are used for change detection by Angular and their respective \ac{mos} counterpart.}
 	\label{fig:angularevents}
 \end{table}
 
 Table \ref{fig:angularevents} lists some events that can result in \ac{DOM} changes.
-Angular hooks into those events by using a low level patch mechanism\footnote{Zone.js \url{https://github.com/angular/zone.js/blob/master/STANDARD-APIS.md}} and redirects them to the actual angular application, which can be considered \textit{user code}.
-After the application is done with it's calculations, the \ac{DOM} updated be re-evaluating the \ac{HTML} templates on the basis of the new values.
+Angular hooks into those events by using a low level patch mechanism\footnote{Zone.js \url{https://github.com/angular/zone.js/blob/master/STANDARD-APIS.md}} and redirects them to the actual angular application (user code).
+After the application is done with it's calculations, the \ac{DOM} is updated by re-evaluating the \ac{HTML} templates on the basis of the new values.
 
-This idea can be transferred to the \ac{mos} system as shown in Table \ref{fig:angularevents}.
+This idea can be transferred to the \ac{mos} system as shown in table \ref{fig:angularevents}.
 Network request action in \ac{mos} are synchronous by definition and there are only a few event's, that can be triggered by the user.
 This reduces the complexity and thus the probability of errors.
 
@@ -546,9 +533,8 @@ Notice the loop which operates on the changes queue.
 Bad configuration could lead to an infinite loop.
 The old single threaded approach which operates directly on the native \ac{UI} has to apply the changes to the \ac{UI} on each iteration, because only that way, the new resulting changes are created.
 This means that the application is not responsive for the time the new view is evaluated.
+This loop exists because changes can trigger new changes, like a database change that can trigger a re-evaluation of a layers contents which can result into a layout change, which results in the hierarchy to be re-layouted.
 
-The biggest challenge is the application of changes to the \ac{UI} in the most efficient way.
-A possible solution could be a unified interface that can update the frame, the layer value and the sublayer list.
 
 \subsection{Shared Code}
 
@@ -561,8 +547,8 @@ A native client should provide platform-specific implementations like the \ac{UI
 \subsection{Testability}
 
 With the current implementation, only some isolated parts can be unit tested.
-Critical parts like layouts, conditions and action cannot be tested, since they all rely on the native \ac{UI} components.
-Also, the code has many circular dependencies, which makes mocking impossible.
+Critical parts like layouts, conditions and actions cannot be tested, since they all rely on the native \ac{UI} components.
+Also, the code has many circular and static dependencies, which makes mocking impossible.
 Behavior of \ac{mos} is directly depended on native \ac{UI} elements and vice versa.
 
 Automated UI tests are expensive to maintain and are hard to evaluate.
@@ -572,9 +558,10 @@ This allows for fast test setups and evaluation.
 
 \subsection{Generalizability}
 
-Abstracting different and separable aspects of software has always been the key focus of every software architecture or design pattern.
+Abstracting different and separable aspects of software has always been the key focus of every software architecture and design pattern.
 The extent of which code is abstracted is the characteristic that changes through out the various approaches.
-This idea of an abstract virtual machine has a high level of code segregation, because the communication of the two levels is defined by several interfaces and protocols.
+
+This idea of an abstract virtual machine has a high level of code separation, because the communication of the two levels is only defined by specific interfaces and protocols.
 In some way, the virtual machine is a model of an mobile app itself.
 It represents an app and it's current state and there are operations possible that are not possible in a native app, like instantiating and accessing \ac{UI} element on non-\ac{UI} threads.
 The \ac{UI} component now is responsible for translating the virtual machine to the \ac{UI}.
