@@ -416,6 +416,9 @@ There have been three main problems, that can be subject to a major refactorizat
 \section{Current Implementation}
 \label{sec:nativeapproach}
 
+The original iOS implementation of mos used a third party \ac{UI} framework to be able to asynchronously change \ac{UI} components.
+The complexity was to high, so the interpreter was re-engineered to use only native \ac{UI} elements.
+
 The main reason for this approach is the simplicity of the code and the low distance to the native components.
 This approach works for a rather small interpreter feature set.
 To compensate bad performance, simple and highly optimized code should be used.

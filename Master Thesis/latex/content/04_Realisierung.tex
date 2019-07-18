@@ -3,14 +3,14 @@
 \chapter{Implementation}
 \label{chap:implementation}
 
-In this chapter, the approaches that are described in chapter \ref{chap:concept} are demonstrated using code examples and the real reference implementation.
+In this chapter, the approaches that are described in chapter \ref{chap:concept} are demonstrated using code examples and a short example implementation.
 In the first section, the initial state of the interpreter is explained.
 This is the starting point from which the re-engineering options are applied.
 
 In the next section, the first approach is examined.
 This is the option that is described in section \ref{sec:nativeapproach} and has been actively developed.
 
-The last section will outline a possible virtual machine implementation exemplary, that was described in section \ref{sec:virtualmachineapproach}.
+The last section will outline a possible virtual machine implementation, that was described in section \ref{sec:virtualmachineapproach}.
 Since the virtual machine approach has not been implemented yet, a simple demonstrator has been design, that implements the key ideas.
 
 
@@ -19,16 +19,15 @@ Since the virtual machine approach has not been implemented yet, a simple demons
 
 The original iOS interpreter is written in Objective-C and uses \textit{AsyncDisplayKit}\footnote{AsyncDisplayKit was renamed to Texture. \url{https://github.com/texturegroup/texture/}} as an asynchronous \ac{UI} framework.
 It allows instantiation and lay-outing of view components on any thread.
-This means, that load intensive tasks can be swapped to background threads.
+This means, that load intensive tasks can be pushed to background threads.
 
 This makes synchronization of \ac{mos} specific behavior like condition evaluation and state management harder.
 Also, custom view implementation that are used very often are more challenging to build, because they have to be a subclass of \textit{ASDisplayNode}, which represents one simple view component.
-In addition, the framework's future was unknown, since it has not been maintained and was licensed by Facebook.
+In addition, the framework's future was obscure, since it has not been maintained and was licensed by Facebook.
 It has no native Swift \ac{API}.
 Later, the framework moved to Pinterest, where it has been maintained more regular.
 
 Because of the high dependence to \textit{AsyncDisplayKit} and the difficult maintenance, the next iteration of \ac{mos}, which should use Swift, needs to move away from the \ac{UI} framework.
-The code basis that was used to utilize the framework became obsolete because native views, that are enriched with \ac{mos} behavior, should be used.
 
 \section{Native Approach Implementation}
 \label{sec:nativeapproachimplementation}
@@ -43,21 +42,20 @@ Every layer operates directly on their native representation.
 That means that if changes need to be applied, the layer manipulates it's \ac{UI} component directly.
 This is necessary because some of the layouting calculations are based on native \ac{UI} \acp{API}.
 
-An example would be the size of text in a label layer.
-A text layer can be configured to update it's size automatically based on the text content.
+An example is the size of text in a text layer, which can be configured to update it's size automatically based on the text content.
 Also, a maximum line count could be defined.
 Since the native text \ac{API} only supports the calculation of the text size based on a constrained size, but not based on a line count, another approach must be taken.
 In this case, the text and the calculated text size is applied to the label.
 After that, \textit{sizeToFit()} is called on the layer.
 It's a native method, that shrinks the label based on the maximum line count.
 The resulting size is then used as the layer's frame to layout the remaining layers.
+This method can only be called on the main thread.
 
-Another example is the size of all sub view of a grid layer.
+Another example is the size of all sub views of a grid layer.
 Since a native grid layouts views based on a collection layout definition, the resulting size can only be determined by asking the grid on the main thread.
 
-This means, that lay-outing and conditions happen directly on the \ac{UI}.
-It keeps the code client and simple configurations are run fast.
-The following listing outlines a layer and it's behavior.
+The examples show, that lay-outing and conditions need to happen directly on the \ac{UI}.
+Working on the \ac{UI} and therefore the main thread keeps the code clean and simple configurations can run fast.
 
 \begin{lstlisting}[style=swift, caption={Layer class (excerpt)}, label={lst:layerclass}]
 class Layer {
@@ -79,17 +77,18 @@ class Layer {
 
 Listing \ref{lst:layerclass} outlines an excerpt of the Layer class.
 The function \textit{update(view:)} is the bottleneck with the most significant impact.
-It's responsible for re-layouting it's native components.
+It's responsible for re-layouting it's sub components.
+\textit{view()} provides the native view instance which is a subclass of \textit{UIView}.
 
 
 \subsection{Concurrency}
 
 Since changes are happening directly on the \ac{UI} elements, the main work needs to be done on the main thread.
-This also means, that if a layer needs to re-layout, the superlayer needs to relayout all of it's sublayers.
+If a layer needs to re-layout, the superlayer needs to relayout all of it's sublayers.
 That is because of layout constraints, that are tied to the content might can change every layers frame.
 Another high workload is the update of sublayers based on a database query.
 This feature is called \textit{InsertLayer} and it uses a layout definition and a database query, to dynamically create sublayers.
-Since layers can only be instantiated in the main thread, and changes have always be applied to the native view elements, the main thread is blocked for the time.
+Since layers can only be instantiated in the main thread, and changes have always be applied to the native view elements, the main thread is blocked for that time.
 It is possible to extract certain tasks to a background thread, but this would not follow any pattern and would lead to poorly comprehensible code.
 
 \subsection{Testability}
@@ -100,7 +99,7 @@ This makes dependency injection impossible.
 Code that has been develop recently has been made testable by using injection patterns, which help to write white box tests.
 An example are the tree conditions of a layer state.
 If the condition tree is evaluated to be true, a defined state is applied.
-The condition tree is a recursive declaration of conditions, that can be combined this standard bool operators.
+The condition tree is a recursive declaration of conditions, that can be combined with standard bool operators.
 The leafs of the tree reference various app context values like user settings or form data.
 Those values can be injected to make the evaluation of the tree testable.
 
@@ -147,7 +146,7 @@ It's similar to the callback pattern on asynchronous functions.
 	\label{fig:vmelements1}
 \end{figure}
 
-The virtual machine now consists of the public interface and it's internal logic.
+The virtual machine now consists of a public interface and it's internal logic.
 The public interface must be as thin as possible, so that most of the work can occur on the virtual machine's thread.
 For the \ac{UI} to be able to display native views, the internal layer implementations also define a small public interface.
 It is used to provide relevant information about the layer.
@@ -180,25 +179,24 @@ It is possible to achieve this with only one copy, but the iOS scroll view compo
 To have more buffer and therefore a soft user interface, two copies have to be made, which results in the layers existing three times.
 
 The problem now is, that because of the duplication of layers, it is undefined which layer responds to actions that reference the layer by its name.
-The virtual machine approach solves this problem, because the duplication of the layers will be done by the view.
-This way, there is no layer duplication and the changes of the separate layers will be flushed to all of the native observers.
+The virtual machine approach solves this problem, because no layers are duplicated, but instead their view reference.
+This way the changes of the separate layers will be applied to all of the native observers.
 
 \subsection{Change Management}
 \label{sec:changemanagement}
 
 The most important key element of this alternative approach is the concept of Dirt and Flushing.
-Dirt represents changes that happen to a layer a will need to be applied to the native view.
+Dirt represents changes that happen to a layer that will need to be applied to the native view.
 Every Layer stores a set, which is filled with dirt instances.
 This makes a layer \textit{dirty}.
 On well defined occasions that are explained later, a flush is executed.
 A flush will take the dirt of every layer and send it to the native views.
 The native view will then apply the changes that are represented by the dirt.
-The dirt set will then be set to empty.
+The dirt set will then be cleared.
 
 Two important conditions must be met for this concept to be useful.
 The storage of the dirt must be a set, so that duplicates are not possible.
 This ensures that changes are not applied multiple times.
-
 The second condition is the frequency of which a flush is executed.
 Similar to the dirt management of Angular and Zone.js\footnote{See section \ref{sec:virtualviewhierarchy}.}, changes can only occur on special, well defined occasions.
 
@@ -224,10 +222,10 @@ Table \ref{fig:mosactionsthatneedflushafterwards} lists all the interactions tha
 Everything that happens in the \ac{VM} originates from one of those interactions, so only after those, one flush must be executed.
 That means, that the most complex action configurations that change a lot of things results in only one flush so that the work on the main thread is as minimal as possible.
 Non-Layer changes like push and pop of views are not part of the dirt system.
-Instead, they are send after the flush, af special app events.
+Instead, they are send after the flush, as special app events.
 This optimizes main thread performance, because only fully evaluated layouts should be send to the \ac{UI}.
 
-A flush is executed recursive, starting the root layer.
+A flush is executed recursively, starting the root layer.
 This ensures, that layers, that are not part of the hierarchy anymore are not triggered, so that the \ac{UI} is not performing work on layers, that will be removed anyway.
 
 \begin{lstlisting}[style=swift, caption={Key data structures of dirt and flush}, label={lst:dirtnflush}]
@@ -286,11 +284,12 @@ public class TextLayer: Layer {
 \end{lstlisting}
 
 Listing \ref{lst:dirtnflush} shows an excerpt of a demo implementation.
-The layers each have a set of their own relevant changes (= dirt).
+The layers each have a set of their own relevant changes (dirt).
 Notice that a developer must not forget to add the dirt to the set in case something changed.
 The functions \textit{updateFrame} on the Layer and \textit{updateValue} on the TextLayer make sure to add the dirt.
+Those functions change the \ac{VM}'s internal representations of those values, but do not apply them to the view.
 
-A native layer view registers itself for changes using the \textit{onFrameChanged} or \textit{onValueChanged}.
+A native view registers itself for changes using the \textit{onFrameChanged} or \textit{onValueChanged}.
 So if the \ac{VM} system decides that it is time to flush, the layers \textit{flushDirt} functions are called.
 The TextLayer makes sure to flush it's own and it's superclass's changes.
 The challenge is, to not forget to add dirt to the set and to represent the change correctly, so no change gets lost.
@@ -319,10 +318,8 @@ It also allows filtering of equal values via \textit{skipRepeats}, to improve \a
 The \textit{skipRepeats} operator cannot replace the dirt flag system, but extend it.
 The dirt system can relieve pressure on the \textit{skipRepeats} operator, because checking for equality on the sub-layer list for example might take very long, so it is better to mark the sub-layers as dirty if re-calculated so it can be overwritten only if actually changed.
 
-The core idea to handle changes is that the \ac{UI} calls the \ac{VM}'s \acp{API} using \textit{fire and forget}\footnote{A call to the other system that returns immediately.}.
-But the \ac{VM} uses synchronization to wait until the main thread is done flushing.
+The \ac{UI} calls the \ac{VM}'s \acp{API} using \textit{fire and forget}\footnote{A call to the other system that returns immediately.}, while the \ac{VM} uses synchronization to wait until the main thread is done flushing.
 This way, the \ac{VM} is always blocked while the \ac{UI} is working.
-
 As a result, the \ac{UI} is always responsive, except for the time it is applying changes.
 Also, changes are applied in the correct order, and always after one another.
 
@@ -337,7 +334,7 @@ Also, changes are applied in the correct order, and always after one another.
 \subsection{Proof of Concept}
 
 A proof of concept implementation has been developed, that represents all the ideas that are described above.
-It consists of an \textit{AppHost}, which is a common iOS app bundle, but instead of launching an app, it calls the main method of \textit{mosUI}, which represents the actual app.
+It consists of an \textit{AppHost}, which is a conventional iOS app bundle, but instead of launching an app, it calls the main method of \textit{mosUI}, which represents the actual app.
 The \textit{AppHost} is separated from the app executable, because it will be used to inject the custom app configuration like app name, icon and runtime privileges.
 \textit{mosUI} is independent to the particular app instance and so it is lifted into an own framework bundle.
 It uses \textit{mosVM}, which is the abstract implementation of mos behavior.
@@ -355,11 +352,12 @@ Notice that \textit{mosVM} contains a Package.swift file, which indicates that i
 
 \subsubsection{Implemented Features}
 
-The virtual machine is designed to support 2 layers.
+The demo implementation supports two layers.
 A TextLayer which has a value and a ColorLayer, which has no properties.
 Both Layer are inherited from a base Layer, that can be configured with a name, a layout frame, a form-data key and a list of actions.
+The color layer will always display a red plane.
 
-A form is implemented, which are used by the layers to synchronize their values based on the form-data key.
+A form is implemented, which is used by the layers to synchronize their values based on the form-data key.
 This means, that the layers share their value with layers that have the same form-data key.
 This logic is implemented in the virtual machine.
 
@@ -373,7 +371,7 @@ The public \ac{API} of the layers make sure, that if the user taps on the repres
 After that, all layers are asked to flush their changes which will then be applied to the view.
 
 A centralized app instance object, which will always be passed to layers and actions holds all of the relevant components of a virtual machine instance.
-In this implementation, the instance object has the form object, the dispatch queue and the current layer list, that are currently displayed.
+In this implementation, the instance object has the form object, the dispatch queue and the layer list, that are currently displayed.
 A dispatch queue is an abstraction of a thread, which is used to run all the machine logic.
 
 
@@ -383,13 +381,12 @@ To demonstrate the approach, a demo app is configured, by letting the virtual ma
 Three layers are configured.
 A color layer with a size of 100 by 100 pixels, a TextLayer that displays the text ''Click me multiple times'' and another TextLayer that shows the text ''... or me''.
 Both text layers are configured to have the same form data key, so both layers should display the same value.
-In mos it is undefined, which layer ''wins'', but in this implementation, the first one sets the form value and the second has to adopt.
+\textit{mos} does not define, which of the two layers wins and pushes its value to the other, but in this implementation, the first one sets the form value and the second one has to adopt.
 The first TextLayer is configured with three ToggleText actions and one GrowAction.
-The GrowAction is configured with a the layer name of the ColorLayer.
-The GrowAction is implemented to find the layer who's frame will be extended by a layer name.
+The GrowAction is configured with the layer name of the ColorLayer and is implemented to find the layer who's frame will be extended by a layer name.
 The ToggleText action is configured three time to simulate multiple changes.
 The result should be the same as if the action would only be fired one time.
-The hard-coded configuration is depicted in listing \ref{lst:democonfig}.
+The hard-coded configuration is outlined in listing \ref{lst:democonfig}.
 
 \begin{lstlisting}[style=swift, caption={Demo configuration}, label={lst:democonfig}]
 let colorLayer = ColorLayer(
@@ -464,13 +461,13 @@ To better visualize this behavior, every action will perform some artificial wor
 	\centering{
 		\includegraphics[width=\linewidth]{images/implementation/vmperformance.png}
 	}
-	\caption{Thread utilization after user tapped the label two times}
+	\caption{Thread utilization after the user tapped the label two times}
 	\label{fig:vmperformance}
 \end{figure}
 
 The graph of figure \ref{fig:vmperformance} shows thread utilization over time.
-The second thread is part of the iOS thread pool and can be assigned to multiple dispatch queue.
-The wide peak occurs, because there is artificial work executed on every action to simulate a fully configured app.
+The second thread is part of the iOS thread pool and can be assigned to multiple dispatch queues.
+The utilization over time occurs, because there is artificial work executed on every action to simulate a fully configured app.
 While the actions are executed, the main thread is free and user interaction like scrolling the container view is still possible.
 After the virtual machine is done evaluating the resulting view hierarchy, the changes are send to the host, who applies them to the native views.
 Applying values to the native view is also extended with artificial workload to simulate an extensive app.
@@ -480,8 +477,8 @@ Notice, that the \ac{VM} thread waits for the \ac{UI} to finish.
 \subsection{Testability}
 
 This approach allows black box testing, which is not possible with the current implementation.
-A black box test of the \ac{VM} can launch an virtual app instance, tap layers and insert values into a text field or any other user interaction.
-All this happens by using the public \ac{VM} interface, that would otherwise be used by the actual \ac{UI} implementation.
+A black box test of the \ac{VM} can launch a virtual app instance, tap layers and insert values into a text field or any other user interaction.
+All this happens headless by using the public \ac{VM} interface, that would otherwise be used by the actual \ac{UI} implementation.
 Those tests are platform independent and can run very fast on a Mac or inside a iOS host application.
 It is now possible to hard-code views, which then can be tested by simulating user input.
 This includes all of the special mos logic.
@@ -493,8 +490,8 @@ It is now possible to simulate an app and it's user input fully on any host syst
 
 An example black box test of the demo app is outlined in listing \ref{lst:unittestblackbox}.
 The test simulates one tap on the first text layer.
-Notice, that the \ac{VM} implementation differs slightly from the previous code snippets, because \textit{ReactiveSwift} was used.
-The core structure is still intact and the approach is implemented accordingly.
+Notice, that the \ac{VM} implementation differs slightly from the previous code snippets, because \textit{ReactiveSwift} is now used.
+The core structure is still the same and the approach is implemented accordingly.
 
 The test expects the color layer to increase it's width by 30 points, because of the \textit{Grow} action.
 Also, it is expected that the two text layers will both have the value ''lorem ipsum'', because of the \textit{ToggleText} action and the shared form data key.
@@ -506,7 +503,7 @@ This way, the test host can wait for the \ac{VM} to push it's first view.
 The simulation of the tap is executed in line 29.
 It is a call, that would normally be done by the native layer view of the \ac{UI} implementation.
 Since layers are abstracted, anyone can tap a layer, even a test host.
-After the tap, the test hosts waits for the color layer to change it's frame.
+After the tap, the test host waits for the color layer to change it's frame.
 The test host uses the same interface, that would be used to update the native views frame.
 But instead, the host uses it to wait for the value to change, so the value can be checked.
 Finally, starting from line 34, the test host checks the color layer's frame and the values of the text layers.
@@ -565,7 +562,7 @@ func testApp() {
 
 \subsection{Core Rules}
 
-To prevent coding errors or inconsistencies, there are some rules that are arising out of it.
+To prevent coding errors or inconsistencies, there are some rules that are derived from the architecture.
 Especially new features or changes must follow these rules, so the performance and maintainability gains are not lost.
 
 
@@ -582,31 +579,32 @@ Especially new features or changes must follow these rules, so the performance a
 	\item \textbf{No \ac{UI} code is allowed inside the virtual machine module.}
 	
 	The virtual machine code should be able to compile on any Apple platform.
-	The gold standard would be a platform independence, that allows the virtual machine code to build on Ubuntu.
+	The gold standard would be a platform independence, that allows the virtual machine code to also build on Ubuntu.
 	As a result, importing UIKit, CoreGraphics, CoreLocation, UserNotifications, EventKit, AVFoundation, MapKit and other modules are is not allowed.
 	Only Foundation and other cross platform modules should be used.
+	Ubuntu is mentioned explicitly, because Swift Package Manager directly supports building Swift packages on Ubuntu.
+	The standard library ''Foundation'' is ported, but other infrastructure functionality are missing or not fully implemented\footnote{The Swift \ac{REPL} requires elevated privileges to create stack traces on Ubuntu. Also, the Swift test runner is unable to dynamically find all test classes on Ubuntu. Instead, an array of test case names has to be provided.}.
 	
-	\item \textbf{The callee of a public interface must make sure to continue on the correct dispatch queue}
+	\item \textbf{Only the callee of a public interface must make sure to continue on the correct dispatch queue.}
 	
 	This helps the code to be more understandable, since random queue changes are harder to track.
 	With this rule, a public interface can be used without the need to check the queue requirements.
-	Queues should only be switched while crossing framework borders.
+	Queues should only be switched while crossing framework interfaces.
 	
 	\item \textbf{Changes to internal layers that are relevant to the \ac{UI} must result in the appropriate dirt flag to be set.}
 	
 	It is important for the internal logic implementation to strictly set the according flags on changes.
-	The lay-outer must set the frame flag, but only if the layout frame actually changed.
+	The layouter must set the frame flag, but only if the layout frame actually changed.
 	Sub-layered layers must set their sublayer flag, if they decide to reload their layer on a database change.
-	Those are some examples of code positions, that need to be disciplined.
 	
 	\item \textbf{\ac{VM} \acp{API} must be called using fire and forget.}
 	
 	To ensure a responsive \ac{UI}, the \ac{VM} must make sure to switch on the \ac{VM} dispatch queue asynchronous.
-	Since every callee must make sure to switch to the correct queue, the \ac{VM} is responsible to perform asynchronous.
+	Since every callee must make sure to switch to the correct queue, the \ac{VM} is responsible to perform asynchronously.
 	
-	\item \textbf{\ac{UI} \acp{API} must be called synchronous, so the \ac{VM} waits for the \ac{UI} to finish.}
+	\item \textbf{\ac{UI} \acp{API} must be called synchronously, so the \ac{VM} waits for the \ac{UI} to finish.}
 	
-	The \ac{UI} make sure to respond synchronous, to make sure that it is safe to read the interface fields to update the \ac{UI}.
+	The \ac{UI} makes sure to respond synchronously, to ensure that it is safe to read the interface fields to update the \ac{UI}.
 	If the \ac{UI} is asked to update some layers and some asynchronous task inside the \ac{VM} is triggered that will write those properties, a thread collision is possible.
 	A solution is to let the \ac{VM} wait until the \ac{UI} is done updating the layer.
 	
@@ -627,7 +625,7 @@ Especially new features or changes must follow these rules, so the performance a
 	\item \textbf{No singletons or static objects.}
 	
 	To keep the code testable, no singletons or public static objects should be used.
-	Instead, a app instance object, that represents one app instance should be passed to every sub-component.
+	Instead, an object, that represents the app instance should be passed to every sub-component.
 	This makes it possible to run any amount of virtual apps in parallel, to enable fast testing.
 	Also, it allows for dependency injection, to perform white box unit tests.
 	
@@ -638,7 +636,7 @@ Especially new features or changes must follow these rules, so the performance a
 \subsection{Maintainability}
 
 To make code maintainable and abstract the different logic levels, like configuration parsing, dynamic logic and interaction, some implementation rules must be set.
-The current implementation disregards all of the rules to some extend.
+The current implementation violates all of the rules to some extend.
 
 \begin{enumerate}
 	
