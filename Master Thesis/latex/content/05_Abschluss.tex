@@ -171,6 +171,7 @@ The goals are always referencing specific scenarios or requirements.
 \section{Requirement Analysis}
 
 The following sections will evaluate the interpreter and the requirement implementation.
+The evaluation approach is a slightly modified version of a cost-benefit analysis, which became known through \cite{zangemeister_nutzwertanalyse_1976}.
 The requirements of the interpreter are weighted by their importance.
 A detailed documentation is shown in figure \ref{fig:pairwisecomparisoninterpreter} and each of the requirements are described in section \ref{functionalinterpreterrequirements}.
 Every requirement is scored by using a pairwise comparison.
@@ -310,7 +311,7 @@ Since the proof-of-concept implementation implies a buildable architecture, the 
 
 It can be assumed that the other requirements are not affected.
 This way, the score increases from 350 to 378 (out of 440).
-This is an increase from 79.55\% to 85.91 \% which is an improvement of 6.36 \%.
+This is an increase from 79.55 \% to 85.91 \% which is an improvement of 6.36 \%.
 
 \section{Threats to Validity}
 
@@ -349,6 +350,12 @@ There is no external validity, because the result only indicates the concrete im
 	Also, the score is only telling the team how well the application's requirements are implemented.
 	That refers directly to the statements of \cite{klein_evaluating_2001} which describe that a software system can only be evaluated against a set of requirements.
 	There is no general quality statement.
+	
+	\item \textbf{Vague assumptions caused by minor score differences}
+	
+	In this example, the second approach has only a 6.36 \% higher score, which is only due to one single requirement.
+	This does not define a clear winner, because the various scores are to similar.
+	This is why, it is not possible to conclusively state that the virtual machine approach is significantly better than the current implementation.
 	
 \end{enumerate}
 

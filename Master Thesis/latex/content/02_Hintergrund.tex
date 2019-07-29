@@ -590,16 +590,21 @@ Since the template elements are scattered in the file and critical segments are 
 An \ac{API}-based generator is a programming library for a development language, which provides an interface to the \ac{AST}.
 It's purpose is to build up an \ac{AST} using a type safe language like Java.
 Now the generator can be structured with Java's language features like Polymorphism, Interfaces and inheritance.
-The \ac{API} makes sure, that only syntactically correct code is produced, because the \ac{AST} does not allow it.
+The \ac{API} makes sure, that only syntactically correct code is produced.
+
+\ac{API}-based generators are direct alternatives to templates and are examined by \cite{stahl_model-driven_2006} 192.
+They are described to be the most popular type of code generators.
 
 It is also possible to generate code for different target languages, which use the same \ac{AST}.
 For example, it is possible to generate Kotlin instead of Java code, since Java is a subset of Kotlin.
 Also, the .NET runtime makes it possible to generate Visual Basic, C\# and C++ code from one \ac{AST}.
 
 \begin{lstlisting}[caption={Using an \ac{API} to generate Java code, written in Swift}, style=swift, label=lst:javagenerator]
+let personClass = ClassDeclaration(named: "Person");
+...
 let studentClass = ClassDeclaration(named: "Student");
 studentClass.baseType = personClass
-studentClass.typeAttributes = .public
+personClass.typeAttributes = .public
 \end{lstlisting}
 
 \begin{lstlisting}[caption={Java code result of lising \ref{lst:javagenerator}}, style=myjava, label=lst:generatredjava]
@@ -621,7 +626,7 @@ Using jQuery to manipulate or build \ac{HTML} content is also a form of \ac{API}
 	\centering{
 		\includegraphics[width=\linewidth]{images/background/apibasedgenerator.pdf}
 	}
-	\caption{API based code generator infrastructure}
+	\caption{API based code generator infrastructure, derived from \cite{stahl_model-driven_2006} 192}
 	\label{fig:apibasedgenerator}
 \end{figure}
 

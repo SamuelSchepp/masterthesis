@@ -1,0 +1,324 @@
+var SITB_STR_LANG = {
+"go":'Start '
+,
+"LOOK_INSIDE":'Hineinsehen!'
+,
+"add_to_cart":'In den Einkaufswagen legen'
+,
+"preorder_add_to_cart":'Vorbestellung: In den Einkaufswagen legen'
+,
+"look_inside_this_book":'Einen Blick in das Buch werfen'
+,
+"try_a_sample":'„Eine Leseprobe bestellen“'
+,
+"DISCOVER_MORE_BOOKS":'Mehr Bücher entdecken'
+,
+"hide_these_books":'Diese Bücher ausblenden'
+,
+"loading_prompt":'Wird geladen...'
+,
+"BOOK_SECTIONS":'Buchabschnitte'
+,
+"SURPRISE_ME":'Ich möchte überrascht werden!'
+,
+"BY":'von #{AUTHORS}'
+,
+"GO_TO_BOOK_PAGE":'Weiter zu Seite aus "#{BOOK_TITLE}"'
+,
+"USED_AND_NEW_FROM":'<a href=\'/gp/offer-listing/#{ASIN}/ref=rdr_ext_uan\' id=\'sitbReaderUsedCount\'> #{COUNT} gebraucht und neu</a> ab <span id=\'sitbReaderUsedPrice\' class=\'sitbReaderPrice\'>#{PRICE}</span>'
+,
+"DELIVER_TO":'Senden an'
+,
+"SEND_SAMPLE":'Diese Leseprobe an Ihren Kindle schicken'
+,
+"PAGE_NOT_AVAILABLE":'Diese Seite ist momentan nicht verfügbar.'
+,
+"SITB_IMAGE_BASE":'http://g-ecx.images-amazon.com/images/G/03/digital/sitb/reader/v4/201111161604/'
+,
+"SITB_IMAGE_BASE_SECURE":'https://images-na.ssl-images-amazon.com/images/G/03/digital/sitb/reader/v4/201111161604/'
+,
+"DEFAULT_ERROR_MSG_HEADER":'Tut uns leid!'
+,
+"DEFAULT_ERROR_MSG_TEXT":'Bei der Bearbeitung Ihrer Anfrage ist ein temporärer Fehler aufgetreten. Versuchen Sie es später noch einmal.'
+,
+"DEFAULT_RELATED_EDITION_MSG":'Sie sehen gerade eine andere Ausgabe des Buches, auf das Sie ursprünglich geklickt haben. Wenn Sie dieses Buch Ihrem Einkaufswagen hinzufügen, erhalten Sie die Ausgabe, auf die Sie ursprünglich geklickt haben.'
+,
+"DEFAULT_RELATED_EDITION_XREF_KINDLE_MSG":'Sie sehen die Vorschau der Kindle Edition. Eine Vorschau der Druckausgabe ist aktuell nicht verfügbar.'
+,
+"DEFAULT_RELATED_EDITION_XREF_PRINT_MSG":'Sie sehen die Vorschau der Druckausgabe. Eine Vorschau der Kindle Edition ist aktuell nicht verfügbar.'
+,
+"JUST_SO_YOU_KNOW":'Zu Ihrer Information...'
+,
+"IN_STANDARDVIEW_TEXT":'Erweiterte Ansicht'
+,
+"IN_FULLSCREEN_TEXT":'Standardansicht'
+,
+"TTIP_ZOOM_IN":'Ansicht vergrößern'
+,
+"TTIP_ZOOM_OUT":'Ansicht verkleinern'
+,
+"TTIP_NEXT_PAGE":'Nächste Seite'
+,
+"TTIP_PREV_PAGE":'Vorherige Seite'
+,
+"TTIP_READER_CLOSE":'Reader schließen'
+,
+"TTIP_SEARCH_CLOSE":'Diese Suche schließen'
+,
+"TTIP_SEARCH_GO":'Suche'
+,
+"TTIP_SEARCH_INPUT":'Im Buch suchen'
+,
+"TTIP_MORE_RESULTS":'Weitere Ergebnisse anzeigen'
+,
+"SB_HIST_LINK":'Bearbeiten Sie Ihren Buch-Suchverlauf'
+,
+"SB_OFF_HIST_LINK":'um weitere Informationen zu erhalten'
+,
+"SB_NO_HIST_LINK":'um weitere Informationen zu erhalten'
+,
+"SB_NO_HIST_TEXT":'Ihr Browserverlauf enthält keine Bücher'
+,
+"SB_OFF_HIST_TEXT":'Ihr Buch-Suchverlauf ist nicht aktiviert'
+,
+"SB_ERR_HIST_TEXT":'Ihr Buch-Suchverlauf konnte nicht abgerufen werden'
+,
+"SB_NO_SIMS":'Weitere von Kunden gekaufte Bücher konnten nicht abgerufen werden'
+,
+"TTIP_SB_PANE_CLD":'Klicken Sie, um Ihren Browserverlauf und ähnliche Bücher anzuzeigen'
+,
+"TTIP_SB_PANE_OPN":'Diese Buchliste schließen'
+,
+"TTIP_SB_TITLE":'Weiter zur Produktseite für #{TITLE}'
+,
+"TTIP_SB_LITB_BUTTON":'Einen Blick in dieses Buch werfen!'
+,
+"TTIP_SB_HIST_LINK":'Buch-Suchverlauf anzeigen und bearbeiten'
+,
+"TTIP_LP_TAB":'Hier klicken, um Details zu diesem Buch anzuzeigen'
+,
+"PLEASE_SELECT":'Auswählen...'
+,
+"1_VERY_UNLIKELY":'1 - Sehr unwahrscheinlich'
+,
+"2_UNLIKELY":'2 - Unwahrscheinlich'
+,
+"3_NEITHER":'3 - Unentschlossen'
+,
+"4_LIKELY":'4 - Wahrscheinlich'
+,
+"5_VERY_LIKELY":'5 - Sehr wahrscheinlich'
+,
+"FEATURE_BROWSING_HISTORY":'Funktion: Ihr Browserverlauf'
+,
+"SHARING_YOUR_THOUGHT":'Sagen Sie uns Ihre Meinung und helfen Sie uns, den Amazon Reader weiter zu verbessern. Auch wenn wir Ihnen nicht direkt antworten können, werden alle Anregungen von uns gelesen und geprüft.'
+,
+"FEEDBACK_TYPE":'Art des Feedbacks:'
+,
+"SUGGESTION":'Vorschlag'
+,
+"COMMENT_ABOUT":'Buch kommentieren'
+,
+"TECHNICAL_PROBLEM":'Technisches Problem'
+,
+"PRAISE":'Lob'
+,
+"COMPLAINT":'Beschwerde'
+,
+"OTHER":'Sonstiges'
+,
+"YOUR_COMMENTS":'Ihre Kommentare:'
+,
+"1500_MAXIMUM":'(max. 1500 Zeichen)'
+,
+"HOW_LIKELY":'Wie wahrscheinlich werden Sie den Amazon Reader an Freunde weiterempfehlen?'
+,
+"THANK_YOU_FOR_FEEDBACK":'Vielen Dank für Ihr Feedback!'
+,
+"FEEDBACK":'Feedback'
+,
+"HELP":'Hilfe'
+,
+"CLOSE":'Schließen'
+,
+"KINDLE_PREVIEW":'Kindle Buch'
+,
+"PRINT_PREVIEW":'Druckbuch'
+,
+"INFORMATION_UNAVAILABLE":'Die Informationen zu diesem Buch sind derzeit nicht verfügbar.'
+,
+"SERVER_TIMEOUT":'Server-Timeout'
+,
+"PAGE":'Seite #{PAGE}'
+,
+"INSERT":'Einfügen'
+,
+"BACK_MATTER":'Nachspann'
+,
+"FRONT_MATTER":'Titelei'
+,
+"FIRST_PAGES":'Die ersten Seiten'
+,
+"THIS_IS_A_PREVIEW":'Dies ist eine Vorschau. Die Anzahl der angezeigten Seiten ist begrenzt.'
+,
+"BROWSING_HISTORY":'Ihr Browserverlauf'
+,
+"CUSTOMER_ALSO_BOUGHT":'Kunden kauften auch'
+,
+"PAGE_OF":'Seite #{HTML_START} von #{HTML_END}'
+,
+"SEARCH_INSIDE_THIS_BOOK":'Im Buch suchen'
+,
+"SAMPLE_SEARCHES":'Beispielsuche in diesem Buch:'
+,
+"SIGN_IN_TO_VIEW":'<a href=\'/gp/search-inside/sign-in?asin=#{ASIN}&query=#{QUERY}\'>Melden Sie sich an</a>, um die Suchergebnisse zu sehen.'
+,
+"SHOW_MORE_RESULT":'#{RESULT_TO_LOAD} weiteres Ergebnis anzeigen...'
+,
+"SHOW_MORE_RESULTS":'#{RESULTS_TO_LOAD} weitere Ergebnisse anzeigen...'
+,
+"RESULT_FOR":'<b>#{RESULT_NUM}</b> Ergebnis für <b>#{HTML_REPLACE}</b> #{SIGN_IN_MSG}'
+,
+"RESULTS_FOR":'<b>#{RESULT_NUM}</b> Ergebnisse für <b>#{HTML_REPLACE}</b> #{SIGN_IN_MSG}'
+,
+"SOME_PAGES_OMITTED":'Einige Seiten sind in dieser Buchvorschau nicht enthalten.'
+,
+"PLEASE_USE_SURPRISE_OR_SITB":'Nutzen Sie die Funktion <a class=\'sitbReader-bookmark-surprise\' href=\'javascript:void(0)\' onclick=\'SitbReader.PageSequenceActions.goToRandomPage()\'>Überraschen lassen!</a> oder Im Buch suchen um weitere Seiten anzuzeigen.'
+,
+"PAGE_NOT_INCLUDED":'Seite #{LABEL_START} ist in dieser Buchvorschau nicht enthalten.'
+,
+"PAGES_NOT_INCLUDED":'Die Seiten #{LABEL_START}-#{LABEL_END} sind in dieser Buchvorschau nicht enthalten.'
+,
+"PLEASE_SIGN_IN":'<a href=\'/gp/search-inside/sign-in?asin=#{ASIN}&page=#{PAGE}\'>Melden Sie sich an</a>, um weitere Seiten aus diesem Buch anzuzeigen.'
+,
+"THIS_IS_A_RANDOM_PAGE":'Dies ist eine zufällige Seite aus einem kleinen Beispiel. <a href=\'/gp/search-inside/sign-in?asin=#{ASIN}&page=random\'>Melden Sie sich an,</a> um weitere Beispielseiten aus diesem Buch anzeigen zu können.'
+,
+"EDITION":'Ausgabe'
+,
+"EDITION_NAME":'#{NAME} Ausgabe'
+,
+"RELATED_EDITION":'verwandte Ausgabe'
+,
+"AUTHORITY_EDITION":'Autoritäts-Ausgabe'
+,
+"PUB_NAME":' von #{NAME}'
+,
+"END_OF_PREVIEW":' Ende der Vorschau für dieses Kindle eBook.'
+,
+"END_OF_PREVIEW_BUY":'Hat Ihnen die Vorschau gefallen?<br/><a class="sitb-buy-box" href="#{BUY_ACTION}">1-Click kaufen</a><br/>oder<br/><a class="sitb-buy-box" href=\'/kindle/dp/#{BUYING_ASIN}/ref=#{REFTAG}\'>Details dieses eBooks im Kindle-Shop anzeigen</a>'
+,
+"NEED_TO_SIGN_IN":'Muss ich angemeldet sein, um die Buchvorschau nutzen zu können?'
+,
+"MY_PRIOR_PURCHASE":'Muss mein vorheriger Kauf ein Buch gewesen sein?'
+,
+"SLIGHTLY_DIFFERENT_CONTENT":'Warum sehe ich leicht abweichende Inhalte für dieses Buch?'
+,
+"ADJUST_SIZE_TEXT":'Kann ich die Schriftgröße ändern?'
+,
+"SEARCH_MORE_EFFECTIVELY":'Wie kann ich meine Suche effektiver gestalten?'
+,
+"PROVIDE_FEEDBACK":'Wie kann ich Ihnen Feedback, Lob oder Verbesserungsvorschläge zukommen lassen?'
+,
+"WHAT_IS_BROWSING_HISTORY":'Was ist der Buch-Suchverlauf?'
+,
+"NEED_TO_SIGN_IN_ANSWER":'Nein, allerdings stehen einige Funktionen und Seiten nur zur Verfügung, wenn Sie bei Ihrem Amazon-Konto angemeldet sind und zuvor einen Kauf getätigt haben. Die Kunden, die sich nicht anmelden möchten oder noch nichts bei uns gekauft haben, erhalten von uns aber dennoch eine hilfreiche Auswahl von Vorschauseiten aus dem Buch.'
+,
+"MY_PRIOR_PURCHASE_ANSWER":'Nein. Es reicht ein beliebiger, bei Amazon.de gekaufter Artikel. (Außer digitale Artikel oder Artikel, die von einem anderen Verkäufer über Amazon erworben wurden.) Ihr Bestellverlauf muss eine gelieferte Bestellung aufweisen. Wenn Sie Hife bei der Änderung Ihrer E-Mail-Adresse oder bei der Wiedererlangung Ihres Passworts für Ihr altes Konto benötigen, wenden Sie sich bitte an den Kundenservice.'
+,
+"SLIGHTLY_DIFFERENT_CONTENT_ANSWER":'Einige Buchvorschauen sind mit einer anderen Ausgabe des Buches verknüpt, die von uns eingescannt wurde. In der Regel scannen wir nur eine Version ein und nutzen die Seitenabbildungen dann für mehrere Ausgaben, da der Text ja identisch ist. In diesem Fall wird angegeben, aus welcher Art von Buch die Seiten stammen.'
+,
+"ADJUST_SIZE_TEXT_ANSWER":'Natürlich! Wenn Ihnen die Standardschriftgröße zu groß oder zu klein ist, klicken Sie einfach auf die Zoom-Symbole, um die Ansicht zu vergrößern oder zu verkleinern. Vergößerte Darstellungen können auch mit der Maus gezogen und geschwenkt werden.'
+,
+"SEARCH_MORE_EFFECTIVELY_ANSWER":'Wenn Sie einen bestimmten Satz statt einer Reihe von Stichwörtern suchen, fassen Sie diesen in Anführungszeichen (z. B. "linkshändige Werfer"). Auf diese Weise erhalten Sie eine kürzere, gezieltere Trefferliste, als wenn Sie ohne Anführungszeichen nach diesen beiden Wörtern suchen.'
+,
+"PROVIDE_FEEDBACK_ANSWER":'Das Feedback unserer Kunden ist eine ständige Quelle von Ideen zur weiteren Verbesserung des Programms. Wir freuen uns daher auf Ihre Rückmeldung. Nutzen Sie einfach den Feedback-Link in der oberen rechten Ecke des Readers (funktioniert bei jedem Buch).'
+,
+"WHAT_IS_BROWSING_HISTORY_ANSWER":'Mit Ihrem Buch-Suchverlauf können Sie verfolgen, welche Bücher Sie sich in letzter Zeit angesehen haben. Wenn Sie Ihren Verlauf löschen möchten, gehen Sie <a href="/gp/yourstore/pym/">zum Browserverlauf</a> und klicken Sie auf den Link "Diesen Artikel löschen", der sich neben den einzelnen Artikeln befindet. Wenn Sie alle Artikel löschen möchten, klicken Sie in der linken Spalte auf Schalfläche "Alle löschen". Wir hoffen, dass Sie Ihren Browserverlauf hilfreich finden. <a href="/gp/yourstore/pym/cc">Klicken Sie hier</a>, wenn Sie diese Funktion lieber deaktivieren möchten.'
+,
+"HELP_PAGE":'/gp/help/customer/display.html?nodeId=200491760'
+,
+"FAQ":'Häufig gestellte Fragen (FAQ)'
+,
+"LEARN_MORE_LITB":'Weitere Informationen über die Blick-ins-Buch-Funktion'
+,
+"TOC":'Inhaltsverzeichnis'
+,
+"FRONT_COVER":'Buchdeckel'
+,
+"FRONT_FLAP":'Vorderer Umschlag'
+,
+"COPYRIGHT":'Copyright'
+,
+"INDEX":'Stichwortverzeichnis'
+,
+"BACK_FLAP":'Umschlagrücken'
+,
+"BACK_COVER":'Rückseite'
+,
+"PIC_SUPP_MSG":'Einige Abbildungen aus diesem Buchbeispiel werden auf Wunsch des Verlags nicht angezeigt.'
+,
+"PARTIAL_CONTENT_MSG":'Die Musterseiten, die Sie in der Vorschau sehen, wurden vom Verleger aus dem Buch ausgewählt.'
+,
+"KINDLE_COVER":'Buchdeckel'
+,
+"KINDLE_START_READING_LOCATION":'Anfang'
+,
+"SEND_CUSTOMER_REQUEST":'<strong>Sagen Sie\'s dem Verleger!</strong><br><a id=\'sitbReaderCustomerRequestLink\'>Ich möchte dieses Buch auf dem Kindle lesen</a><br><br>Sie haben keinen Kindle? <a href=\'/dp/B00KDRUCJY/ref=rdr_ext_kdl\'>Besorgen Sie sich Ihren Kindle hier</a> oder laden Sie eine <b>KOSTENFREIE</b> <a href=\'/gp/kindle/kcp/ref=rdr_ext_kra\'> Kindle Lese-App</a> herunter.<br>'
+,
+"SEND_CUSTOMER_REQUEST_SUCCESS":'<span><strong>Vielen Dank</strong></span><br><br>Danke für Ihre Anfrage zu <a href=\'/dp/#{ASIN}/ref=rdr_ext_book\'>#{TITLE}</a> für Kindle. Wir leiten Ihre Anfrage an den Verlag weiter.'
+,
+"SEND_CUSTOMER_REQUEST_ERROR":'<span><strong>Wir bedauern...</strong></span><br><br>Beim Verarbeiten Ihrer Anfrage ist ein Fehler aufgegetreten. Bitte versuchen Sie es später noch einmal.'
+,
+"REL_ED_MSG_PRINT":'Angezeigt wird die #{AUTHORITY_LINK}#{AUTHORITY_YEAR_DISP}#{AUTHORITY_PUB_DISP}. Sie erhalten die ursprünglich angezeigte #{RELATED_LINK}#{RELATED_YEAR_DISP}#{RELATED_PUB_DISP}, wenn Sie links auf die Schaltfläche "In den Einkaufswagen" klicken.'
+,
+"REL_ED_MSG_KINDLE":'Angezeigt wird #{AUTHORITY_LINK}#{AUTHORITY_YEAR_DISP}#{AUTHORITY_PUB_DISP}. Sie erhalten die ursprünglich angezeigte Ausgabe #{RELATED_LINK}#{RELATED_YEAR_DISP}#{RELATED_PUB_DISP}, wenn Sie links auf die Schaltfläche "Jetzt mit 1-Click kaufen" klicken.'
+,
+"REL_ED_MSG_KINDLE_WITH_BUTTON_TEXT":'Angezeigt wird #{AUTHORITY_LINK}#{AUTHORITY_YEAR_DISP}#{AUTHORITY_PUB_DISP}. Sie erhalten die ursprünglich angezeigte Ausgabe #{RELATED_LINK}#{RELATED_YEAR_DISP}#{RELATED_PUB_DISP}, wenn Sie links auf die Schaltfläche #{BUY_BUTTON_TEXT} klicken.'
+,
+"REL_ED_MSG_KINDLE_WITHOUT_VALID_OFFER":'Angezeigt wird #{AUTHORITY_LINK}#{AUTHORITY_YEAR_DISP}#{AUTHORITY_PUB_DISP}. Der #{RELATED_LINK}#{RELATED_YEAR_DISP}#{RELATED_PUB_DISP} , den Sie ursprünglich angesehen haben, ist derzeit nicht zum Kauf erhältlich.'
+,
+"REL_ED_XREF_MSG_PRINT":'Sie sehen die Vorschau der Druckausgabe (#{AUTHORITY_LINK_TEXT}). Eine Vorschau der Kindle Edition ist aktuell nicht verfügbar.'
+,
+"REL_ED_XREF_MSG_KINDLE_V2":'Sie sehen eine Vorschau der #{AUTHORITY_LINK} #{AUTHORITY_YEAR_DISP}#{AUTHORITY_PUB_DISP}. Eine Vorschau der Druckausgabe (#{RELATED_LINK_TEXT}) ist aktuell nicht verfügbar.'
+,
+"PLEASE_SIGN_IN_TITLE":'Bitte anmelden'
+,
+"PLEASE_SIGN_IN_TEXT":'Sie müssen bei Ihrem gültigen Konto angemeldet sein, um diese Seite anzeigen zu können. <a href=\'/gp/search-inside/sign-in?#{LOGIN_RETURN_ARGS}\'>Melden Sie sich</a> bitte bei Ihrem Amazon-Konto an.'
+,
+"PAGE_NOT_AVAILABLE_TITLE":'Seite nicht verfügbar'
+,
+"PAGE_NOT_AVAILABLE_TEXT":'In diesem Buchauszug sind nicht alle Seiten enthalten.'
+,
+"FEATURE_UNAVAILABLE_TITLE":'Funktion nicht verfügbar'
+,
+"FEATURE_UNAVAILABLE_TEXT":'Leider ist diese Funktion derzeit nicht verfügbar. Bitte versuchen Sie es später noch einmal.'
+,
+"kcp_sitb_getfreeapp_ebooks":''
+,
+"kcp_sitb_getfreeapp_pbooks":''
+,
+"kcp_get_reading_app_dialog_title":'Beziehen Sie Ihre kostenfreie Kindle Lese-App'
+,
+"kcp_close":'Schließen'
+,
+"kcp_loading_error":'Fehler beim Laden des Inhalts, Bitte versuchen Sie es später noch einmal.'
+,
+"kcp_sitb_widget_width":''
+,
+"BUY_WITH_1_CLICK":'Mit 1-Click&#174; kaufen'
+,
+"PREORDER_WITH_1_CLICK":'Mit 1-Click vorbestellen'
+,
+"ADDITIONAL_BUY_WITH_1_CLICK":'Mit 1-Click&#174; kaufen'
+,
+"END_OF_PREVIEW_BUY_DUAL":''
+,
+"NEW_FROM":''
+,
+"SITB_REGION_MAGNIFICATION":'Klicken Sie zum Vergrößern auf die Bilder oder Textblöcke in der Leseprobe. Verwenden Sie das Mausrad oder die Pfeiltasten, um durch den Inhalt zu blättern. Klicken Sie zum Verkleinern erneut auf den Inhalt.'
+,
+"zoom_plus":'Zoom +'
+,
+"zoom_minus":'Zoom - '
+};
+Vellum.lj2(Vellum.js);

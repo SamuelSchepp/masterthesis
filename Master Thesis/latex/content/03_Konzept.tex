@@ -3,10 +3,12 @@
 \chapter{Concept}
 \label{chap:concept}
 
-This chapter will describe the goals of \ac{mos} and it's iOS implementation.
-The first section will deal with the requirements to the model.
-After that, the model syntax and interpreter implementation will be presented.
-In the last section of this chapter, an alternative implementation is presented. 
+This chapter will define the implementation goals of the model and the interpreter.
+The model syntax is derived from the requirements and will be outlined in section \ref{sec:modelsyntax}.
+This leads to the client application and it's various implementation approaches.
+Two possible interpreter architectures are described.
+The first one is currently used for actual apps, while the second one is a concept to solve architecture and performance issues.
+This approach will be called ''virtual machine''.
 
 \section{Implementation Goals}
 \label{sec:implementationgloas}
@@ -147,6 +149,7 @@ In the same way, the usability of the models are also considered, so that both s
 
 
 \section{Model Syntax}
+\label{sec:modelsyntax}
 
 To meet the majority of the non-functional requirements, \ac{JSON} is used to define the model.
 It allows the client to parse common structures and define optional and default values in an maintainable way.
