@@ -3,7 +3,7 @@
 \chapter{Conclusion}
 
 This chapter will wrap up the discussion on the interpreter and it's various implementation approaches.
-A summary will be given, that will outline the key aspects of all of the previous chapter.
+A summary will be given, that will outline the key aspects of all of the previous chapters.
 After that, the evaluation result will be discussed and the research questions of section \ref{sec:goals} will be answered.
 The current state of art will then be described using other examples.
 This thesis will then end with a list of next steps resulting from the work and references to related papers and work.
@@ -17,10 +17,10 @@ To be able to update the contents, layouts and behaviors of the applications, a 
 The model defines layout, behavior and data.
 The configuration allows the definition of complex layouts and interaction.
 This makes it very powerful and functional, while still being very flexible.
-If the configuration changes, the applications download the changes and updates it's behavior accordingly.
+If the configuration changes, the applications download the changes and update their behaviors accordingly.
 The model fits into the definition of the general and specialized model theories, that are defined by Stachowiak \cite{stachowiak_allgemeine_1973} and Seidewitz \cite{seidewitz_what_2003}.
 
-Because of low starting requirements, the interpreter's performance is noticeable slower than a native application's performance, that implements the functionality directly and natively.
+Because of low starting requirements, the interpreter's performance is noticeable worse than a native application's performance, that implements the functionality directly and natively.
 This is because a software architecture has been implemented, that directly maps the models capabilities to native \ac{UI} elements.
 Since changes to the \ac{UI} are happening multiple times with only one user interaction, the \ac{UI} thread is very busy.
 An interaction example is a database change, that could trigger layout updates.
@@ -59,20 +59,21 @@ This is also true for the legacy implementation, which lacks a few features but 
 This suggests a correlation between the evaluation's result and the informal feeling and usability of the apps, that has been mentioned by the development team and users.
 
 The generalizability is limited by the fact that the interpreter is only evaluated against it's requirements.
-That is why, the result is only comparable to software systems that have been evaluated using the same requirements with the same weights.
+That is why, the result is only comparable to software systems that have been evaluated using the same requirements and the same weights.
 This is the case for alternative implementations.
 If the requirements are valid for every platform\footnote{iOS, Android}, the different platform interpreter evaluations can be compared to each other.
 
 \section{State of the Art}
 
-There are alternatives to the mos software system.
+There are no direct alternatives to the mos software.
+But systems that implement a similar idea exist.
 React Native is a JavaScript interpreter, which runs JavaScript code using WebKit's JavaScriptCore.
 The UI declaration is translated into native elements and user interaction results into a re-evaluation of the virtual view hierarchy, which is then applied to the native view.
 This way, user interaction, animations are fast and native functionality is available in the JavaScript context.
 The user code is bundled into a single file, which can be swapped at any time.
-Expo is a React Native infrastructure and framework system, which allows the replacement of the JavaScript bundle file, while the app is started for the next time.
+Expo is a React Native infrastructure and framework system, which allows the replacement of the JavaScript bundle file, when the app is started for the next time.
 The \ac{UI} is defined by \ac{JSX}, which allows embedding XML like code as expressions into JavaScript.
-This makes it possible to directly write \ac{HTML} or \ac{UI} code, while still being able to inject JavaScript data.
+This makes it possible to directly write \ac{HTML} style \ac{UI} code, while still being able to inject JavaScript data.
 
 \begin{figure}[h]
 	\centering{
@@ -82,7 +83,7 @@ This makes it possible to directly write \ac{HTML} or \ac{UI} code, while still 
 	\label{fig:reactnative}
 \end{figure}
 
-The evaluated approach that is discussed in this thesis is implemented by React Native.
+The evaluated virtual machine approach that is discussed in this thesis is implemented by React Native.
 While the proposed architecture is only called virtual machine, because of it's strict separation from the main thread, the React Native implementation actually uses the JavaScript runtime environment for it's main calculation and virtual \ac{DOM} evaluation.
 This is why, React Native represents the most advanced version of the virtual machine approach.
 The capabilities of the React Native runtime are to high and the requirements of mos would not be met.
@@ -96,7 +97,7 @@ Since video library apps are very similar, \ac{TVML} can be used to build a full
 For advanced logic, TVMLKit JS can be used, which is a full JavaScript environment with \ac{TVML} specific classes and objects.
 The client application is responsible for loading and displaying the markup definitions, which is handled by classic, native code.
 This means the loading and caching policies can be fine-tuned to match the requirements.
-\ac{TVML} is comparable to the mos software system, because the model can be rendered server-side and it is declarative in it's core.
+\ac{TVML} is comparable to the mos software system, because the model can be rendered server-side and it is declarative by design.
 
 \begin{figure}[h]
 	\centering{
@@ -116,64 +117,58 @@ This includes alternative architectures and concrete implementation approaches.
 
 The next step is the actual implementation of the interpreter.
 It could be considered a full rewrite, but the more intelligent solution is a continuous evolution, which transfers the application into the target architecture.
-The approach that was described fully separates the virtual runtime and the user interface.
+The described approach fully separates the virtual runtime and the user interface.
 This radical step can be applied to the interpreter by separating all the aspects step by step.
 
 In the beginning, the UI behavior can be extracted from the various layer implementations, by sub-classing native view elements and implement view specific behavior.
 This way, the dirt flushing mechanism can be implemented step by step.
-The next major problems are the view controller, which are the windows that present the node layouts.
+The next major problems are the view controllers, which are the windows that present the node layouts.
 Those also need to be separated, so the window management is working with the virtual windows, which directly use the native elements.
 After that, the dirt flush mechanism is fully implemented so that every change only results in a dirt flag, which will then be applied to the view after the interactions are finished.
 
-Each step can be considered to be a sprint in which the application is executable after each iteration.
+These steps can be considered to be a sprints where the application is executable after each iteration.
 Every change is a step in the target direction, because a good abstraction supports maintainability and extensibility.
-After every changes, the team can evaluated if the next step is even possible or if the architecture is not suitable at all.
+After each change, the team can evaluated if the next step is even possible or if the architecture is not suitable at all.
 
 The book \textit{Reengineering Patterns} \cite{demeyer_object-oriented_2002} systematically describes approaches, that support a re-engineering process of a given system.
 The base patterns include, among other things, test evolution and incremental migration of sub-components.
-The for every approach, the author explains the intent, the problem, a solution, the respective trade offs and examples.
+For every approach, the author explains the intent, the problem, a solution, the respective trade offs and examples.
 
-The tools and development processes can be applied to this section, because it directly fits the continuous change approach which is needed to be able to always release an updated version of an evolving system.
+The tools and development processes can be applied to this section, because it directly fits into the continuous change approach which is needed to always release an updated version of an evolving system.
 
-One example approach is the idea of coding business logic into automatic tests.
+One example approach is the idea of coding business logic into automated tests.
 One key objective of this reengineering concept is the ability to unit test domain specific logic.
 Also, the book suggests to incrementally grow the test base, which is an important aspect of future reengineering processes.
 The tests help to build confidence, that the current change to the system does not break it.
 While not every error can be exposed by tests, they provide a basic assurance.
 
 Another important suggestion is the continuous and incrementally migration of the system, so that it can always be deployed.
-A full rewrite or parallel reengineering while also maintaining the old system results in two code basis'.
-This means, bug fixes and new features must be applied to both system, which can mean that they have to be developed two times, because the new system's environment and architecture could be different.
+A full rewrite or parallel reengineering while also maintaining the old system results in two code branches.
+This means, bug fixes and new features must be applied to both system, which can lead to increased development time and diverging functionality.
 
 \subsection{Hybrid Approaches}
 
-A hybrid interpreter is a architecture approach, that allows native and custom code to run with an interpreted model side-by-side.
-This can be achieved by embedding an interpreter to offload some aspects of an app.
-A example are parts of the mobile applications of Facebook and Instagram, where some features and far-flung are extracted into based progressive web apps\footnote{Source: \url{https://instagram-engineering.com/react-native-at-instagram-dd828a9a90c7}}.
+A hybrid interpreter is an architecture approach that allows native and custom code to run with an interpreted model side-by-side.
+This can be achieved by embedding an interpreter into an application to offload a specific set of aspects.
+An example are parts of the mobile applications of Facebook and Instagram, where some features are extracted into browser based progressive web apps\footnote{Source: \url{https://instagram-engineering.com/react-native-at-instagram-dd828a9a90c7}}.
 Those run inside the app and basically behave like other native parts of the app.
 These can be recognized by longer loading times and a delayed view setup.
-The same benefits and disadvantage apply to the part of the application that now is handled by the respective interpreter.
-Code only has to be written one time for any platform, the model can be loaded from network, to make it possible to change important aspects live.
+Code only has to be written one time for any platform, the model can be loaded from network, to make it possible to change important aspects on the fly.
 Promotion and news are often times models or configuration data that can be interpreted on the platform without the need to design custom views and wait for the user to update.
 This approach is suitable for apps that only substitute small aspects.
 
-A alternative is a plugin system, that is integrated into the meta model and the interpreter.
-This way, the model can access native functionality that must be compiled into the app and is then part of the interpreter.
-The meta model could be extended to support the call of static native methods.
-The interpreter can be compiled to directly understand the method name and map them directly to the call.
-It is also possible to directly call a static method using reflection by only using the name.
-This way, that plugin library can be linked dynamically.
+Another hybrid approach is a plugin system, that is integrated into the meta model and the interpreter.
+This way, the model can access native functionality that should have been compiled into the app and is then part of the interpreter.
+A possible implementation could be the extension of the meta model to support calling static native methods using meta programming language features.
 The plugins can access the plugin interface of the interpreter.
 Depending on requirements, this interface can be very open, so the interpreter can be arbitrarily extended.
-This approach can be used, if the native parts are small exceptions.
+This approach can be used, if the native parts are small exceptions and most of the work is done by the interpreter.
 Examples are native components in React Native or native modules in ionic.
 
 A hybrid interpreter can also mean, that parts of the interpreter are generated.
-For mos, this is partially true, because the app container is generated using an additional model.
-The generated produces a native app project structure that can be used by Xcode to run and publish the app.
+For mos, this is partially true, because the app container is generated using a separate model.
+The generator produces a native app project structure that can be used by Xcode to run and publish the app.
 The app then uses the interpreter framework to display the actual app contents.
-This means, that if the whole app is considered to be the interpreter, it is a hybrid interpreter.
-If only the sub-framework is considered to be an interpreter, it's not considered hybrid.
 
 \subsection{Abstraction}
 
@@ -201,7 +196,7 @@ Also, part of the overall requirements of mos is to avoid as many dependencies a
 
 The most compatible and future-proof option is C++, which can be compiled to the respective platforms and can be used directly and natively without crossing abstraction barriers.
 The interface must be designed very carefully so that both platforms can work with the implementation.
-C++ makes the development hard, because it is a unsafe language that must be bridged to C and then to Swift, which makes it hard for changes to be implemented.
+C++ makes the development hard, because it is an unsafe language that must be bridged to C and then to Swift, which makes it hard for changes to be implemented.
 Also, modern programming paradigms like functional or reactive programming, multi-threading, networking and JSON are not fully supported by the standard library.
 
 Another suitable platform is Kotlin Native, which makes it possible to actually use classes and functions as if there where implemented natively.
@@ -229,13 +224,12 @@ The following section will collate some related papers and resources.
 \textbf{Runtime Models:} The paper \textit{Systematic literature review of the objectives, techniques, kinds, and architectures of models at runtime} \cite{szvetits_systematic_2013} analyses the use of models with regard to runtime systems, by using Systematic Literature Review.
 Runtime models take the idea of static artifacts one step further.
 The paper's goal is to identify and classify approaches, architectures and usage of runtime models.
-The research suggests problems like error localization, requirements evolution, abstraction and maintenance are addressed by runtime models.
-Those models can have various architectures, techniques, objectives and kinds.
+The research suggests problems like error localization, requirements evolution, abstraction and maintenance can be addressed by runtime models.
+Those models can have various architectures, techniques and objectives.
 The paper proposes those classification to improve development workflows of systems using runtime model support.
 
 One example model is an abstract state machine that can be used to formally describe component behavior, which then can be executed directly.
-The the goals are abstraction, consistency, simulation, platform independence and policy checking.
-The virtual machine approach of section \ref{sec:virtualmachineapproach} implements a comprehensive model of a mobile application, while being platform independent.
+The goals are abstraction, consistency, simulation, platform independence and policy checking.
 
 \textbf{Requirements Engineering:} The paper \textit{Embedding requirements within Model-Driven Architecture} \cite{jeary_embedding_2011} deals with the topic of integrating Requirements Engineering and Business Process Management into a Model Driven Architecture project.
 The objective is to improve and enhance the artifacts of requirements engineering, by using \ac{BPMN} to transform business logic into a Computation Independent Model (CIM).
@@ -245,12 +239,12 @@ Those can then be converted to \ac{MDA}'s \acp{CIM} and therefor to \acp{PSM}.
 The paper concludes by emphasizing the openness of \ac{MDA}, which allows many model variations and tools that can be integrated into the process.
 This way, it is possible to formally map a \ac{BPMN} to a \ac{PSM}.
 
-\textbf{Software Architecture:} The connection between software architecture and abstraction over software is discussed in the paper \textit{Architecture = Abstractions over Software} \cite{jacobsen_architectureabstractions_1999}.
+\textbf{Software Architecture:} The connection between software architecture and abstraction is discussed in the paper \textit{Architecture = Abstractions over Software} \cite{jacobsen_architectureabstractions_1999}.
 The main statement is that software design and architecture are a abstraction over the software domain, which elevates the architecture above the usage environment and domain.
 This means, that architecture is domain independent.
 The paper classifies and characterizes various aspects and implications of software architecture like the design process, tools and perspectives.
 Static and dynamic aspects are also being discussed.
-Dynamic aspects of an architecture include snapshots and state snapshots and transitions.
+Dynamic aspects of an architecture include state and transitions.
 
 
 
