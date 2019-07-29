@@ -94,6 +94,7 @@ An app can load data into databases that can be configured using the model.
 This configuration can be interpreted by any relational database system, since only commonly used column types can be used.
 This can be considered computation independent, because the internal structure and processing of the configuration is not defined.
 But since concrete \ac{SQL} queries can be used in the definition, this part of the model cannot be considered computation independent, since there is a direct and formal definition of the data syntax and processing.
+Instead, this case of \ac{SQL} usage can be considered platform independent.
 
 
 
@@ -123,14 +124,14 @@ Figure \ref{fig:pairwisecomparisonmetamodell} shows the intermediate score value
 	\label{table:pairwisecomparisonmetamodelresult}
 \end{table}
 
-Every requirement was compared to each of the other ones and a score of -1 and 1 are assigned.
+Every requirement was compared to each other and a score of -1 or 1 are assigned.
 There are ten requirements, so the maximum score is 9, while the minimum score is -9.
 The scoring shows, that F6 Actions is the most important requirement.
-It is notable, that actions have not been the first thing, that the model had to offer.
+It is notable, that actions have not been the first thing, that the model offered.
 The meta model started with F1 Separation into independent sub-models.
 But today, the actions are one of the most important features, while there are workarounds for the other requirements.
-The other obvious result is, that the non-functional requirements make up the entire bottom half of the requirement table.
-This is, because non-functional requirements on a meta model only affect application and infrastructure developers.
+Another notable finding is, that the non-functional requirements make up the entire bottom half of the requirements table.
+This is, because non-functional requirements on a meta model only affect application and infrastructure developers and do not make any statement about the quality of the final application.
 
 The current meta model, that is used in the various production apps is fully implementing all of the acceptance criteria.
 Those are described in section \ref{functionalmodelrequirements} and the following.
@@ -139,18 +140,17 @@ Those are described in section \ref{functionalmodelrequirements} and the followi
 
 The analysis of a software architecture is described in \cite{klein_evaluating_2001}.
 It is one aspect of a software development project and is done before the first design planning of the software's architecture is created.
-The architecture of a software references multiple point of views and abstraction level.
-The architectural consideration can refer to the procedure of distributed applications or to the used code paradigm.
+The architecture of a software is a combination of multiple points of view and abstraction levels.
 A software architecture and it's analysis is "a bet, a wager on the success of a system" (\cite{klein_evaluating_2001} 19).
-This means, that a analysis might steer the software development process in a possibly reasonable direction, but the actual outcome relating to the requirements is undefined.
+This means, that an analysis might steer the software development process in a possibly reasonable direction, but the actual outcome relating to the requirements is undefined.
 In addition, the authors suggest, that an unsuitable architecture can cause a complete project failure.
 Also, the software architecture is directly related to the project structure and the team allocation.
 
 An architecture analysis starts with the definition of quality goals, which are non-functional requirements on the system.
 Those are not only end-user-oriented, but also include development and maintenance quality goals.
-Those goals have to be defined precisely since statements like "The system must be stable." do not have any explanatory power.
-The statement must refer a concrete scenario in which the system can handle errors and is able to stay available.
-The following list describes some examples.
+Those goals have to be defined precisely since statements like "The system must be stable." do not express any practical demands.
+To make the statement more meaningful, it must name a concrete scenario in which the system can handle errors and is able to stay available.
+The following list states some examples.
 
 \begin{enumerate}
 	\item The system must stay available after 10.000 simultaneous login requests, where 10\% are unsuccessful logins.
@@ -158,11 +158,11 @@ The following list describes some examples.
 	\item The system must have a maintenance mode, in which major components can be swapped, while the user sees a maintenance view.
 \end{enumerate}
 
-These goals now imply some consequences.
+These goals now imply consequences.
 A monolithic architecture might allow a simple and fast development process and fulfills the second goal, but it is not possible to change components while there is still a maintenance view for the end user.
 Also, depending on the complexity of a login request, the monolithic approach might be unable to handle those login requests.
 A distributed system might be more complex, especially the second goal can be challenging.
-But now it should be possible to handle many requests and implement a maintenance mode, where sub systems can be shutdown and swapped, while the main handler shows the maintenance view.
+But now it should be possible to handle many requests and implement a maintenance mode, where sub systems can be shut down and swapped, while the main handler shows the maintenance view.
 
 A suitable architecture meets it's quality goals and is actually buildable.
 This is why the largest part of an architecture evaluation is the specification and prioritizing of quality goals.
@@ -175,7 +175,7 @@ The requirements of the interpreter are weighted by their importance.
 A detailed documentation is shown in figure \ref{fig:pairwisecomparisoninterpreter} and each of the requirements are described in section \ref{functionalinterpreterrequirements}.
 Every requirement is scored by using a pairwise comparison.
 The requirement that is more important gets a sore of 1 while the other one is scored -1.
-The results are shown in the following table.
+The results are shown in table \ref{table:pairwisecomparisoninterpreterresult}.
 
 \begin{table}[h]
 	\begin{center}
@@ -199,8 +199,8 @@ The results are shown in the following table.
 \end{table}
 
 There are 11 requirements, so a maximum score of 10 or a minimum of -10 is possible.
-The fact that the scores are not extreme and the values are more spread out show, that the requirement's weights or more similar to each other than the ones of the meta model.
-It is not as obvious of how to sort them.
+The fact that the scores do not peak at the maximum and the values are more spread out show, that the weights are more similar to each other than the ones of the meta model.
+This is, because the requirements are all defined as equally important and the weighting is mostly based on user experience.
 
 \subsection{Native Approach}
 
@@ -323,7 +323,7 @@ There is no external validity, because the result only indicates the concrete im
 \begin{enumerate}
 	\item \textbf{Not enough requirements are used in the process.}
 	
-	If there are not enough requirements used in the process the remaining one are all more relevant and slight changes in the weight classification have a strong impact on the result.
+	If there are not enough requirements used in the process the remaining ones are all more relevant and slight changes in the weight classification have a strong impact on the result.
 	The worst case scenario is that the most important requirements are missing, so the less relevant ones have the most significant impact on the score, which will result in wrong assumptions.
 	A comparison of two implementations is then only valid for exactly those requirements.
 	
@@ -337,9 +337,10 @@ There is no external validity, because the result only indicates the concrete im
 	
 	This might happen if the actual quality is unknown, because it was not sufficiently evaluated beforehand.
 	Another common mistake is, that instead of evaluating the quality of the implementation, the quality or correctness of the requirement is scored.
-	An example if the requirement \textit{F1 Reflects changes to the model}.
-	While the native approach implementation perfectly implements the required functionality, the requirement itself is insufficient.
-	A example are images that have been updated will not be re-downloaded, because the \ac{URL} did not change and images will be cached infinitely.
+	An example is the requirement \textit{F1 Reflects changes to the model}.
+	While the native approach implementation perfectly implements the required functionality, the requirement itself is insufficient and must be extended.
+	An example are cached images that have been updated on the server.
+	They will not be invalidated and updated, because the \ac{URL} did not change and images will be cached infinitely.
 	But since the interpreter implements the required functionality, the implementation quality is full (4 out of 4).
 	
 	\item \textbf{The score is misinterpreted as a general software quality.}
