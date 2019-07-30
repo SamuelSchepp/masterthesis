@@ -171,7 +171,7 @@ The goals are always referencing specific scenarios or requirements.
 \section{Requirement Analysis}
 
 The following sections will evaluate the interpreter and the requirement implementation.
-The evaluation approach is a slightly modified version of a cost-benefit analysis, which became known through \cite{zangemeister_nutzwertanalyse_1976}.
+The evaluation approach is a slightly modified version of a value-benefit analysis\footnote{This term is not well defined and combines multiple similar approaches. What is actually used here is the Nutzwertanalyse, which became known through \cite{zangemeister_nutzwertanalyse_1976}.}.
 The requirements of the interpreter are weighted by their importance.
 A detailed documentation is shown in figure \ref{fig:pairwisecomparisoninterpreter} and each of the requirements are described in section \ref{functionalinterpreterrequirements}.
 Every requirement is scored by using a pairwise comparison.
@@ -205,7 +205,7 @@ This is, because the requirements are all defined as equally important and the w
 
 \subsection{Native Approach}
 
-The "native" approach is the currently used production architecture, that is powering most of the company's mobile applications for iOS.
+The native approach is the currently used production architecture, that is powering most of the company's mobile applications for iOS.
 It is comparable to a monolithic approach, since everything is happening on the main thread, and mos specific functionality is directly mapped to native \ac{UI} elements and frameworks.
 One example is the evaluation of layout constraints.
 If a text layer has a variable height, it should fit it's height to the size of the current text content.
