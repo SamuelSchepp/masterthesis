@@ -436,10 +436,13 @@ The problem is, that applying changes to the native elements can result in new c
 If a layer is configured to change it's state based on the child count of another layer, the \ac{UI} has to be rendered multiple times, which is very expensive.
 
 While the feature set grew, the requirements to the system got higher.
-New features like the application of changes to layers in a different nodes result in a high workload on the main thread.
-Introducing concurrency now is only possible on a few marked-out aspects, because the code operates on the \ac{UI} in an unstructured way.
+New features like the application of changes to layers in a different view result in a high workload on the main thread.
+Introducing concurrency now is only possible on a few aspects, because the code operates on the \ac{UI} in an unstructured way.
 \ac{UI} operations are only allowed on the main thread, otherwise, the change will be ignored or the app could crash.
 The opposite of this approach is explained in the following section, which tries to separate \ac{mos} and \ac{UI} code.
+Some extreme performance issues are shown in figure \ref{fig:testmatrix}.
+The table compares the performance of the old and the current implementation by measuring the time it takes to update the view in three example scenarios.
+Those scenarios are specifically chosen to demonstrate the implementations weak points\footnote{Those issues already got fixed by highly optimizing the \ac{UI} code. Since the architecture does not allow general use of background threads, those changes are mostly considered workarounds.}.
 
 \section{Reengineering Approach: Virtual Machine}
 \label{sec:virtualmachineapproach}
