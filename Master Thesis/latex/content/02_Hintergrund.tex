@@ -16,12 +16,12 @@ The app categories range from retail to event to city marketing apps\footnote{\u
 
 The creator of the system is Fabrik 19 GmbH.
 The company is based in Gießen, Hesse, Germany and was founded 2013 by Mark Pralle and Sven Herchenhein.
-At the moment, the company has bout 25 employees.
+At the moment, the company has about 25 employees.
 Besides of apps, there are also other projects and solutions, like consulting and web hosting.
 
 \subsection{Markets}
 
-Fabrik19 does not deliver apps directly to end users, but is partner with business customers like retail corporations and city marketing agencies.
+Fabrik19 does not deliver apps directly to end users, but is partner with businesses like retail corporations and city marketing agencies.
 The current flagship is the Gießen App (figure \ref{giessenapp}), which was developed in cooperation with DISTAMA GmbH.
 The app was downloaded 40,000 times and has 20 distinct and active users per day.
 Over 500 advertisement partners are represented in the app\footnote{\url{https://distama.de/giessen-app/}}.
@@ -84,7 +84,7 @@ The main development focus is on the app interpreter platform ''mos''.
 It supports the two major platforms iOS and Android, but there is also a lightweight version available in .Net, which is running on the steles as a Windows app.
 A web client is also in active development, which aims to replace the .Net version.
 
-A configuration are multiple JSON files, that represent the app meta information, its layout and its behavior.
+A configuration contains multiple JSON files, that represent the app meta information, its layout and its behavior.
 These files are called node.
 There is one root node, whose \ac{URL} is baked into the app on compile time.
 This root node defines the first screen of the app.
@@ -103,7 +103,7 @@ The previous node can pass data, like the ID of the item that should be displaye
 \end{figure}
 
 The goal is, to be able to create a new app in one day, by meeting with the customer and configuring the app together.
-The syntax of the configuration is designed to abstract all of an apps' standard behavior.
+The syntax of the configuration is designed to abstract all of an app's standard behavior.
 The custom layout system of mos enables unrestricted, dynamic and relative layouts, which allows for almost any layout.
 This way, it is not obvious, that the app was created using a framework.
 
@@ -141,7 +141,7 @@ Many parameters can be configured to be dependent on device class and display or
 }
 \end{lstlisting}
 
-Listing \ref{lst:layoutexample} shows a simplified version of the layout \textit{c\_home}.
+Listing \ref{lst:layoutexample} shows a heavily simplified version of the layout \textit{c\_home}.
 It consists of one color layer and one grid layer.
 A color layer has a solid color and is used as a background.
 The grid layer arranges it's sublayers on a grid, while every layer contains information on column span and other layout constraints.
