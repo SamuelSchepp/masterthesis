@@ -3,7 +3,7 @@
 \chapter{Conclusion}
 
 This chapter will wrap up the discussion on the interpreter and it's various implementation approaches.
-A summary will be given, that will outline the key aspects of all of the previous chapters.
+A summary will be given, that will outline the key aspects of the previous chapters.
 After that, the evaluation result will be discussed and the research questions of section \ref{sec:goals} will be answered.
 The current state of art will then be described using other examples.
 This thesis will then end with a list of next steps resulting from the work and references to related papers and work.
@@ -20,11 +20,12 @@ This makes it very powerful and functional, while still being very flexible.
 If the configuration changes, the applications download the changes and update their behaviors accordingly.
 The model fits into the definition of the general and specialized model theories, that are defined by Stachowiak \cite{stachowiak_allgemeine_1973} and Seidewitz \cite{seidewitz_what_2003}.
 
-Because of low starting requirements, the interpreter's performance is noticeable worse than a native application's performance, that implements the functionality directly and natively.
+The current interpreter's performance is noticeable worse than that of a native application's performance, that implements the functionality directly and natively.
 This is because a software architecture has been implemented, that directly maps the models capabilities to native \ac{UI} elements.
 Since changes to the \ac{UI} are happening multiple times with only one user interaction, the \ac{UI} thread is very busy.
 An interaction example is a database change, that could trigger layout updates.
 If the interaction produces multiple interactions, all the changes are applied to the \ac{UI}, blocking the main thread.
+This is the result of simple starting requirements and a fast growth.
 
 An alternative approach of implementing the interpreter is the virtual machine approach, which simulates the app's runtime with basic data structures.
 This system is independent to any native \ac{UI} implementation and the main thread.
