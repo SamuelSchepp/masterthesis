@@ -571,7 +571,7 @@ Especially new features or changes must follow these rules, so the performance a
 	
 	Since this rule represents the key elements of the re-engineering approach, it is the most important one.
 	There are a few exceptions in which there is \ac{UI} functionality called right before a flush.
-	En example is a pushNode action, which would push a new view of layers to the stack.
+	An example is a pushNode action, which would push a new view of layers to the stack.
 	After the layers are displayed, the remaining dirt is flushed.
 	A pop of a view would result in first removing the view from the stack and then flushing changes.
 	The changes of layers that don't exist anymore will not be flushed, because the flushing is done recursively and the layer's are not part of the tree anymore.
